@@ -31,6 +31,7 @@ class Result(models.Model):
     assigned_student = models.ForeignKey(User, on_delete=models.CASCADE)
     term = models.CharField(max_length=10, choices=TERM_CHOICES, default='1st_term')
     name = models.CharField(max_length=50, default=f"${assigned_student.username}_${year_span}_${term}_Result")
+    result_file = models.FileField(blank=True, upload_to='results/')
     uploaded = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     uploaded_at = models.DateTimeField(auto_now=True)
