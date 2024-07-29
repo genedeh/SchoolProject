@@ -39,4 +39,9 @@ class Result(models.Model):
     def __str__(self) -> str:
         return self.name
 
-    
+
+class UploadList(models.Model):
+    name = models.CharField(max_length=20, default=f"Upload_List#${id}", unique=True)
+    results_to_be_uploaded = models.ForeignKey(Result, on_delete=models.SET_NULL, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
