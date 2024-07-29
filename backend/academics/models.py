@@ -9,4 +9,5 @@ class ClassRoom(models.Model):
     assigned_Teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
     def __str__(self) -> str:
-        return self.class_name
+        return self.name
+    
