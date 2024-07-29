@@ -5,6 +5,8 @@ from user.models import User
 
 
 class ClassRoomAdmin(admin.ModelAdmin):
+    list_display = ("id","name", "assigned_Teacher")
+    search_fields = ['name']
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "assigned_Teacher":
             kwargs["queryset"] = User.objects.filter(is_student_or_teacher=False)
