@@ -7,7 +7,7 @@ from user.models import User
 class ClassRoom(models.Model):
     name = models.CharField(max_length=8, unique=True)
     no_of_students = models.IntegerField(verbose_name="Number Of Students")
-    assigned_Teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="classrooms")
+    assigned_Teacher = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, related_name="classrooms")
 
     def __str__(self) -> str:
         return self.name
@@ -27,8 +27,8 @@ class Result(models.Model):
     ]
 
     year_span = models.CharField(max_length=10, help_text="For Example: 2023/2024")
-    assigned_class = models.ForeignKey(ClassRoom, on_delete=models.CASCADE, related_name='results')
-    assigned_student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='results')
+    assigned_class = models.OneToOneField(ClassRoom, on_delete=models.CASCADE, related_name='results')
+    assigned_student = models.OneToOneField(User, on_delete=models.CASCADE, related_name='results')
     term = models.CharField(max_length=10, choices=TERM_CHOICES, default='1st_term')
     name = models.CharField(max_length=50, default=f"${assigned_student.username}_${year_span}_${term}_Result")
     result_file = models.FileField(blank=True, upload_to='results/')
