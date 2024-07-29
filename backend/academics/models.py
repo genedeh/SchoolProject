@@ -43,8 +43,8 @@ class Result(models.Model):
         return self.name
     
     def save(self, *args, **kwargs):
-        if not self.username:
-            self.username = f"{self.year_span}_{self.term}_Result"
+        if not self.name:
+            self.name = f"{self.year_span}_{self.term}_Result"
         super().save(*args, **kwargs)
 
 
