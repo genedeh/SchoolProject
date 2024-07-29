@@ -8,7 +8,7 @@ from user.models import User
 class ClassRoom(models.Model):
     name = models.CharField(max_length=8, unique=True)
     assigned_Teacher = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, related_name="classrooms")
-    students = models.ForeignKey(User, on_delete=models.PROTECT, related_name='classes')
+    students = models.ManyToManyField(User, related_name='classes')
 
     def __str__(self) -> str:
         return self.name
@@ -16,7 +16,7 @@ class ClassRoom(models.Model):
 class Subject(models.Model):
     name = models.CharField(max_length=100)
     assigned_class = models.ForeignKey(ClassRoom, related_name='sujects', on_delete=models.PROTECT)
-    students_offering = models.ForeignKey(User, on_delete=models.PROTECT, related_name='subjects')
+    students_offering = models.ManyToManyField(User,  related_name='subjects')
 
 
     def __str__(self) -> str:
@@ -30,8 +30,8 @@ class Result(models.Model):
     ]
 
     year_span = models.CharField(max_length=10, help_text="For Example: 2023/2024")
-    assigned_class = models.OneToOneField(ClassRoom, on_delete=models.CASCADE, related_name='results')
-    assigned_student = models.OneToOneField(User, on_delete=models.CASCADE, related_name='results')
+    assigned_class = models.ForeignKey(ClassRoom, on_delete=models.CASCADE, related_name='results')
+    assigned_student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='results')
     term = models.CharField(max_length=10, choices=TERM_CHOICES, default='1st_term')
     name = models.CharField(max_length=50, blank=True)
     result_file = models.FileField(blank=True, upload_to='results/')
