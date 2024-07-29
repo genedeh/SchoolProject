@@ -6,8 +6,8 @@ from user.models import User
 
 class ClassRoom(models.Model):
     name = models.CharField(max_length=8, unique=True)
-    no_of_students = models.IntegerField(verbose_name="Number Of Students")
     assigned_Teacher = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, related_name="classrooms")
+    students = models.ForeignKey(User, on_delete=models.PROTECT, related_name='classes')
 
     def __str__(self) -> str:
         return self.name
@@ -15,6 +15,8 @@ class ClassRoom(models.Model):
 class Subject(models.Model):
     name = models.CharField(max_length=100)
     assigned_class = models.ManyToManyField(ClassRoom, related_name='sujects')
+    students_offering = models.ForeignKey(User, on_delete=models.PROTECT, related_name='subjects')
+
 
     def __str__(self) -> str:
         return f"${self.assigned_class.name}_${self.name}"
