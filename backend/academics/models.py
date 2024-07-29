@@ -7,14 +7,14 @@ from user.models import User
 class ClassRoom(models.Model):
     name = models.CharField(max_length=8, unique=True)
     no_of_students = models.IntegerField(verbose_name="Number Of Students")
-    assigned_Teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    assigned_Teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="classrooms")
 
     def __str__(self) -> str:
         return self.name
     
 class Subject(models.Model):
     name = models.CharField(max_length=100)
-    assigned_class = models.ForeignKey(ClassRoom, on_delete=models.SET_NULL, null=True)
+    assigned_class = models.ManyToManyField(ClassRoom, related_name='sujects')
 
     def __str__(self) -> str:
         return f"${self.assigned_class.name}_${self.name}"
@@ -27,8 +27,8 @@ class Result(models.Model):
     ]
 
     year_span = models.CharField(max_length=10, help_text="For Example: 2023/2024")
-    assigned_class = models.ForeignKey(ClassRoom, on_delete=models.CASCADE)
-    assigned_student = models.ForeignKey(User, on_delete=models.CASCADE)
+    assigned_class = models.ForeignKey(ClassRoom, on_delete=models.CASCADE, related_name='results')
+    assigned_student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='results')
     term = models.CharField(max_length=10, choices=TERM_CHOICES, default='1st_term')
     name = models.CharField(max_length=50, default=f"${assigned_student.username}_${year_span}_${term}_Result")
     result_file = models.FileField(blank=True, upload_to='results/')
@@ -42,6 +42,6 @@ class Result(models.Model):
 
 class UploadList(models.Model):
     name = models.CharField(max_length=20, default=f"Upload_List#${id}", unique=True)
-    results_to_be_uploaded = models.ForeignKey(Result, on_delete=models.SET_NULL, null=True)
+    results_to_be_uploaded = models.ForeignKey(Result, on_delete=models.SET_NULL, null=True, related_name='results')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
