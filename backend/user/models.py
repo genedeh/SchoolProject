@@ -11,7 +11,7 @@ class User(AbstractUser, models.Model):
     is_student_or_teacher = models.BooleanField(default=False)
     age = models.IntegerField(default=13)
     address = models.CharField(max_length=150, blank=True)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=11, blank=True)
 
     def __str__(self) -> str:
