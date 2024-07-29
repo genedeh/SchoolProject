@@ -33,7 +33,7 @@ class Result(models.Model):
     assigned_class = models.OneToOneField(ClassRoom, on_delete=models.CASCADE, related_name='results')
     assigned_student = models.OneToOneField(User, on_delete=models.CASCADE, related_name='results')
     term = models.CharField(max_length=10, choices=TERM_CHOICES, default='1st_term')
-    name = models.CharField(max_length=50, default=f"{year_span}_{term}_Result", blank=True)
+    name = models.CharField(max_length=50, blank=True)
     result_file = models.FileField(blank=True, upload_to='results/')
     uploaded = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -41,6 +41,11 @@ class Result(models.Model):
 
     def __str__(self) -> str:
         return self.name
+    
+    def save(self, *args, **kwargs):
+        if not self.username:
+            self.username = f"{self.year_span}_{self.term}_Result"
+        super().save(*args, **kwargs)
 
 
 class UploadList(models.Model):

@@ -7,7 +7,7 @@ from uuid import uuid4
 class User(AbstractUser, models.Model):
     first_name = models.CharField(max_length=20, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
-    username = models.CharField(max_length=60,default=f"${last_name}_${first_name}", unique=True)
+    username = models.CharField(max_length=100, unique=True, blank=True)
     user_id = models.UUIDField(default=f"{uuid4()}", primary_key=True, unique=True)
     profile_picture = models.ImageField(upload_to='profile_images/', default='default_profile_images/default_image.jpeg')
     is_student_or_teacher = models.BooleanField(default=False)
@@ -18,3 +18,8 @@ class User(AbstractUser, models.Model):
 
     def __str__(self) -> str:
         return self.username
+    
+    def save(self, *args, **kwargs):
+        if not self.username:
+            self.username = f'{self.first_name}_{self.last_name}'
+        super().save(*args, **kwargs)
