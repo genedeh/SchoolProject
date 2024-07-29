@@ -15,8 +15,18 @@ class ClassRoomAdmin(admin.ModelAdmin):
         if db_field.name == "students":
             kwargs["queryset"] = User.objects.filter(is_student_or_teacher=True)
         return super().formfield_for_manytomany(db_field, request, **kwargs)
+    
+
+class SubjectAdmin(admin.ModelAdmin):
+    list_display = ("id", "name", "assigned_class")
+    search_fields = ['name']
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "students_offering":
+            kwargs["queryset"] = User.objects.filter(is_student_or_teacher=True)
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
 
 admin.site.register(ClassRoom, ClassRoomAdmin)
-admin.site.register(Subject)
+admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Result)
 admin.site.register(UploadList)
