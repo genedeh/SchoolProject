@@ -49,7 +49,7 @@ class Result(models.Model):
 
 
 class UploadList(models.Model):
-    name = models.CharField(max_length=60, default=f"Upload_List#{uuid4()}", unique=True, blank=True)
+    name = models.CharField(max_length=60, unique=True, blank=True)
     assigned_teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uploalists')
     results_to_be_uploaded = models.ManyToManyField(Result, related_name='uploalists')
     created_at = models.DateTimeField(auto_now_add=True)
