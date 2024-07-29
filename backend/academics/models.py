@@ -1,3 +1,4 @@
+from uuid import uuid4
 from django.db import models
 from user.models import User
 
@@ -14,12 +15,12 @@ class ClassRoom(models.Model):
     
 class Subject(models.Model):
     name = models.CharField(max_length=100)
-    assigned_class = models.ManyToManyField(ClassRoom, related_name='sujects')
+    assigned_class = models.ForeignKey(ClassRoom, related_name='sujects', on_delete=models.PROTECT)
     students_offering = models.ForeignKey(User, on_delete=models.PROTECT, related_name='subjects')
 
 
     def __str__(self) -> str:
-        return f"${self.assigned_class.name}_${self.name}"
+        return f"{self.assigned_class.name}_{self.name}"
     
 class Result(models.Model):
     TERM_CHOICES = [
@@ -32,7 +33,7 @@ class Result(models.Model):
     assigned_class = models.OneToOneField(ClassRoom, on_delete=models.CASCADE, related_name='results')
     assigned_student = models.OneToOneField(User, on_delete=models.CASCADE, related_name='results')
     term = models.CharField(max_length=10, choices=TERM_CHOICES, default='1st_term')
-    name = models.CharField(max_length=50, default=f"${year_span}_${term}_Result")
+    name = models.CharField(max_length=50, default=f"{year_span}_{term}_Result", blank=True)
     result_file = models.FileField(blank=True, upload_to='results/')
     uploaded = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -43,8 +44,11 @@ class Result(models.Model):
 
 
 class UploadList(models.Model):
-    name = models.CharField(max_length=20, default=f"Upload_List#${id}", unique=True)
+    name = models.CharField(max_length=60, default=f"Upload_List#{uuid4()}", unique=True, blank=True)
     assigned_teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uploalists')
-    results_to_be_uploaded = models.ForeignKey(Result, on_delete=models.SET_NULL, null=True, related_name='uploalists')
+    results_to_be_uploaded = models.ManyToManyField(Result, related_name='uploalists')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return self.name
