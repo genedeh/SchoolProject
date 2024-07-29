@@ -4,7 +4,7 @@ from user.models import User
 # Create your models here.
 
 class ClassRoom(models.Model):
-    class_name = models.CharField(max_length=8, unique=True)
+    name = models.CharField(max_length=8, unique=True)
     no_of_students = models.IntegerField(verbose_name="Number Of Students")
     assigned_Teacher = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
