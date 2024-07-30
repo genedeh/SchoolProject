@@ -1,3 +1,4 @@
+from typing import Iterable
 from uuid import uuid4
 from django.db import models
 from user.models import User
@@ -58,3 +59,8 @@ class UploadList(models.Model):
 
     def __str__(self) -> str:
         return self.name
+    
+    def save(self, *args, **kwargs):
+        if not self.name:
+            self.name = f"{self.assigned_class}_{self.assigned_class}_UploadList"
+        super().save(*args, **kwargs)
