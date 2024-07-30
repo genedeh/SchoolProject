@@ -62,5 +62,5 @@ class UploadList(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.name:
-            self.name = f"{self.assigned_class}_{self.assigned_class}_UploadList"
+            self.name = f"{self.assigned_class}_{self.assigned_teacher}_UploadList"
         super().save(*args, **kwargs)
