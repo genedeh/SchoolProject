@@ -1,5 +1,4 @@
-from typing import Iterable
-from uuid import uuid4
+from datetime import datetime
 from django.db import models
 from user.models import User
 
@@ -30,7 +29,7 @@ class Result(models.Model):
         ('3rd_term', '3RD TERM'),
     ]
 
-    year_span = models.CharField(max_length=10, help_text="For Example: 2023/2024")
+    year_span = models.CharField(max_length=10, help_text="For Example: 2023/2024", blank=True)
     assigned_class = models.ForeignKey(ClassRoom, on_delete=models.CASCADE, related_name='results')
     assigned_student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='results')
     term = models.CharField(max_length=10, choices=TERM_CHOICES, default='1st_term')
@@ -44,6 +43,7 @@ class Result(models.Model):
         return self.name
     
     def save(self, *args, **kwargs):
+        self.year_span = f"{datetime.now().year}/{datetime.now().year + 1}"
         if not self.name:
             self.name = f"{self.year_span}_{self.term}_Result"
         super().save(*args, **kwargs)
