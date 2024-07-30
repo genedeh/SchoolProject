@@ -56,7 +56,7 @@ class UploadList(models.Model):
     results_to_be_uploaded = models.ManyToManyField(Result, related_name='uploalists', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
     def __str__(self) -> str:
         return self.name
     

@@ -10,8 +10,7 @@ class User(AbstractUser, models.Model):
     username = models.CharField(max_length=100, unique=True, blank=True)
     profile_picture = models.ImageField(upload_to='profile_images/', default='default_profile_images/default_image.jpeg')
     is_student_or_teacher = models.BooleanField(default=False)
-    birth_date = models.DateField(null=True)
-    age = models.IntegerField(blank=True)
+    age = models.IntegerField(null=True)
     address = models.CharField(max_length=150, blank=True)
     email = models.EmailField()
     phone_number = models.CharField(max_length=11, blank=True)
@@ -22,5 +21,5 @@ class User(AbstractUser, models.Model):
     def save(self, *args, **kwargs):
         if not self.username:
             self.username = f'{self.first_name}_{self.last_name}'
-        self.age = datetime.now().year - self.birth_date.year
+        # self.age = datetime.now().year - self.birth_date.year
         super().save(*args, **kwargs)
