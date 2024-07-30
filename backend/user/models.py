@@ -8,7 +8,7 @@ class User(AbstractUser, models.Model):
     first_name = models.CharField(max_length=20, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
     username = models.CharField(max_length=100, unique=True, blank=True)
-    profile_picture = models.ImageField(upload_to='profile_images/', default='default_profile_images/default_image.jpeg')
+    profile_picture = models.ImageField(upload_to='profile_images/')
     is_student_or_teacher = models.BooleanField(default=False)
     age = models.IntegerField(null=True)
     address = models.CharField(max_length=150, blank=True)
