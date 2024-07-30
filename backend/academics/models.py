@@ -51,6 +51,7 @@ class Result(models.Model):
 class UploadList(models.Model):
     name = models.CharField(max_length=60, unique=True, blank=True)
     assigned_teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uploalists')
+    assigned_class = models.ForeignKey(ClassRoom, on_delete=models.PROTECT, related_name="uploadlists", null=True)
     results_to_be_uploaded = models.ManyToManyField(Result, related_name='uploalists')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
