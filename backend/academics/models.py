@@ -45,7 +45,7 @@ class Result(models.Model):
     def save(self, *args, **kwargs):
         self.year_span = f"{datetime.now().year}/{datetime.now().year + 1}"
         if not self.name:
-            self.name = f"{self.year_span}_{self.term}_Result"
+            self.name = f"{self.assigned_student}_{self.year_span}_{self.term}_Result"
         super().save(*args, **kwargs)
 
 
