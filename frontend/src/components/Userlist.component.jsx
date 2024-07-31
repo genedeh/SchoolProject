@@ -4,8 +4,10 @@ import axios from 'axios';
 const UserList = () => {
     const [users, setUsers] = useState([]);
 
+
+
     useEffect(() => {
-        axios.get('/users/')
+        axios.get('http://127.0.0.1:8000/api/users/')
             .then(response => setUsers(response.data))
             .catch(error => console.error('Error fetching User:', error));
     }, []);

@@ -6,7 +6,7 @@ from .serializers import UserSerializer
 # Create your views here.
 
 class UserViewSet(viewsets.ViewSet):
-    permission_classes = [permissions.AllowAny]
+    # permission_classes = [permissions.AllowAny]
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
