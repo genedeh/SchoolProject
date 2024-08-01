@@ -1,22 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
-
+    let navigate = useNavigate();
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
             const response = await axios.post('http://127.0.0.1:8000/api/login/', { username, password });
             localStorage.setItem('token', response.data.access);
             setMessage('SUCCESFUL LOGIN')
+            return navigate("/dashboard")
         } catch (err) {
             setMessage('Invalid Credentials');
         }
     };
 
+    useEffect(() => {
+        const currentToken = localStorage.getItem('token')
+        if (currentToken) {
+            return navigate("/dashboard")
+        }
+    },[])
     return (
         <div>
             <form onSubmit={handleLogin}>
@@ -41,6 +49,8 @@ const LoginForm = () => {
             </form>
         </div>
     );
+
+
 };
 
 export default LoginForm;
