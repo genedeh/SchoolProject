@@ -8,7 +8,7 @@ function App() {
   // const token = localStorage.getItem('token');
 
   return (
-    <Routes>
+      <Routes>
       <Route index Component={LoginForm} />
       <Route path='dashboard' Component={UserProfile} />
     </Routes>
