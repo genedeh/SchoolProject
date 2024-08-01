@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
 
 const UserProfile = () => {
     const [user, setUser] = useState(null);
     const [error, setError] = useState('');
+    let navigate = useNavigate()
+
+    const logoutHandler = () => {
+        localStorage.removeItem('token');
+        return navigate("/")
+    }
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -27,7 +34,11 @@ const UserProfile = () => {
         fetchUserProfile();
     }, []);
 
-    if (error) {
+    if (error === "No token found") {
+        return <div>PLS ENDEVOUR TO LOG IN BEFORE U CAN HAVE ACCESS TO THIS PAGE
+            <br /><Link to="/">LOG IN</Link>
+        </div>;
+    } else if (error) {
         return <div>{error}</div>;
     }
 
@@ -36,12 +47,17 @@ const UserProfile = () => {
     }
 
     return (
-        <div>
-            <h1>User Profile</h1>
-            <p>ID: {user.id}</p>
-            <p>Username: {user.username}</p>
-            <p>Email: {user.email}</p>
-        </div>
+        <>
+            <div>
+                <h1>User Profile</h1>
+                <p>ID: {user.id}</p>
+                <p>Username: {user.username}</p>
+                <p>Email: {user.email}</p>
+            </div>
+            <div>
+                <button onClick={logoutHandler}>LOG OUT</button>
+            </div>
+        </>
     );
 };
 

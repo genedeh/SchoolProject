@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,13 +18,6 @@ const LoginForm = () => {
             setMessage('Invalid Credentials');
         }
     };
-
-    useEffect(() => {
-        const currentToken = localStorage.getItem('token')
-        if (currentToken) {
-            return navigate("/dashboard")
-        }
-    },[])
     return (
         <div>
             <form onSubmit={handleLogin}>
