@@ -1,0 +1,33 @@
+/* src/Login.css */
+.login-container {
+    background: #f0f8ff;
+}
+
+.login-box {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-header {
+    margin-bottom: 2rem;
+}
+
+.login-title {
+    margin-top: 1rem;
+    color: #333;
+}
+
+.login-footer {
+    margin-top: 1rem;
+}
+
+.login-footer a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
