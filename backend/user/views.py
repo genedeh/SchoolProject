@@ -18,15 +18,16 @@ class LoginView(generics.GenericAPIView):
         password = request.data.get('password')
         user = authenticate(username=username,password=password)
         if user is None:
-            user = User.objects.get(username=username, password=password)
-        if user is not None:
+            try:
+              user = User.objects.get(username=username, password=password)
+            except:
+                return Response({'error': 'Invalid Credentials'}, status=400)
+        else:
             refresh = RefreshToken.for_user(user)
             return Response({
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
             })
-        else:
-            return Response({'error': 'Invalid Credentials'}, status=400)
         
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
