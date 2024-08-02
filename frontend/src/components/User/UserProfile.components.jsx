@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
-import { Spinner } from 'react-bootstrap'
-
+import { useNavigate } from 'react-router-dom';
+import { Alert, Button, Spinner } from 'react-bootstrap'
+import '../User/UserProfile.styles.css'
+import TeacherDashboard from '../Dashboard/TeacherDashboard.components';
+import StudentDashboard from '../Dashboard/StudentDashboard.components';
 const UserProfile = () => {
     const [user, setUser] = useState(null);
     const [error, setError] = useState('');
@@ -25,7 +27,7 @@ const UserProfile = () => {
                     });
                     setUser(response.data);
                 } catch (err) {
-                    setError('Failed to fetch user profile');
+                    setError('Failed to fetch user profile'.toLocaleUpperCase());
                 }
             } else {
                 setError('No token found');
@@ -36,11 +38,23 @@ const UserProfile = () => {
     }, []);
 
     if (error === "No token found") {
-        return <div>PLS ENDEVOUR TO LOG IN BEFORE U CAN HAVE ACCESS TO THIS PAGE
-            <br /><Link to="/">LOG IN</Link>
-        </div>;
+        return (
+            <Alert variant='warning' className='warning-container'>
+                <Alert.Heading>Missing Permission</Alert.Heading>
+                <hr />
+                PLS ENDEVOUR TO LOG IN BEFORE U CAN HAVE ACCESS TO THIS PAGE
+                <Alert.Link href='/' className='m-2'>GO TO LOGIN PAGE</Alert.Link>
+            </Alert>
+        );
     } else if (error) {
-        return <div>{error}</div>;
+        return (
+            <Alert variant='danger' className='error-container'>
+                <Alert.Heading>Failed Request</Alert.Heading>
+                <hr />
+                {error}
+                <Alert.Link href='/' className='m-2'>GO TO LOGIN PAGE</Alert.Link>
+            </Alert>
+        );
     }
 
     if (!user) {
@@ -51,14 +65,9 @@ const UserProfile = () => {
 
     return (
         <>
+            {user.is_student_or_teacher ? (<StudentDashboard user={user} />) : (<TeacherDashboard user={user} />)}
             <div>
-                <h1>User Profile</h1>
-                <p>ID: {user.id}</p>
-                <p>Username: {user.username}</p>
-                <p>Email: {user.email}</p>
-            </div>
-            <div>
-                <button onClick={logoutHandler}>LOG OUT</button>
+                <Button onClick={logoutHandler}>LOG OUT</Button>
             </div>
         </>
     );
