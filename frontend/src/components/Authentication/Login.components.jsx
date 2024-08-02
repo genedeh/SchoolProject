@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Container, Form, Row, Col, Button, Alert, Spinner } from 'react-bootstrap'
 import '../Authentication/Login.styles.css'
+
 const LoginForm = () => {
     const [username, setUsername] = useState('');
     const [firstname, setFirstname] = useState('');
@@ -27,7 +28,7 @@ const LoginForm = () => {
                 setError('');
                 return navigate("/dashboard")
             } catch (err) {
-                setError("INVALID CREDENTIALS");
+                setError(err.response.data.error);
             }
 
         }
@@ -66,7 +67,7 @@ const LoginForm = () => {
                                         </Button>
                                     </Form>
                                     <div className="login-footer">
-                                        <b>Ogunboyejo Adeola Memorial School</b>
+                                        <b>--Ogunboyejo Adeola Memorial School--</b>
                                     </div>
                                 </div>
                             )

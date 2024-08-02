@@ -17,13 +17,17 @@ class ClassRoomAdmin(admin.ModelAdmin):
         return super().formfield_for_manytomany(db_field, request, **kwargs)
     
 class SubjectAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "assigned_class")
+    list_display = ("id", "name", "assigned_teacher")
     search_fields = ['name']
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
         if db_field.name == "students_offering":
             kwargs["queryset"] = User.objects.filter(is_student_or_teacher=True)
         return super().formfield_for_manytomany(db_field, request, **kwargs)
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "assigned_teacher":
+            kwargs["queryset"] = User.objects.filter(is_student_or_teacher=False)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 class ResultAdmin(admin.ModelAdmin):
     list_display = ("id", "assigned_class", "term", "year_span", "assigned_student")

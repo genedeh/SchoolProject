@@ -15,7 +15,7 @@ class ClassRoom(models.Model):
     
 class Subject(models.Model):
     name = models.CharField(max_length=100)
-    assigned_class = models.ForeignKey(ClassRoom, related_name='sujects', on_delete=models.PROTECT)
+    assigned_teacher = models.ForeignKey(User, related_name='subject', on_delete=models.PROTECT)
     students_offering = models.ManyToManyField(User,  related_name='subjects')
 
 

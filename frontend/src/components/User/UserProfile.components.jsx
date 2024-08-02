@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import { Spinner } from 'react-bootstrap'
 
 const UserProfile = () => {
     const [user, setUser] = useState(null);
@@ -43,7 +44,9 @@ const UserProfile = () => {
     }
 
     if (!user) {
-        return <div>Loading...</div>;
+        return <Spinner animation="border" role="status">
+            <span className="visually-hidden">Loading...</span>
+        </Spinner>;
     }
 
     return (
