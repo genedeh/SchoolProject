@@ -37,7 +37,13 @@ class UserProfileView(APIView):
         user = request.user
         user_data = {
             'id': user.id,
-            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'address': user.address,
+            'username':user.username,
+            'phone_number':user.phone_number,
+            'birth_date':user.birth_date,
+            'profile_picture': f'http://127.0.0.1:8000/media/{str(user.profile_picture)}',
             'email': user.email,
             'is_student_or_teacher': user.is_student_or_teacher
         }

@@ -10,10 +10,10 @@ const StudentSidebar = () => {
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="flex-column" coll>
                         <Nav.Item>
-                            <Nav.Link href="#home" ><House className="me-2" /> Home</Nav.Link>
+                            <Nav.Link href='#home'><House className="me-2" /> Home</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link href="#profile" ><Person className="me-2" /> Profile</Nav.Link>
+                            <Nav.Link href='#profile'><Person className="me-2" /> Profile</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
                             <Nav.Link href="#homework"><Book className="me-2" /> Homework</Nav.Link>

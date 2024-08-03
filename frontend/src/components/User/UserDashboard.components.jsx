@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { Alert, Button, Spinner } from 'react-bootstrap'
-import '../User/UserProfile.styles.css'
-import TeacherDashboard from '../Dashboard/TeacherDashboard.components';
-import StudentDashboard from '../Dashboard/StudentDashboard.components';
-const UserProfile = () => {
+import { Alert, Spinner } from 'react-bootstrap'
+import '../User/UserDashboard.styles.css'
+import TeacherDashboard from '../Dashboard/Teachers/TeacherDashboard.components';
+import StudentDashboard from '../Dashboard/Students/StudentDashboard.components';
+const UserDashboard = () => {
     const [user, setUser] = useState(null);
     const [error, setError] = useState('');
-    let navigate = useNavigate()
-
-    const logoutHandler = () => {
-        localStorage.removeItem('token');
-        return navigate("/")
-    }
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -42,7 +35,7 @@ const UserProfile = () => {
             <Alert variant='warning' className='warning-container'>
                 <Alert.Heading>Missing Permission</Alert.Heading>
                 <hr />
-                PLS ENDEVOUR TO LOG IN BEFORE U CAN HAVE ACCESS TO THIS PAGE
+                PLEASE ENDEVOUR TO LOG IN BEFORE U CAN HAVE ACCESS TO THIS PAGE
                 <Alert.Link href='/' className='m-2'>GO TO LOGIN PAGE</Alert.Link>
             </Alert>
         );
@@ -66,11 +59,8 @@ const UserProfile = () => {
     return (
         <>
             {user.is_student_or_teacher ? (<StudentDashboard user={user} />) : (<TeacherDashboard user={user} />)}
-            <div>
-                <Button onClick={logoutHandler}>LOG OUT</Button>
-            </div>
         </>
     );
 };
 
-export default UserProfile;
+export default UserDashboard;

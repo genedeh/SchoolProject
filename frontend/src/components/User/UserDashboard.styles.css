@@ -12,3 +12,11 @@
     box-shadow: 0 0 10px rgb(255, 225, 0);
 }
 
+.username{
+    text-transform:capitalize;
+    margin-left: 1rem;
+}
+
+.profile-card{
+    max-width: 200px;
+}
