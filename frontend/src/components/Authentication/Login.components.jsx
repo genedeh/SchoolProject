@@ -26,7 +26,7 @@ const LoginForm = () => {
                 const response = await axios.post('http://127.0.0.1:8000/api/login/', { username, password });
                 localStorage.setItem('token', response.data.access);
                 setError('');
-                return navigate("/dashboard")
+                return navigate("/dashboard#home")
             } catch (err) {
                 console.log(err)
                 setError(err.response.data.error);

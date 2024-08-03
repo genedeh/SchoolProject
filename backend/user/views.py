@@ -39,5 +39,6 @@ class UserProfileView(APIView):
             'id': user.id,
             'username': user.username,
             'email': user.email,
+            'is_student_or_teacher': user.is_student_or_teacher
         }
         return Response(user_data)
