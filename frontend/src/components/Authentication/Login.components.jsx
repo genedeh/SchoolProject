@@ -28,6 +28,7 @@ const LoginForm = () => {
                 setError('');
                 return navigate("/dashboard")
             } catch (err) {
+                console.log(err)
                 setError(err.response.data.error);
             }
 

@@ -22,12 +22,12 @@ class LoginView(generics.GenericAPIView):
               user = User.objects.get(username=username, password=password)
             except:
                 return Response({'error': 'Invalid Credentials'}, status=400)
-        else:
-            refresh = RefreshToken.for_user(user)
-            return Response({
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            })
+            
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        })
         
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
