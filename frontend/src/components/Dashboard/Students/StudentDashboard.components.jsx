@@ -13,24 +13,38 @@ const StudentDashboard = ({ user }) => {
     }
     if (location.hash === '#home') {
         return (
-            <Container fluid>
-                <Row>
-                    <Col md={2} className="bg-light">
-                        <StudentSidebar />
-                    </Col>
-                    <Col md={10}>
-                        <Stack direction="horizontal" gap={1} className='container-input'>
-                            <Form.Control className="me-auto" placeholder={`${user.first_name} ${user.last_name}`} disabled />
-                            <Image src={user.profile_picture} roundedCircle width="35" height="35" className="me-2" />
-                            <div>
-                                <div><Button onClick={logoutHandler} size='sm' variant="outline-primary">Logout</Button></div>
-                            </div>
+            <>
+                <Container fluid>
+                    <Row>
+                        <Col md={2} className="bg-light">
+                            <StudentSidebar />
+                        </Col>
+                        <Col md={10}>
+                            <Stack direction="horizontal" gap={1} className='container-input'>
+                                <Form.Control className="me-auto" placeholder={`${user.first_name} ${user.last_name}`} disabled />
+                                {user.profile_picture === null ? (<Image
+                                    src={user.profile_picture}
+                                    roundedCircle
+                                    width="35"
+                                    height="35"
+                                    className="me-2 dashboard-pic"
+                                />) : (<Image
+                                    src="http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg"
+                                    roundedCircle
+                                    width="35"
+                                    height="35"
+                                    className="me-2 dashboard-pic"
+                                />)}
+                                <div>
+                                    <div><Button onClick={logoutHandler} size='sm' variant="outline-primary">Logout</Button></div>
+                                </div>
 
-                        </Stack>
-                        <StudentHome user={user} />
-                    </Col>
-                </Row>
-            </Container>
+                            </Stack>
+                            <StudentHome user={user} />
+                        </Col>
+                    </Row>
+                </Container>
+            </>
         );
     } else if (location.hash === '#profile') {
         return (
@@ -42,7 +56,19 @@ const StudentDashboard = ({ user }) => {
                     <Col md={10}>
                         <Stack direction="horizontal" gap={1} className='container-input'>
                             <Form.Control className="me-auto" placeholder={`${user.first_name} ${user.last_name}`} disabled />
-                            <Image src={user.profile_picture} roundedCircle width="35" height="35" className="me-2" />
+                            {user.profile_picture === null ? (<Image
+                                src={user.profile_picture}
+                                roundedCircle
+                                width="35"
+                                height="35"
+                                className="me-2 dashboard-pic"
+                            />) : (<Image
+                                src="http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg"
+                                roundedCircle
+                                width="35"
+                                height="35"
+                                className="me-2 dashboard-pic"
+                            />)}
                             <div>
                                 <div><Button onClick={logoutHandler} size='sm' variant="outline-primary">Logout</Button></div>
                             </div>

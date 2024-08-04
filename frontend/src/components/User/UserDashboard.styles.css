@@ -20,3 +20,20 @@
 .profile-card{
     max-width: 200px;
 }
+
+.profile-pic{
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+    margin-right: 3rem;
+    outline:auto;
+    outline-style:groove;
+    outline-offset: 10px;
+    outline-color: rgb(12, 12, 12);
+}
+.dashboard-pic{
+    outline: auto;
+    outline-style:groove;
+    /* outline-offset: 10px; */
+    outline-color: rgb(5, 12, 214);
+    margin-left: 10px;
+}

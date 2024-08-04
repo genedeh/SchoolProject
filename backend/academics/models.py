@@ -20,7 +20,7 @@ class Subject(models.Model):
 
 
     def __str__(self) -> str:
-        return f"{self.assigned_class}_{self.name}"
+        return self.name
     
 class Result(models.Model):
     TERM_CHOICES = [

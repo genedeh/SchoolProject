@@ -45,6 +45,7 @@ class UserProfileView(APIView):
             'birth_date':user.birth_date,
             'profile_picture': f'http://127.0.0.1:8000/media/{str(user.profile_picture)}',
             'email': user.email,
+            'gender': user.gender,
             'is_student_or_teacher': user.is_student_or_teacher
         }
         return Response(user_data)
