@@ -1,10 +1,11 @@
+from pyclbr import Class
 from rest_framework import generics
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
-from .serializers import UserSerializer
+from .serializers import UserSerializer, UserListSerializer
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -30,6 +31,7 @@ class LoginView(generics.GenericAPIView):
         })
         
 class UserProfileView(APIView):
+    
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -49,3 +51,8 @@ class UserProfileView(APIView):
             'is_student_or_teacher': user.is_student_or_teacher
         }
         return Response(user_data)
+    
+class UserSearchView(generics.ListAPIView):
+    serializer_class = UserListSerializer
+    queryset = User.objects.all()
+    lookup_field = 'username'
