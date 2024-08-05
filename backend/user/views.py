@@ -1,4 +1,3 @@
-from pyclbr import Class
 from rest_framework import generics
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
@@ -28,7 +27,7 @@ class LoginView(generics.GenericAPIView):
         return Response({
             'refresh': str(refresh),
             'access': str(refresh.access_token),
-        })
+        }, status=200)
         
 class UserProfileView(APIView):
     
