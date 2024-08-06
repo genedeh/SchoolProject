@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
+from academics.models import ClassRoom
 from .serializers import UserSerializer, UserListSerializer
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -30,7 +31,6 @@ class LoginView(generics.GenericAPIView):
         }, status=200)
         
 class UserProfileView(APIView):
-    
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
@@ -47,8 +47,19 @@ class UserProfileView(APIView):
             'profile_picture': f'http://127.0.0.1:8000/media/{str(user.profile_picture)}',
             'email': user.email,
             'gender': user.gender,
-            'is_student_or_teacher': user.is_student_or_teacher
+            'is_student_or_teacher': user.is_student_or_teacher,
+            'user_class': None,
         }
+        if user_data['is_student_or_teacher']:
+            dummy_value = str(user.classes.all().values_list('id', flat=True))
+            dummy_array1 = dummy_value.split()
+            dummy_array2 = dummy_array1[1].split(']')
+            class_id = int(dummy_array2[0].split('[')[1])
+            user_data.update({'user_class': ClassRoom.objects.get(id=class_id).name})
+        else:
+            print('Teacher: ',user.classrooms.name)
+            user_data.update({'user_class': user.classrooms.name})
+            
         return Response(user_data)
     
 class UserSearchView(generics.ListAPIView):
