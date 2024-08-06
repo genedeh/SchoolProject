@@ -67,7 +67,7 @@ const UserDashboard = () => {
                     })
                     SetUserProfileList(dummyArray)
                 } catch (err) {
-                    console.error('There was an error fetching the items!', error);
+                    console.error('There was an error fetching the items!', err);
                 }
             }
         }
@@ -98,13 +98,20 @@ const UserDashboard = () => {
         return <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
         </Spinner>;
+    } else {
+        userProfileList.map(userProfile => {
+            if (userProfile.username === user.username) {
+                user['user_class'] = userProfile.user_class
+            }
+        })
+        console.log('success')
     }
-
     return (
         <>
             {user.is_student_or_teacher ? (<StudentDashboard user={user} usersList={userProfileList} />) : (<TeacherDashboard user={user} />)}
         </>
     );
+
 };
 
 export default UserDashboard;

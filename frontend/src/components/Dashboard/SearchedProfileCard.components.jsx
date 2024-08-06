@@ -108,7 +108,7 @@ const SearchedProfileCard = ({ user }) => {
                             Class • {user_class}
                         </Card.Text>
                         <div className="mt-auto d-flex align-items-center">
-                            <Button variant="outline-secondary" onClick={handleShow}><BsThreeDots /></Button>
+                            <Button variant="outline-dark" onClick={handleShow}><BsThreeDots /></Button>
                         </div>
                     </Card.Body>
                 </Card>

@@ -1,7 +1,7 @@
 import { Card, Image, Button, Container, Row, Col, Badge, ListGroup } from 'react-bootstrap';
-import { GenderFemale, GenderMale, GeoAlt,  Telephone } from 'react-bootstrap-icons';
-const StudentProfile = ({ user }) => {
-    const { first_name, last_name, username, address, phone_number, email, profile_picture, birth_date, gender } = user
+import { GenderFemale, GenderMale, GeoAlt, Telephone } from 'react-bootstrap-icons';
+const StudentProfile = ({ user}) => {
+    const { first_name, last_name, username, address, phone_number, email, profile_picture, birth_date, gender, user_class } = user
     return (
         <>
             <Container className="my-4">
@@ -33,17 +33,24 @@ const StudentProfile = ({ user }) => {
                                             @   {username}
                                         </div>
                                         <div className="d-flex align-items-center mt-2">
-                                            <Telephone className='me-2'/>{phone_number}
+                                            <Telephone className='me-2' />{phone_number}
                                         </div>
                                         <div className="d-flex align-items-center mt-2">
-                                            {gender === 'male' ? (<GenderMale className='me-2'/>):(<GenderFemale className='me-2'/>)}    {gender.toUpperCase()}
+                                            {gender === 'male' ?
+                                                (<Button className="m-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
+                                                    <GenderMale />
+                                                </Button>) :
+                                                (<Button className="m-2" size="sm" style={{ 'backgroundColor': 'pink', 'borderColor': 'white' }}>
+                                                    <GenderFemale />
+                                                </Button>)}
                                         </div>
                                     </div>
                                 </div>
                             </Card.Header>
                             <Card.Body className="d-flex justify-content-between">
                                 <Button variant="outline-primary">{email}</Button>
-                                <Button variant="outline-secondary">BIRTH DATE: {birth_date}</Button>
+                                <Button variant="outline-danger">{birth_date}</Button>
+                                <Button variant="outline-success">{user_class}</Button>
                             </Card.Body>
                         </Card>
                         <Card className="mb-4">

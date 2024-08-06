@@ -3,7 +3,7 @@ import StudentSidebar from '../../Side_Navigation_Bar/StudentSideBar.components'
 import StudentHome from './Home.components';
 import StudentProfile from './Profile.components';
 import StudentTopLevel from './TopLevel.components';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap'
 import SearchedProfileCard from '../SearchedProfileCard.components';
 
@@ -11,6 +11,9 @@ import SearchedProfileCard from '../SearchedProfileCard.components';
 const StudentDashboard = ({ user, usersList }) => {
     const location = useLocation();
     const [searchTerm, setSearchTerm] = useState('')
+
+
+    // console.log(current)
 
     const SearchHandler = (e) => {
         setSearchTerm(e.target.value);
