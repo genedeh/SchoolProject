@@ -22,7 +22,9 @@ const StudentDashboard = ({ user, usersList }) => {
 
     const filteredUsers = usersList.filter(userProfile => {
         if (searchTerm.length !== 0 || searchTerm === null) {
-            return userProfile.username.toLowerCase().includes(searchTerm.replace(' ', '_').toLowerCase())
+            if (userProfile.username !== user.username) {
+                return userProfile.username.toLowerCase().includes(searchTerm.replace(' ', '_').toLowerCase())
+            }
         }
     }
     );
