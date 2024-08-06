@@ -54,4 +54,3 @@ class UserProfileView(APIView):
 class UserSearchView(generics.ListAPIView):
     serializer_class = UserListSerializer
     queryset = User.objects.all()
-    lookup_field = 'username'

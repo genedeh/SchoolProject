@@ -6,8 +6,8 @@ import TeacherDashboard from '../Dashboard/Teachers/TeacherDashboard.components'
 import StudentDashboard from '../Dashboard/Students/StudentDashboard.components';
 const UserDashboard = () => {
     const [user, setUser] = useState(null);
+    const [userProfileList, SetUserProfileList] = useState([]);
     const [error, setError] = useState('');
-
     useEffect(() => {
         const fetchUserProfile = async () => {
             const token = localStorage.getItem('token');
@@ -19,6 +19,7 @@ const UserDashboard = () => {
                         },
                     });
                     setUser(response.data);
+                    fetchUserProfilesList();
                 } catch (err) {
                     setError('Failed to fetch user profile'.toLocaleUpperCase());
                 }
@@ -27,6 +28,49 @@ const UserDashboard = () => {
             }
         };
 
+        const fetchUserProfilesList = async () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                try {
+                    const response = await axios.get('http://127.0.0.1:8000/api/users/')
+                    const dummyArray = []
+                    response.data.map(async ({ classes, classrooms, id, username, profile_picture, is_student_or_teacher, birth_date, gender, address, phone_number, email }) => {
+                        if (Number(classes) !== 0) {
+                            const classesresponse = await axios.get(`http://127.0.0.1:8000/api/classrooms/${Number(classes)}`)
+                            dummyArray.push({
+                                'id': id,
+                                'username': username,
+                                'profile_picture': profile_picture,
+                                'is_student_or_teacher': is_student_or_teacher,
+                                'birth_date': birth_date,
+                                'gender': gender,
+                                'user_class': classesresponse.data.name,
+                                'address': address,
+                                'phone_number': phone_number,
+                                'email': email,
+                            })
+                        } else {
+                            const classroomsResponse = await axios.get(`http://127.0.0.1:8000/api/classrooms/${Number(classrooms)}/`)
+                            dummyArray.push({
+                                'id': id,
+                                'username': username,
+                                'profile_picture': profile_picture,
+                                'is_student_or_teacher': is_student_or_teacher,
+                                'birth_date': birth_date,
+                                'gender': gender,
+                                'user_class': classroomsResponse.data.name,
+                                'address': address,
+                                'phone_number': phone_number,
+                                'email': email,
+                            })
+                        }
+                    })
+                    SetUserProfileList(dummyArray)
+                } catch (err) {
+                    console.error('There was an error fetching the items!', error);
+                }
+            }
+        }
         fetchUserProfile();
     }, []);
 
@@ -50,7 +94,7 @@ const UserDashboard = () => {
         );
     }
 
-    if (!user) {
+    if (!user || !userProfileList) {
         return <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
         </Spinner>;
@@ -58,7 +102,7 @@ const UserDashboard = () => {
 
     return (
         <>
-            {user.is_student_or_teacher ? (<StudentDashboard user={user} />) : (<TeacherDashboard user={user} />)}
+            {user.is_student_or_teacher ? (<StudentDashboard user={user} usersList={userProfileList} />) : (<TeacherDashboard user={user} />)}
         </>
     );
 };

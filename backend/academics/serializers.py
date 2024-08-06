@@ -4,8 +4,8 @@ from .models import ClassRoom, Subject
 class ClassRoomListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassRoom
-        fields = '__all__'
-        extra_kwargs = {'name': {'read_only': True}}
+        fields = ('id', 'name')
+        extra_kwargs = {'__all__': {'read_only': True}}
 
 class OfferingSubjectSerializer(serializers.ModelSerializer):
     class Meta:

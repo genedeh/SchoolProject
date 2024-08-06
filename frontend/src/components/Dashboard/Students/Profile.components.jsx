@@ -15,13 +15,15 @@ const StudentProfile = ({ user }) => {
                                         roundedCircle
                                         width="100"
                                         height="100"
-                                        className="me-3 profile-pic"
+                                        className="me-3 "
+                                        style={{ 'objectFit': 'cover' }}
                                     />) : (<Image
                                         src="http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg"
                                         roundedCircle
                                         width="100"
                                         height="100"
-                                        className="me-3 profile-pic"
+                                        className="me-3 "
+                                        style={{ 'objectFit': 'cover' }}
                                     />)}
                                     <div>
                                         <Card.Title className="mb-0 fw-bold">{first_name} {last_name}</Card.Title>

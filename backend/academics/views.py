@@ -12,7 +12,7 @@ class ClassRoomRetrieveView(generics.RetrieveAPIView):
 
 class OfferingSubjectsListView(generics.GenericAPIView):
     serializer_class = OfferingSubjectSerializer
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         id = request.data.get('students_offering') 
         user = User.objects.get(id=id)
         if user is not None:
@@ -21,7 +21,7 @@ class OfferingSubjectsListView(generics.GenericAPIView):
             subject_list = []
             for subject in subjects:
                subject_list.append(subject)
-            return Response({f'Subjects': f"{subject_list}"}, status=200)
+            return Response({'Subjects': f"{subject_list}"}, status=200)
           else:
             return Response({'User-Type': f"{user.username} is a Teacher"}, status=200)
         else:
