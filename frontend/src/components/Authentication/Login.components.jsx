@@ -28,8 +28,9 @@ const LoginForm = () => {
                 setError('');
                 return navigate("/dashboard#home")
             } catch (err) {
-                console.log(err)
-                setError(err.response.data.error);
+                if (err.message === "Network Error") {
+                    setError('THERE SEEMS TO BE A PROBLEM WITH OUR SERVER NETWORK PLEASE TRY AGAIN!')
+                };
             }
 
         }
