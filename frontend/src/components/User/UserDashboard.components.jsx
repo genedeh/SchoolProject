@@ -1,15 +1,49 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
-import { Alert, Spinner } from 'react-bootstrap'
-import '../User/UserDashboard.styles.css'
+import { Alert, Spinner } from 'react-bootstrap';
+import '../User/UserDashboard.styles.css';
 import TeacherDashboard from '../Dashboard/Teachers/TeacherDashboard.components';
 import StudentDashboard from '../Dashboard/Students/StudentDashboard.components';
 import { UserContext } from '../../contexts/User.contexts';
+import { UsersListContext } from '../../contexts/UsersList.contexts';
 
 const UserDashboard = () => {
-    const [userProfileList, SetUserProfileList] = useState([]);
     const [error, setError] = useState('');
-    const { currentUser, setCurrentUser } = useContext(UserContext)
+    const { currentUser, setCurrentUser } = useContext(UserContext);
+    const { usersList, setUsersList } = useContext(UsersListContext);
+    const giveUserClass = (dummyArray, response) => {
+        response.data.map(async ({ classes, classrooms, id, username, profile_picture, is_student_or_teacher, birth_date, gender, address, phone_number, email }) => {
+            if (Number(classes) !== 0) {
+                const classesresponse = await axios.get(`http://127.0.0.1:8000/api/classrooms/${Number(classes)}`)
+                dummyArray.push({
+                    'id': id,
+                    'username': username,
+                    'profile_picture': profile_picture,
+                    'is_student_or_teacher': is_student_or_teacher,
+                    'birth_date': birth_date,
+                    'gender': gender,
+                    'user_class': classesresponse.data.name,
+                    'address': address,
+                    'phone_number': phone_number,
+                    'email': email,
+                })
+            } else {
+                const classroomsResponse = await axios.get(`http://127.0.0.1:8000/api/classrooms/${Number(classrooms)}/`)
+                dummyArray.push({
+                    'id': id,
+                    'username': username,
+                    'profile_picture': profile_picture,
+                    'is_student_or_teacher': is_student_or_teacher,
+                    'birth_date': birth_date,
+                    'gender': gender,
+                    'user_class': classroomsResponse.data.name,
+                    'address': address,
+                    'phone_number': phone_number,
+                    'email': email,
+                })
+            }
+        })
+    }
     useEffect(() => {
         const fetchUserProfile = async () => {
             const token = localStorage.getItem('token');
@@ -36,44 +70,15 @@ const UserDashboard = () => {
                 try {
                     const response = await axios.get('http://127.0.0.1:8000/api/users/')
                     const dummyArray = []
-                    response.data.map(async ({ classes, classrooms, id, username, profile_picture, is_student_or_teacher, birth_date, gender, address, phone_number, email }) => {
-                        if (Number(classes) !== 0) {
-                            const classesresponse = await axios.get(`http://127.0.0.1:8000/api/classrooms/${Number(classes)}`)
-                            dummyArray.push({
-                                'id': id,
-                                'username': username,
-                                'profile_picture': profile_picture,
-                                'is_student_or_teacher': is_student_or_teacher,
-                                'birth_date': birth_date,
-                                'gender': gender,
-                                'user_class': classesresponse.data.name,
-                                'address': address,
-                                'phone_number': phone_number,
-                                'email': email,
-                            })
-                        } else {
-                            const classroomsResponse = await axios.get(`http://127.0.0.1:8000/api/classrooms/${Number(classrooms)}/`)
-                            dummyArray.push({
-                                'id': id,
-                                'username': username,
-                                'profile_picture': profile_picture,
-                                'is_student_or_teacher': is_student_or_teacher,
-                                'birth_date': birth_date,
-                                'gender': gender,
-                                'user_class': classroomsResponse.data.name,
-                                'address': address,
-                                'phone_number': phone_number,
-                                'email': email,
-                            })
-                        }
-                    })
-                    SetUserProfileList(dummyArray)
+                    giveUserClass(dummyArray, response);
+                    setUsersList(dummyArray);
                 } catch (err) {
                     console.error('There was an error fetching the items!', err);
                 }
             }
         };
         fetchUserProfile();
+        console.log(usersList)
     }, []);
 
     if (error === "No token found") {
@@ -96,14 +101,17 @@ const UserDashboard = () => {
         );
     }
 
-    if (!currentUser || !userProfileList) {
-        return <Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading...</span>
-        </Spinner>;
+    if (!currentUser) {
+        return (
+            <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+            </Spinner>
+        )
+            ;
     }
     return (
         <>
-            {currentUser.is_student_or_teacher ? (<StudentDashboard usersList={userProfileList} />) : (<TeacherDashboard />)}
+            {currentUser.is_student_or_teacher ? (<StudentDashboard />) : (<TeacherDashboard />)}
         </>
     );
 

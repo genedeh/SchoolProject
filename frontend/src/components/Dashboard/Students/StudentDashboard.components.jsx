@@ -7,12 +7,14 @@ import { useContext, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap'
 import SearchedProfileCard from '../SearchedProfileCard.components';
 import { UserContext } from '../../../contexts/User.contexts';
+import { UsersListContext } from '../../../contexts/UsersList.contexts';
 
 
-const StudentDashboard = ({ usersList }) => {
+const StudentDashboard = () => {
     const location = useLocation();
-    const [searchTerm, setSearchTerm] = useState('')
-    const {currentUser} = useContext(UserContext)
+    const [searchTerm, setSearchTerm] = useState('');
+    const { currentUser } = useContext(UserContext);
+    const { usersList } = useContext(UsersListContext);
 
 
     // console.log(current)
@@ -22,10 +24,10 @@ const StudentDashboard = ({ usersList }) => {
     }
 
 
-    const filteredUsers = usersList.filter(userProfile => {
+    const filteredUsers = usersList.filter(({username}) => {
         if (searchTerm.length !== 0 || searchTerm === null) {
-            if (userProfile.username !== currentUser.username) {
-                return userProfile.username.toLowerCase().includes(searchTerm.replace(' ', '_').toLowerCase())
+            if (username !== currentUser.username) {
+                return username.toLowerCase().includes(searchTerm.replace(' ', '_').toLowerCase())
             }
         }
     }

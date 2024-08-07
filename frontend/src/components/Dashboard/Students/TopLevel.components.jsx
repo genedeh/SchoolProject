@@ -2,14 +2,17 @@ import { useNavigate } from 'react-router-dom';
 import { Stack, Form, Image, Button } from 'react-bootstrap'
 import { UserContext } from '../../../contexts/User.contexts';
 import { useContext } from 'react';
+import { UsersListContext } from '../../../contexts/UsersList.contexts';
 
 const StudentTopLevel = ({ searchHandler, term }) => {
-    const { currentUser, setCurrentUser } = useContext(UserContext)
+    const { currentUser, setCurrentUser } = useContext(UserContext);
+    const { setUsersList } = useContext(UsersListContext);
     const { profile_picture } = currentUser
     let navigate = useNavigate()
     const logoutHandler = () => {
         localStorage.removeItem('token');
         setCurrentUser(null);
+        setUsersList([]);
         return navigate("/");
     }
     return (
