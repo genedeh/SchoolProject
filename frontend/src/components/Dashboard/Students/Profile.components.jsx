@@ -1,7 +1,11 @@
+import { useContext } from 'react';
 import { Card, Image, Button, Container, Row, Col, Badge, ListGroup } from 'react-bootstrap';
 import { GenderFemale, GenderMale, GeoAlt, Telephone } from 'react-bootstrap-icons';
-const StudentProfile = ({ user}) => {
-    const { first_name, last_name, username, address, phone_number, email, profile_picture, birth_date, gender, user_class } = user
+import { UserContext } from '../../../contexts/User.contexts';
+const StudentProfile = () => {
+    const { currentUser } = useContext(UserContext)
+    const { first_name, last_name, username, address, phone_number, email, profile_picture, birth_date, gender, user_class } = currentUser;
+    
     return (
         <>
             <Container className="my-4">

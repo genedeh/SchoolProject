@@ -1,12 +1,16 @@
-import { Card, Container, Row, Col, ListGroup } from 'react-bootstrap'
-const StudentHome = ({ user }) => {
+import { Card, Container, Row, Col, ListGroup } from 'react-bootstrap';
+import { UserContext } from '../../../contexts/User.contexts';
+import { useContext } from 'react';
+const StudentHome = () => {
+    const { currentUser } = useContext(UserContext)
+    const { last_name, first_name } = currentUser;
     return (
         <Container fluid className="p-4 container">
             <Row className="mb-4">
                 <Col md={8}>
                     <Card className="p-3 mb-4 container-welcome" bg="primary" text='light' >
                         <Card.Body >
-                            <Card.Title>Welcome back, {`${user.first_name} ${user.last_name}`} 👋</Card.Title>
+                            <Card.Title>Welcome back, {`${first_name} ${last_name}`} 👋</Card.Title>
                             <Card.Text>
                                 You've learned 70% of your goal this week! Keep it up and improve your progress.
                             </Card.Text>

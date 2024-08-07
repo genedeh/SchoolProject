@@ -75,7 +75,7 @@ const SearchedProfileCard = ({ user }) => {
     return (
         <>
             <Col md={4} className="mb-4">
-                <Card className="h-100" >
+                <Card className="h-100 container" >
                     <Card.Body className="d-flex flex-column align-items-start" >
                         <div className="d-flex align-items-center mb-3">
                             {profile_picture !== null ? (<Image

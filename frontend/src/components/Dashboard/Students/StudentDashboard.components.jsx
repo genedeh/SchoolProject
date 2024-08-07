@@ -3,14 +3,16 @@ import StudentSidebar from '../../Side_Navigation_Bar/StudentSideBar.components'
 import StudentHome from './Home.components';
 import StudentProfile from './Profile.components';
 import StudentTopLevel from './TopLevel.components';
-import { useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap'
 import SearchedProfileCard from '../SearchedProfileCard.components';
+import { UserContext } from '../../../contexts/User.contexts';
 
 
-const StudentDashboard = ({ user, usersList }) => {
+const StudentDashboard = ({ usersList }) => {
     const location = useLocation();
     const [searchTerm, setSearchTerm] = useState('')
+    const {currentUser} = useContext(UserContext)
 
 
     // console.log(current)
@@ -22,7 +24,7 @@ const StudentDashboard = ({ user, usersList }) => {
 
     const filteredUsers = usersList.filter(userProfile => {
         if (searchTerm.length !== 0 || searchTerm === null) {
-            if (userProfile.username !== user.username) {
+            if (userProfile.username !== currentUser.username) {
                 return userProfile.username.toLowerCase().includes(searchTerm.replace(' ', '_').toLowerCase())
             }
         }
@@ -36,7 +38,7 @@ const StudentDashboard = ({ user, usersList }) => {
                         <StudentSidebar />
                     </Col>
                     <Col md={10}>
-                        <StudentTopLevel user={user} searchHandler={SearchHandler} term={searchTerm} />
+                        <StudentTopLevel searchHandler={SearchHandler} term={searchTerm} />
                         <Container fluid>
                             <Row className='m-3'>
                                 {filteredUsers.map((user) => (
@@ -56,8 +58,8 @@ const StudentDashboard = ({ user, usersList }) => {
                         <StudentSidebar />
                     </Col>
                     <Col md={10}>
-                        <StudentTopLevel user={user} searchHandler={SearchHandler} term={searchTerm} />
-                        <StudentHome user={user} />
+                        <StudentTopLevel searchHandler={SearchHandler} term={searchTerm} />
+                        <StudentHome />
                     </Col>
                 </Row>
             </Container>
@@ -70,8 +72,8 @@ const StudentDashboard = ({ user, usersList }) => {
                         <StudentSidebar />
                     </Col>
                     <Col md={10}>
-                        <StudentTopLevel user={user} searchHandler={SearchHandler} term={searchTerm} />
-                        <StudentProfile user={user} />
+                        <StudentTopLevel searchHandler={SearchHandler} term={searchTerm} />
+                        <StudentProfile />
                     </Col>
                 </Row>
             </Container>

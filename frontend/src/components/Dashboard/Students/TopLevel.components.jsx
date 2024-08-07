@@ -1,24 +1,28 @@
 import { useNavigate } from 'react-router-dom';
-import {Stack, Form, Image, Button } from 'react-bootstrap'
+import { Stack, Form, Image, Button } from 'react-bootstrap'
+import { UserContext } from '../../../contexts/User.contexts';
+import { useContext } from 'react';
 
-const StudentTopLevel = ({ user, searchHandler, term }) => {
-
+const StudentTopLevel = ({ searchHandler, term }) => {
+    const { currentUser, setCurrentUser } = useContext(UserContext)
+    const { profile_picture } = currentUser
     let navigate = useNavigate()
     const logoutHandler = () => {
         localStorage.removeItem('token');
-        return navigate("/")
+        setCurrentUser(null);
+        return navigate("/");
     }
     return (
         <>
             <Stack direction="horizontal" gap={1} className='container-input'>
                 <Form.Control className="me-auto" placeholder='Enter Student Or Teacher Username...' value={term} onChange={searchHandler} />
-                {user.profile_picture === null ? (<Image
-                    src={user.profile_picture}
+                {profile_picture === null ? (<Image
+                    src={profile_picture}
                     roundedCircle
                     width="35"
                     height="35"
                     className="me-2 "
-                    style={{'objectFit' :'cover'}}
+                    style={{ 'objectFit': 'cover' }}
                 />) : (<Image
                     src="http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg"
                     roundedCircle

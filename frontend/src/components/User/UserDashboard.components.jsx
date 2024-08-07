@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { Alert, Spinner } from 'react-bootstrap'
 import '../User/UserDashboard.styles.css'
 import TeacherDashboard from '../Dashboard/Teachers/TeacherDashboard.components';
 import StudentDashboard from '../Dashboard/Students/StudentDashboard.components';
+import { UserContext } from '../../contexts/User.contexts';
+
 const UserDashboard = () => {
-    const [user, setUser] = useState(null);
     const [userProfileList, SetUserProfileList] = useState([]);
     const [error, setError] = useState('');
+    const { currentUser, setCurrentUser } = useContext(UserContext)
     useEffect(() => {
         const fetchUserProfile = async () => {
             const token = localStorage.getItem('token');
@@ -18,7 +20,7 @@ const UserDashboard = () => {
                             'Authorization': `Bearer ${token}`,
                         },
                     });
-                    setUser(response.data);
+                    setCurrentUser(response.data);
                     fetchUserProfilesList();
                 } catch (err) {
                     setError('Failed to fetch user profile'.toLocaleUpperCase());
@@ -94,21 +96,14 @@ const UserDashboard = () => {
         );
     }
 
-    if (!user || !userProfileList) {
+    if (!currentUser || !userProfileList) {
         return <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
         </Spinner>;
-    } else {
-        userProfileList.map(userProfile => {
-            if (userProfile.username === user.username) {
-                user['user_class'] = userProfile.user_class
-            }
-        })
-        console.log('success')
     }
     return (
         <>
-            {user.is_student_or_teacher ? (<StudentDashboard user={user} usersList={userProfileList} />) : (<TeacherDashboard user={user} />)}
+            {currentUser.is_student_or_teacher ? (<StudentDashboard usersList={userProfileList} />) : (<TeacherDashboard />)}
         </>
     );
 
