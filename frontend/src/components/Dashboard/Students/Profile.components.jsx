@@ -1,11 +1,15 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Card, Image, Button, Container, Row, Col, Badge, ListGroup } from 'react-bootstrap';
 import { GenderFemale, GenderMale, GeoAlt, Telephone } from 'react-bootstrap-icons';
 import { UserContext } from '../../../contexts/User.contexts';
+import { UsersListContext } from '../../../contexts/UsersList.contexts';
+
+
 const StudentProfile = () => {
-    const { currentUser } = useContext(UserContext)
+    const { currentUser } = useContext(UserContext);
+    const { usersList } = useContext(UsersListContext);
     const { first_name, last_name, username, address, phone_number, email, profile_picture, birth_date, gender, user_class } = currentUser;
-    
+
     return (
         <>
             <Container className="my-4">
@@ -69,27 +73,48 @@ const StudentProfile = () => {
                         </Card>
                     </Col>
                     <Col md={4}>
-                        <Card className="mb-4">
-                            <Card.Body>
+                        <Card className="m-2">
+                            <Card.Body >
                                 <Card.Title>Class Mates</Card.Title>
                                 <ListGroup variant="flush">
-                                    {/* {people.map(person => ( */}
-                                    <ListGroup.Item >
-                                        <div className="d-flex align-items-center">
-                                            <Image
-                                                src="/path/to/profile-image.jpg"
-                                                roundedCircle
-                                                width="40"
-                                                height="40"
-                                                className="me-3"
-                                            />
-                                            <div>
-                                                <div className="fw-bold">person.name</div>
-                                                <div className="text-muted">person.title at person.company</div>
-                                            </div>
-                                        </div>
-                                    </ListGroup.Item>
-                                    {/* ))} */}
+                                    {usersList.map(potentialClassMate => {
+                                        if (potentialClassMate.username !== username) {
+                                            if (potentialClassMate.user_class === user_class) {
+                                                if (potentialClassMate.is_student_or_teacher) {
+                                                    return (
+                                                        <ListGroup.Item key={potentialClassMate.id} >
+                                                            <div className="d-flex align-items-center">
+                                                                {potentialClassMate.profile_picture !== null ? (<Image
+                                                                    src={potentialClassMate.profile_picture}
+                                                                    roundedCircle
+                                                                    style={{ width: '35px', height: '35px', objectFit: 'cover' }}
+                                                                    className="me-3" />)
+                                                                    : (<Image
+                                                                        src="http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg"
+                                                                        roundedCircle
+                                                                        style={{ width: '35px', height: '35px', objectFit: 'cover' }}
+                                                                        className="me-3" />)
+                                                                }
+                                                                <div>
+                                                                    <div className="fw-bold">{potentialClassMate.username.replace('_', ' ')}</div>
+                                                                    <div className="d-flex align-items-center mt-2">
+                                                                        {potentialClassMate.gender === 'male' ?
+                                                                            (<Button className="me-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
+                                                                                <GenderMale />
+                                                                            </Button>) :
+                                                                            (<Button className="me-2" size="sm" style={{ 'backgroundColor': 'pink', 'borderColor': 'white' }}>
+                                                                                <GenderFemale />
+                                                                            </Button>)}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <hr />
+                                                        </ListGroup.Item>
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    })}
                                 </ListGroup>
                             </Card.Body>
                         </Card>

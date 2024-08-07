@@ -10,7 +10,7 @@ import { UsersListContext } from '../../contexts/UsersList.contexts';
 const UserDashboard = () => {
     const [error, setError] = useState('');
     const { currentUser, setCurrentUser } = useContext(UserContext);
-    const { usersList, setUsersList } = useContext(UsersListContext);
+    const { setUsersList } = useContext(UsersListContext);
     const giveUserClass = (dummyArray, response) => {
         response.data.map(async ({ classes, classrooms, id, username, profile_picture, is_student_or_teacher, birth_date, gender, address, phone_number, email }) => {
             if (Number(classes) !== 0) {
@@ -77,8 +77,7 @@ const UserDashboard = () => {
                 }
             }
         };
-        fetchUserProfile();
-        console.log(usersList)
+        fetchUserProfile(); 
     }, []);
 
     if (error === "No token found") {

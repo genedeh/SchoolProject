@@ -24,7 +24,7 @@ const StudentDashboard = () => {
     }
 
 
-    const filteredUsers = usersList.filter(({username}) => {
+    const filteredUsers = usersList.filter(({ username }) => {
         if (searchTerm.length !== 0 || searchTerm === null) {
             if (username !== currentUser.username) {
                 return username.toLowerCase().includes(searchTerm.replace(' ', '_').toLowerCase())
