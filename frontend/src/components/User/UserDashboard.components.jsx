@@ -72,7 +72,7 @@ const UserDashboard = () => {
                     console.error('There was an error fetching the items!', err);
                 }
             }
-        }
+        };
         fetchUserProfile();
     }, []);
 
