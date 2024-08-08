@@ -8,6 +8,7 @@ import { Container, Row, Col } from 'react-bootstrap'
 import SearchedProfileCard from '../SearchedProfileCard.components';
 import { UserContext } from '../../../contexts/User.contexts';
 import { UsersListContext } from '../../../contexts/UsersList.contexts';
+import { SignDeadEnd } from 'react-bootstrap-icons';
 
 
 const StudentDashboard = () => {
@@ -15,9 +16,6 @@ const StudentDashboard = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const { currentUser } = useContext(UserContext);
     const { usersList } = useContext(UsersListContext);
-
-
-    // console.log(current)
 
     const SearchHandler = (e) => {
         setSearchTerm(e.target.value);
@@ -42,11 +40,14 @@ const StudentDashboard = () => {
                     <Col md={10}>
                         <StudentTopLevel searchHandler={SearchHandler} term={searchTerm} />
                         <Container fluid>
-                            <Row className='m-3'>
-                                {filteredUsers.map((user) => (
-                                    <SearchedProfileCard key={user.id} user={user} />
-                                ))}
-                            </Row>
+                            {filteredUsers.length === 0 ?
+                                (<div style={{ 'margin': '5rem' }}><h1><SignDeadEnd color='red' size={96} /> 404 NO USER OF USERNAME "{searchTerm}" EXISTS</h1></div>)
+                                : (<Row className='m-3'>
+                                    {filteredUsers.map((user) => (
+                                        <SearchedProfileCard key={user.id} user={user} />
+                                    ))}
+                                </Row>
+                                )}
                         </Container>
                     </Col>
                 </Row>
