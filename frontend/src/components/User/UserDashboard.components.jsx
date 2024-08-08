@@ -77,7 +77,12 @@ const UserDashboard = () => {
                 }
             }
         };
-        fetchUserProfile(); 
+        if (currentUser === null) {
+            fetchUserProfile();
+        } else {
+            fetchUserProfilesList();
+        }
+        console.log(currentUser)
     }, []);
 
     if (error === "No token found") {
