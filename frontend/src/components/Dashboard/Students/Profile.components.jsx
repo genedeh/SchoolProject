@@ -4,7 +4,39 @@ import { GenderFemale, GenderMale, GeoAlt, Telephone } from 'react-bootstrap-ico
 import { UserContext } from '../../../contexts/User.contexts';
 import { UsersListContext } from '../../../contexts/UsersList.contexts';
 
-
+const ClassMateCard = (({ classMate }) => {
+    const { username, profile_picture, gender } = classMate
+    return (
+        <ListGroup.Item >
+            <div className="d-flex align-items-center">
+                {profile_picture !== null ? (<Image
+                    src={profile_picture}
+                    roundedCircle
+                    style={{ width: '35px', height: '35px', objectFit: 'cover' }}
+                    className="me-3" />)
+                    : (<Image
+                        src="http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg"
+                        roundedCircle
+                        style={{ width: '35px', height: '35px', objectFit: 'cover' }}
+                        className="me-3" />)
+                }
+                <div>
+                    <div className="fw-bold">{username.replace('_', ' ')}</div>
+                    <div className="d-flex align-items-center mt-2">
+                        {gender === 'male' ?
+                            (<Button className="me-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
+                                <GenderMale />
+                            </Button>) :
+                            (<Button className="me-2" size="sm" style={{ 'backgroundColor': 'pink', 'borderColor': 'white' }}>
+                                <GenderFemale />
+                            </Button>)}
+                    </div>
+                </div>
+            </div>
+            <hr />
+        </ListGroup.Item>
+    )
+})
 const StudentProfile = () => {
     const { currentUser } = useContext(UserContext);
     const { usersList } = useContext(UsersListContext);
@@ -82,34 +114,7 @@ const StudentProfile = () => {
                                             if (potentialClassMate.user_class === user_class) {
                                                 if (potentialClassMate.is_student_or_teacher) {
                                                     return (
-                                                        <ListGroup.Item key={potentialClassMate.id} >
-                                                            <div className="d-flex align-items-center">
-                                                                {potentialClassMate.profile_picture !== null ? (<Image
-                                                                    src={potentialClassMate.profile_picture}
-                                                                    roundedCircle
-                                                                    style={{ width: '35px', height: '35px', objectFit: 'cover' }}
-                                                                    className="me-3" />)
-                                                                    : (<Image
-                                                                        src="http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg"
-                                                                        roundedCircle
-                                                                        style={{ width: '35px', height: '35px', objectFit: 'cover' }}
-                                                                        className="me-3" />)
-                                                                }
-                                                                <div>
-                                                                    <div className="fw-bold">{potentialClassMate.username.replace('_', ' ')}</div>
-                                                                    <div className="d-flex align-items-center mt-2">
-                                                                        {potentialClassMate.gender === 'male' ?
-                                                                            (<Button className="me-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
-                                                                                <GenderMale />
-                                                                            </Button>) :
-                                                                            (<Button className="me-2" size="sm" style={{ 'backgroundColor': 'pink', 'borderColor': 'white' }}>
-                                                                                <GenderFemale />
-                                                                            </Button>)}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <hr />
-                                                        </ListGroup.Item>
+                                                        <ClassMateCard classMate={potentialClassMate} />
                                                     )
                                                 }
                                             }
