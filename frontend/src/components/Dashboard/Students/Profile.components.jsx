@@ -3,6 +3,7 @@ import { Card, Image, Button, Container, Row, Col, Badge, ListGroup } from 'reac
 import { GenderFemale, GenderMale, GeoAlt, Telephone } from 'react-bootstrap-icons';
 import { UserContext } from '../../../contexts/User.contexts';
 import { UsersListContext } from '../../../contexts/UsersList.contexts';
+import axios from 'axios';
 
 const ClassMateCard = (({ classMate }) => {
     const { username, profile_picture, gender } = classMate
@@ -40,8 +41,25 @@ const ClassMateCard = (({ classMate }) => {
 const StudentProfile = () => {
     const { currentUser } = useContext(UserContext);
     const { usersList } = useContext(UsersListContext);
-    const { first_name, last_name, username, address, phone_number, email, profile_picture, birth_date, gender, user_class } = currentUser;
+    const [offeringSubjects, setOfferingSubjects] = useState([]);
+    const { id, first_name, last_name, username, address, phone_number, email, profile_picture, birth_date, gender, user_class } = currentUser;
 
+
+    useEffect(() => {
+        const fetchOfferingSubjects = async () => {
+            if (currentUser) {
+                try {
+                    const respone = await axios.post("http://127.0.0.1:8000/api/offering_subjects/", { "students_offering": id })
+                    setOfferingSubjects(respone.data.Subjects.replace('[', '').replace(']', '').split(','))
+                } catch (err) {
+                    console.log("Error: ", err)
+                }
+            } else {
+                console.log('No User Found')
+            }
+        };
+        fetchOfferingSubjects();
+    }, [])
     return (
         <>
             <Container className="my-4">
@@ -96,11 +114,11 @@ const StudentProfile = () => {
                         <Card className="mb-4">
                             <Card.Body>
                                 <Card.Title>Offering Subjects</Card.Title>
-                                {/* {skills.map(skill => ( */}
-                                <Badge pill bg="primary" className="me-2 mb-2" >
-                                    Subject
-                                </Badge>
-                                {/* ))} */}
+                                {offeringSubjects.map(subject => (
+                                    <Badge pill bg="primary" className="me-2 mb-2" key={subject.replace(`'`, '').replace(`'`, '')} >
+                                        {subject.replace(`'`, '').replace(`'`, '')}
+                                    </Badge>
+                                ))}
                             </Card.Body>
                         </Card>
                     </Col>
@@ -114,7 +132,7 @@ const StudentProfile = () => {
                                             if (potentialClassMate.user_class === user_class) {
                                                 if (potentialClassMate.is_student_or_teacher) {
                                                     return (
-                                                        <ClassMateCard classMate={potentialClassMate} />
+                                                        <ClassMateCard classMate={potentialClassMate} key={potentialClassMate.id} />
                                                     )
                                                 }
                                             }

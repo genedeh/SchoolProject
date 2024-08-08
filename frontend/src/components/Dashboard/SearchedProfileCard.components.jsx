@@ -1,15 +1,34 @@
-import { Card, Button, Col, Image, Modal, Row } from 'react-bootstrap';
+import { Card, Button, Col, Image, Modal, Row, Badge } from 'react-bootstrap';
 import { GenderFemale, GenderMale } from 'react-bootstrap-icons';
-import { BsThreeDots, BsArrowLeft, BsFillHeartFill, BsChatDots } from "react-icons/bs";
-import { useState } from 'react';
+import { BsThreeDots, BsArrowLeft } from "react-icons/bs";
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const ProfileModal = ({ user, show, handleClose }) => {
-    const { username, is_student_or_teacher, gender, profile_picture, user_class, birth_date, phone_number, email, address } = user;
+    const { username, is_student_or_teacher, gender, profile_picture, user_class, birth_date, phone_number, email, address, id } = user;
     const current_date = new Date();
+    const [offeringSubjects, setOfferingSubjects] = useState([]);
+
+    useEffect(() => {
+        const fetchOfferingSubjects = async () => {
+            if (user) {
+                try {
+                    const respone = await axios.post("http://127.0.0.1:8000/api/offering_subjects/", { "students_offering": id })
+                    setOfferingSubjects(respone.data.Subjects.replace('[', '').replace(']', '').split(','))
+                } catch (err) {
+                    console.log("Error: ", err)
+                }
+            } else {
+                console.log('No User Found')
+            }
+        };
+        fetchOfferingSubjects();
+    }, [])
+
     return (
-        <Modal show={show} onHide={handleClose} centered size="lg" style={{'borderRadius': '1rem' }}>
+        <Modal show={show} onHide={handleClose} centered size="lg" style={{ 'borderRadius': '1rem' }}>
             <Modal.Header closeButton>
-                <Modal.Title style={{'textAlign':'center'}}>Profile Overview</Modal.Title>
+                <Modal.Title style={{ 'textAlign': 'center' }}>Profile Overview</Modal.Title>
             </Modal.Header>
             <Modal.Body className="text-center" style={{ backgroundColor: 'white' }}>
                 <Button variant="link" className="position-absolute top-0 start-0 mt-2 ms-2" onClick={handleClose}>
@@ -58,6 +77,17 @@ const ProfileModal = ({ user, show, handleClose }) => {
                     <Col><strong>Email • </strong></Col>
                     <Col><Button variant='outline-primary'>{email}</Button></Col>
                 </Row>
+                <hr />
+                <Card className="mb-4">
+                    <Card.Body>
+                        <Card.Title>{is_student_or_teacher ? ("Offering Subjects") : ('')}</Card.Title>
+                        {offeringSubjects.map(subject => (
+                            <Badge pill bg="primary" className="me-2 mb-2" key={subject.replace(`'`, '').replace(`'`, '')} >
+                                {subject.replace(`'`, '').replace(`'`, '')}
+                            </Badge>
+                        ))}
+                    </Card.Body>
+                </Card>
                 <hr />
             </Modal.Body>
         </Modal>

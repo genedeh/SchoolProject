@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from user.models import User
 from .models import ClassRoom, Subject
 
 class ClassRoomListSerializer(serializers.ModelSerializer):
@@ -8,6 +10,7 @@ class ClassRoomListSerializer(serializers.ModelSerializer):
         extra_kwargs = {'__all__': {'read_only': True}}
 
 class OfferingSubjectSerializer(serializers.ModelSerializer):
+    students_offering = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(),many=True)
     class Meta:
         model = Subject
         fields = '__all__'

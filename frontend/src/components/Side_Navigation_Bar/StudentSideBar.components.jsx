@@ -16,13 +16,13 @@ const StudentSidebar = () => {
                             <Nav.Link href='#profile'><Person className="me-2" /> Profile</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link href="#homework"><Book className="me-2" /> Homework</Nav.Link>
+                            <Nav.Link href="#homework"><Book className="me-2" /> Homework <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
                             <Nav.Link href="#messages"><Envelope className="me-2" /> Alerts <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link href="#results"><BarChart className="me-2" /> Results</Nav.Link>
+                            <Nav.Link href="#results"><BarChart className="me-2" /> Results <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                         </Nav.Item>
                     </Nav>
                 </Navbar.Collapse>
