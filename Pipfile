@@ -11,6 +11,9 @@ mysqlclient = "*"
 pillow = "*"
 djangorestframework-simplejwt = "*"
 django-cors-headers = "*"
+django-rest-swagger = "*"
+drf-yasg = "*"
+setuptools = "*"
 
 [dev-packages]
 

@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'academics',
     'rest_framework_simplejwt',
     'corsheaders',
+    'rest_framework_swagger',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
