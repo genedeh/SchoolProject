@@ -68,7 +68,7 @@ const StudentProfile = () => {
                         <Card className="mb-4">
                             <Card.Header className="bg-gradient">
                                 <div className="d-flex align-items-center">
-                                    {profile_picture === null ? (<Image
+                                    {profile_picture !== null ? (<Image
                                         src={profile_picture}
                                         roundedCircle
                                         width="100"
