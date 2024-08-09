@@ -22,7 +22,7 @@ class LoginView(generics.GenericAPIView):
             try:
               user = User.objects.get(username=username, password=password)
             except:
-                return Response({'error': 'Invalid Credentials'}, status=400)
+                return Response({'error': 'Invalid Credentials'}, status=401)
         refresh = RefreshToken.for_user(user)
         return Response({
             'refresh': str(refresh),
