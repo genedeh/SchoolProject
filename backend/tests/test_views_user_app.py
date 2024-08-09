@@ -1,6 +1,6 @@
-from .test_setup import TestSetUp
+from .test_setup_user_app import TestSetUp
 
-class TestViews(TestSetUp):
+class TestUserViews(TestSetUp):
     def test_user_cannot_login_with_no_data(self):
         response = self.client.post(self.login_url)
 
