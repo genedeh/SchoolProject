@@ -79,6 +79,118 @@ const TeacherDashboard = () => {
                 </Row>
             </Container>
         );
+    } else if (location.hash === '#add-user') {
+        return (
+            <Container fluid>
+                <Row>
+                    <Col md={2} className="bg-light">
+                        <TeacherSidebar />
+                    </Col>
+                    <Col md={10}>
+                        <TopLevel searchHandler={SearchHandler} term={searchTerm} />
+                        {/* <StudentProfile /> */}
+                    </Col>
+                </Row>
+            </Container>
+        );
+    } else if (location.hash === '#alerts') {
+        return (
+            <Container fluid>
+                <Row>
+                    <Col md={2} className="bg-light">
+                        <TeacherSidebar />
+                    </Col>
+                    <Col md={10}>
+                        <TopLevel searchHandler={SearchHandler} term={searchTerm} />
+                        {/* <StudentProfile /> */}
+                    </Col>
+                </Row>
+            </Container>
+        );
+    } else if (location.hash === '#results') {
+        return (
+            <Container fluid>
+                <Row>
+                    <Col md={2} className="bg-light">
+                        <TeacherSidebar />
+                    </Col>
+                    <Col md={10}>
+                        <TopLevel searchHandler={SearchHandler} term={searchTerm} />
+                        {/* <StudentProfile /> */}
+                    </Col>
+                </Row>
+            </Container>
+        );
+    } else if (location.hash === '#events') {
+        return (
+            <Container fluid>
+                <Row>
+                    <Col md={2} className="bg-light">
+                        <TeacherSidebar />
+                    </Col>
+                    <Col md={10}>
+                        <TopLevel searchHandler={SearchHandler} term={searchTerm} />
+                        {/* <StudentProfile /> */}
+                    </Col>
+                </Row>
+            </Container>
+        );
+    } else if (location.hash === '#subjects') {
+        return (
+            <Container fluid>
+                <Row>
+                    <Col md={2} className="bg-light">
+                        <TeacherSidebar />
+                    </Col>
+                    <Col md={10}>
+                        <TopLevel searchHandler={SearchHandler} term={searchTerm} />
+                        {/* <StudentProfile /> */}
+                    </Col>
+                </Row>
+            </Container>
+        );
+    } else if (location.hash === '#classrooms') {
+        return (
+            <Container fluid>
+                <Row>
+                    <Col md={2} className="bg-light">
+                        <TeacherSidebar />
+                    </Col>
+                    <Col md={10}>
+                        <TopLevel searchHandler={SearchHandler} term={searchTerm} />
+                        {/* <StudentProfile /> */}
+                    </Col>
+                </Row>
+            </Container>
+        );
+    } else if (location.hash === '#subject') {
+        return (
+            <Container fluid>
+                <Row>
+                    <Col md={2} className="bg-light">
+                        <TeacherSidebar />
+                    </Col>
+                    <Col md={10}>
+                        <TopLevel searchHandler={SearchHandler} term={searchTerm} />
+                        {/* <StudentProfile /> */}
+                    </Col>
+                </Row>
+            </Container>
+        );
+    } else if (location.hash === '#classroom') {
+        return (
+            <Container fluid>
+                <Row>
+                    <Col md={2} className="bg-light">
+                        <TeacherSidebar />
+                    </Col>
+                    <Col md={10}>
+                        <TopLevel searchHandler={SearchHandler} term={searchTerm} />
+                        {/* <StudentProfile /> */}
+                    </Col>
+                </Row>
+            </Container>
+        );
     }
 }
 

@@ -55,7 +55,7 @@ export const TeacherSidebar = () => {
                                 <Nav.Link href='#profile'><PersonCircle className="me-2" /> Profile</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href="#homework"><PersonAdd className="me-2" /> Add User <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                                <Nav.Link href="#add-user"><PersonAdd className="me-2" /> Add User <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link href="#alerts"><Envelope className="me-2" /> Alerts <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
@@ -101,7 +101,7 @@ export const TeacherSidebar = () => {
                                 <Nav.Link href="#events"><Calendar2Event className="me-2" /> Events <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href="#subjects"><BookHalf className="me-2" /> Subject <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                                <Nav.Link href="#subject"><BookHalf className="me-2" /> Subject <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link href="#classroom"><SuitClub className="me-1" /> Your ClassRoom <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
