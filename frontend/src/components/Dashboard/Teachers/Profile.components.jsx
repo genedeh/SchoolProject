@@ -28,7 +28,7 @@ const TeacherProfile = () => {
         <>
             <Container className="m-2">
                 <Row>
-                    <Col md={8}>
+                    <Col >
                         <Card className="m-2">
                             <Card.Header className="bg-gradient">
                                 <div className="d-flex align-items-center">
