@@ -11,7 +11,7 @@ const ProfileModal = ({ user, show, handleClose }) => {
 
     useEffect(() => {
         const fetchOfferingSubjects = async () => {
-            if (is_student_or_teacher && user) {
+            if (user) {
                 try {
                     const respone = await axios.post("http://127.0.0.1:8000/api/offering-subjects/", { "students_offering": id })
                     setOfferingSubjects(respone.data.Subjects.replace('[', '').replace(']', '').split(','))
@@ -78,7 +78,7 @@ const ProfileModal = ({ user, show, handleClose }) => {
                 <hr />
                 <Card className="mb-4">
                     <Card.Body>
-                        <Card.Title>{is_student_or_teacher ? ("Offering Subjects") : ('')}</Card.Title>
+                        <Card.Title>{is_student_or_teacher ? ("Offering Subjects") : ('Teaching Subjects')}</Card.Title>
                         {offeringSubjects.map(subject => (
                             <Badge pill bg="primary" className="me-2 mb-2" key={subject.replace(`'`, '').replace(`'`, '')} >
                                 {subject.replace(`'`, '').replace(`'`, '')}
