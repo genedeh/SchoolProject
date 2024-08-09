@@ -25,9 +25,9 @@ from django.conf import settings
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="My Project API",
+        title="School Project API",
         default_version='v1',
-        description="API documentation for My Project",
+        description="API documentation for School Project",
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),

@@ -14,7 +14,10 @@ class OfferingSubjectsListView(generics.GenericAPIView):
     serializer_class = OfferingSubjectSerializer
     def post(self, request):
         id = request.data.get('students_offering') 
-        user = User.objects.get(id=id)
+        try:
+          user = User.objects.get(id=id)
+        except:
+          return Response({'error': "Invalid User.", 'detail':f'No such User with id = {id}'}, status=404)
         if user is not None:
           if user.is_student_or_teacher:  
             subjects = Subject.objects.filter(students_offering=id)
@@ -23,6 +26,5 @@ class OfferingSubjectsListView(generics.GenericAPIView):
                subject_list.append(subject.name.split('_')[1])
             return Response({'Subjects':f"{subject_list}"}, status=200)
           else:
-            return Response({'User-Type': f"{user.username} is a Teacher"}, status=200)
-        else:
-            return Response({'error': "User Not Found"}, status=404)
+            subject = Subject.objects.get(assigned_teacher=id)
+            return Response({'Subject':f"{subject}"}, status=200)

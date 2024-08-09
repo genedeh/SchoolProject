@@ -49,7 +49,7 @@ const StudentProfile = () => {
         const fetchOfferingSubjects = async () => {
             if (currentUser) {
                 try {
-                    const respone = await axios.post("http://127.0.0.1:8000/api/offering_subjects/", { "students_offering": id })
+                    const respone = await axios.post("http://127.0.0.1:8000/api/offering-subjects/", { "students_offering": id })
                     setOfferingSubjects(respone.data.Subjects.replace('[', '').replace(']', '').split(','))
                 } catch (err) {
                     console.log("Error: ", err)
