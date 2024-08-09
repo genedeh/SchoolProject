@@ -23,7 +23,6 @@ class LoginView(generics.GenericAPIView):
               user = User.objects.get(username=username, password=password)
             except:
                 return Response({'error': 'Invalid Credentials'}, status=400)
-            
         refresh = RefreshToken.for_user(user)
         return Response({
             'refresh': str(refresh),
@@ -60,7 +59,7 @@ class UserProfileView(APIView):
             print('Teacher: ',user.classrooms.name)
             user_data.update({'user_class': user.classrooms.name})
             
-        return Response(user_data)
+        return Response(user_data, status=200)
     
 class UserSearchView(generics.ListAPIView):
     serializer_class = UserListSerializer
