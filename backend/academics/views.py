@@ -23,8 +23,11 @@ class OfferingSubjectsListView(generics.GenericAPIView):
             subjects = Subject.objects.filter(students_offering=id)
             subject_list = []
             for subject in subjects:
-               subject_list.append(subject.name.split('_')[1])
+               subject_list.append(subject.name)
             return Response({'Subjects':f"{subject_list}"}, status=200)
           else:
-            subject = Subject.objects.get(assigned_teacher=id)
-            return Response({'Subject':f"{subject}"}, status=200)
+            subjects = Subject.objects.filter(assigned_teacher=id)
+            subject_list = []
+            for subject in subjects:
+               subject_list.append(subject.name)
+            return Response({'Subjects':f"{subject_list}"}, status=200)

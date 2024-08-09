@@ -8,6 +8,7 @@ import { Container, Col, Row } from 'react-bootstrap';
 import { SignDeadEnd } from 'react-bootstrap-icons';
 import { TeacherSidebar } from '../../Side_Navigation_Bar/SideBar.components';
 import TeacherHome from './Home.components';
+import TeacherProfile from './Profile.components';
 
 const TeacherDashboard = () => {
     const location = useLocation();
@@ -74,7 +75,7 @@ const TeacherDashboard = () => {
                     </Col>
                     <Col md={10}>
                         <TopLevel searchHandler={SearchHandler} term={searchTerm} />
-                        {/* <StudentProfile /> */}
+                        <TeacherProfile />
                     </Col>
                 </Row>
             </Container>

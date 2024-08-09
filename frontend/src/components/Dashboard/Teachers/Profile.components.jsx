@@ -1,56 +1,20 @@
-import { useContext, useEffect, useState } from 'react';
-import { Card, Image, Button, Container, Row, Col, Badge, ListGroup } from 'react-bootstrap';
-import { GenderFemale, GenderMale, GeoAlt, Telephone } from 'react-bootstrap-icons';
-import { UserContext } from '../../../contexts/User.contexts';
-import { UsersListContext } from '../../../contexts/UsersList.contexts';
-import axios from 'axios';
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "../../../contexts/User.contexts";
+import { Container, Card, Row, Col, Image, Button, Badge } from 'react-bootstrap';
+import { GenderFemale, GenderMale, Telephone, GeoAlt } from "react-bootstrap-icons";
+import axios from "axios";
 
-const ClassMateCard = (({ classMate }) => {
-    const { username, profile_picture, gender } = classMate
-    return (
-        <ListGroup.Item >
-            <div className="d-flex align-items-center">
-                {profile_picture ? (<Image
-                    src={profile_picture.includes('http://') ? (profile_picture) : (`http://127.0.0.1:8000/media/${profile_picture}`)}
-                    roundedCircle
-                    style={{ width: '35px', height: '35px', objectFit: 'cover' }}
-                    className="me-3" />)
-                    : (<Image
-                        src="http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg"
-                        roundedCircle
-                        style={{ width: '35px', height: '35px', objectFit: 'cover' }}
-                        className="me-3" />)
-                }
-                <div>
-                    <div className="fw-bold">{username.replace('_', ' ')}</div>
-                    <div className="d-flex align-items-center mt-2">
-                        {gender === 'male' ?
-                            (<Button className="me-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
-                                <GenderMale />
-                            </Button>) :
-                            (<Button className="me-2" size="sm" style={{ 'backgroundColor': 'pink', 'borderColor': 'white' }}>
-                                <GenderFemale />
-                            </Button>)}
-                    </div>
-                </div>
-            </div>
-            <hr />
-        </ListGroup.Item>
-    )
-})
-const StudentProfile = () => {
+const TeacherProfile = () => {
     const { currentUser } = useContext(UserContext);
-    const { usersList } = useContext(UsersListContext);
-    const [offeringSubjects, setOfferingSubjects] = useState([]);
+    const [teachingSubjects, setTeachingSubjects] = useState([]);
     const { id, first_name, last_name, username, address, phone_number, email, profile_picture, birth_date, gender, user_class } = currentUser;
-
-
+    console.log(currentUser.subjects)
     useEffect(() => {
-        const fetchOfferingSubjects = async () => {
+        const fetchTeachingSubjects = async () => {
             if (currentUser) {
                 try {
                     const respone = await axios.post("http://127.0.0.1:8000/api/offering-subjects/", { "students_offering": id })
-                    setOfferingSubjects(respone.data.Subjects.replace('[', '').replace(']', '').split(','))
+                    setTeachingSubjects(respone.data.Subjects.replace('[', '').replace(']', '').split(','))
                 } catch (err) {
                     console.log("Error: ", err)
                 }
@@ -58,7 +22,7 @@ const StudentProfile = () => {
                 console.log('No User Found')
             }
         };
-        fetchOfferingSubjects();
+        fetchTeachingSubjects();
     }, [])
     return (
         <>
@@ -108,13 +72,13 @@ const StudentProfile = () => {
                             <Card.Body className="d-flex justify-content-between">
                                 <Button variant="outline-primary">{email}</Button>
                                 <Button variant="outline-danger">{birth_date}</Button>
-                                <Button variant="outline-success">Class • {user_class}</Button>
+                                <Button variant="outline-success">Assigned Class • {user_class}</Button>
                             </Card.Body>
                         </Card>
                         <Card className="mb-4">
                             <Card.Body>
-                                <Card.Title>Offering Subjects</Card.Title>
-                                {offeringSubjects.map(subject => (
+                                <Card.Title>Teaching Subjects</Card.Title>
+                                {teachingSubjects.map(subject => (
                                     <Badge pill bg="primary" className="me-2 mb-2" key={subject.replace(`'`, '').replace(`'`, '')} >
                                         {subject.replace(`'`, '').replace(`'`, '')}
                                     </Badge>
@@ -122,30 +86,10 @@ const StudentProfile = () => {
                             </Card.Body>
                         </Card>
                     </Col>
-                    <Col md={4}>
-                        <Card className="m-2">
-                            <Card.Body >
-                                <Card.Title>Class Mates</Card.Title>
-                                <ListGroup variant="flush">
-                                    {usersList.map(potentialClassMate => {
-                                        if (potentialClassMate.username !== username) {
-                                            if (potentialClassMate.user_class === user_class) {
-                                                if (potentialClassMate.is_student_or_teacher) {
-                                                    return (
-                                                        <ClassMateCard classMate={potentialClassMate} key={potentialClassMate.id} />
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    })}
-                                </ListGroup>
-                            </Card.Body>
-                        </Card>
-                    </Col>
                 </Row>
-            </Container >
+            </Container>
         </>
-    )
-}
+    );
+};
 
-export default StudentProfile
+export default TeacherProfile;

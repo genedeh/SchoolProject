@@ -82,7 +82,6 @@ const UserDashboard = () => {
         } else {
             fetchUserProfilesList();
         }
-        console.log(currentUser)
     }, []);
 
     if (error === "No token found") {
