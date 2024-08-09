@@ -10,8 +10,8 @@ const ClassMateCard = (({ classMate }) => {
     return (
         <ListGroup.Item >
             <div className="d-flex align-items-center">
-                {profile_picture !== null ? (<Image
-                    src={profile_picture}
+                {profile_picture ? (<Image
+                    src={profile_picture.includes('http://') ? (profile_picture) : (`http://127.0.0.1:8000/media/${profile_picture}`)}
                     roundedCircle
                     style={{ width: '35px', height: '35px', objectFit: 'cover' }}
                     className="me-3" />)
@@ -68,8 +68,8 @@ const StudentProfile = () => {
                         <Card className="mb-4">
                             <Card.Header className="bg-gradient">
                                 <div className="d-flex align-items-center">
-                                    {profile_picture !== null ? (<Image
-                                        src={profile_picture}
+                                    {profile_picture ? (<Image
+                                        src={profile_picture.includes('http://') ? (profile_picture) : (`http://127.0.0.1:8000/media/${profile_picture}`)}
                                         roundedCircle
                                         width="100"
                                         height="100"

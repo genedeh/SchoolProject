@@ -18,7 +18,7 @@ const ProfileModal = ({ user, show, handleClose }) => {
                 } catch (err) {
                     console.log("Error: ", err)
                 }
-            } 
+            }
         };
         fetchOfferingSubjects();
     }, [])
@@ -32,8 +32,8 @@ const ProfileModal = ({ user, show, handleClose }) => {
                 <Button variant="link" className="position-absolute top-0 start-0 mt-2 ms-2" onClick={handleClose}>
                     <BsArrowLeft />
                 </Button>
-                {profile_picture !== null ? (<Image
-                    src={profile_picture}
+                {profile_picture ? (<Image
+                    src={profile_picture.includes('http://') ? (profile_picture) : (`http://127.0.0.1:8000/media/${profile_picture}`)}
                     roundedCircle
                     style={{ width: '100px', height: '100px', objectFit: 'cover' }}
                     className="mb-3" />)
@@ -53,7 +53,7 @@ const ProfileModal = ({ user, show, handleClose }) => {
                         </Button>)
                     }</span></h4>
                 <h5 className="text-muted">{is_student_or_teacher ? ("Student") : ("Teacher")}</h5>
-                <p className='fw-bold text-muted'>{is_student_or_teacher ? (`Class • ${user_class}`) : (`Assigned Class • ${user_class}`) }</p>
+                <p className='fw-bold text-muted'>{is_student_or_teacher ? (`Class • ${user_class}`) : (`Assigned Class • ${user_class}`)}</p>
                 <hr />
                 <Row className="text-start mb-3">
                     <Col><strong>Address • </strong></Col>
@@ -106,8 +106,8 @@ const SearchedProfileCard = ({ user }) => {
                 <Card className="h-100 container" >
                     <Card.Body className="d-flex flex-column align-items-start" >
                         <div className="d-flex align-items-center mb-3">
-                            {profile_picture !== null ? (<Image
-                                src={profile_picture}
+                            {profile_picture ? (<Image
+                                src={profile_picture.includes('http://') ? (profile_picture) : (`http://127.0.0.1:8000/media/${profile_picture}`)}
                                 roundedCircle
                                 style={{ width: '60px', height: '60px', objectFit: 'cover' }}
                                 className="me-3" />)

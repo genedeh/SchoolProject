@@ -19,11 +19,11 @@ const TopLevel = ({ searchHandler, term }) => {
         <>
             <Stack direction="horizontal" gap={1} className='container-input'>
                 <Form.Control className="me-auto" placeholder='Enter Student Or Teacher Username...' value={term} onChange={searchHandler} />
-                {profile_picture !== null ? (<Image
-                    src={profile_picture}
+                {profile_picture ? (<Image
+                    src={profile_picture.includes('http://') ? (profile_picture) : (`http://127.0.0.1:8000/media/${profile_picture}`)}
                     roundedCircle
                     width="35"
-                    height="35"
+                    height="32"
                     className="me-2 "
                     style={{ 'objectFit': 'cover' }}
                 />) : (<Image
