@@ -53,7 +53,7 @@ const ProfileModal = ({ user, show, handleClose }) => {
                         </Button>)
                     }</span></h4>
                 <h5 className="text-muted">{is_student_or_teacher ? ("Student") : ("Teacher")}</h5>
-                <p className='fw-bold text-muted'>Class • {user_class}</p>
+                <p className='fw-bold text-muted'>{is_student_or_teacher ? (`Class • ${user_class}`) : (`Assigned Class • ${user_class}`) }</p>
                 <hr />
                 <Row className="text-start mb-3">
                     <Col><strong>Address • </strong></Col>
@@ -133,7 +133,7 @@ const SearchedProfileCard = ({ user }) => {
                             </div>
                         </div>
                         <Card.Text className="fw-bold text-muted">
-                            Class • {user_class}
+                            {is_student_or_teacher ? (`Class • ${user_class}`) : (`Assigned Class • ${user_class}`)}
                         </Card.Text>
                         <div className="mt-auto d-flex align-items-center">
                             <Button variant="outline-dark" onClick={handleShow}><BsThreeDots /></Button>
