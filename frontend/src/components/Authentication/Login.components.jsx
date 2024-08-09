@@ -30,7 +30,9 @@ const LoginForm = () => {
             } catch (err) {
                 if (err.message === "Network Error") {
                     setError('THERE SEEMS TO BE A PROBLEM WITH OUR SERVER NETWORK PLEASE TRY AGAIN!')
-                };
+                } else {
+                    setError("Invalid Credentials")
+                }
             }
 
         }
