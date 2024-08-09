@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { Stack, Form, Image, Button } from 'react-bootstrap'
-import { UserContext } from '../../../contexts/User.contexts';
+import { UserContext } from '../../contexts/User.contexts';
 import { useContext } from 'react';
-import { UsersListContext } from '../../../contexts/UsersList.contexts';
+import { UsersListContext } from '../../contexts/UsersList.contexts';
 
-const StudentTopLevel = ({ searchHandler, term }) => {
+const TopLevel = ({ searchHandler, term }) => {
     const { currentUser, setCurrentUser } = useContext(UserContext);
     const { setUsersList } = useContext(UsersListContext);
     const { profile_picture } = currentUser
@@ -44,4 +44,4 @@ const StudentTopLevel = ({ searchHandler, term }) => {
     )
 };
 
-export default StudentTopLevel;
+export default TopLevel;

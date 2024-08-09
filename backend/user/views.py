@@ -48,6 +48,7 @@ class UserProfileView(APIView):
             'gender': user.gender,
             'is_student_or_teacher': user.is_student_or_teacher,
             'user_class': None,
+            'is_admin':user.is_superuser,
         }
         if user_data['is_student_or_teacher']:
             dummy_value = str(user.classes.all().values_list('id', flat=True))

@@ -1,8 +1,8 @@
 import { useLocation } from 'react-router-dom';
-import StudentSidebar from '../../Side_Navigation_Bar/StudentSideBar.components';
+import StudentSidebar from '../../Side_Navigation_Bar/SideBar.components';
 import StudentHome from './Home.components';
 import StudentProfile from './Profile.components';
-import StudentTopLevel from './TopLevel.components';
+import TopLevel from '../TopLevel.components';
 import { useContext, useState } from 'react';
 import { Container, Row, Col } from 'react-bootstrap'
 import SearchedProfileCard from '../SearchedProfileCard.components';
@@ -38,7 +38,7 @@ const StudentDashboard = () => {
                         <StudentSidebar />
                     </Col>
                     <Col md={10}>
-                        <StudentTopLevel searchHandler={SearchHandler} term={searchTerm} />
+                        <TopLevel searchHandler={SearchHandler} term={searchTerm} />
                         <Container fluid>
                             {filteredUsers.length === 0 ?
                                 (<div style={{ 'margin': '5rem' }}><h1><SignDeadEnd color='red' size={96} /> 404 NO USER OF USERNAME "{searchTerm}" EXISTS</h1></div>)
@@ -61,7 +61,7 @@ const StudentDashboard = () => {
                         <StudentSidebar />
                     </Col>
                     <Col md={10}>
-                        <StudentTopLevel searchHandler={SearchHandler} term={searchTerm} />
+                        <TopLevel searchHandler={SearchHandler} term={searchTerm} />
                         <StudentHome />
                     </Col>
                 </Row>
@@ -75,7 +75,7 @@ const StudentDashboard = () => {
                         <StudentSidebar />
                     </Col>
                     <Col md={10}>
-                        <StudentTopLevel searchHandler={SearchHandler} term={searchTerm} />
+                        <TopLevel searchHandler={SearchHandler} term={searchTerm} />
                         <StudentProfile />
                     </Col>
                 </Row>
