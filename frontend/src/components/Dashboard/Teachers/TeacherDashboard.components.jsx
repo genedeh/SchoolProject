@@ -7,6 +7,7 @@ import SearchedProfileCard from '../SearchedProfileCard.components';
 import { Container, Col, Row } from 'react-bootstrap';
 import { SignDeadEnd } from 'react-bootstrap-icons';
 import { TeacherSidebar } from '../../Side_Navigation_Bar/SideBar.components';
+import TeacherHome from './Home.components';
 
 const TeacherDashboard = () => {
     const location = useLocation();
@@ -32,7 +33,7 @@ const TeacherDashboard = () => {
             <Container fluid>
                 <Row>
                     <Col md={2} className="bg-light">
-                        <TeacherSidebar is_admin={currentUser.is_admin} />
+                        <TeacherSidebar  />
                     </Col>
                     <Col md={10}>
                         <TopLevel searchHandler={SearchHandler} term={searchTerm} />
@@ -55,11 +56,11 @@ const TeacherDashboard = () => {
             <Container fluid>
                 <Row>
                     <Col md={2} className="bg-light">
-                        <TeacherSidebar is_admin={currentUser.is_admin} />
+                        <TeacherSidebar  />
                     </Col>
                     <Col md={10}>
                         <TopLevel searchHandler={SearchHandler} term={searchTerm} />
-                        {/* <StudentHome /> */}
+                        <TeacherHome />
                     </Col>
                 </Row>
             </Container>
@@ -69,7 +70,7 @@ const TeacherDashboard = () => {
             <Container fluid>
                 <Row>
                     <Col md={2} className="bg-light">
-                        <TeacherSidebar is_admin={currentUser.is_admin} />
+                        <TeacherSidebar  />
                     </Col>
                     <Col md={10}>
                         <TopLevel searchHandler={SearchHandler} term={searchTerm} />

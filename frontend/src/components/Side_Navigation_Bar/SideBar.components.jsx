@@ -1,6 +1,9 @@
 import { Nav, Navbar, Badge } from 'react-bootstrap';
-import { House,  Book, Envelope, BarChart, Award, PersonAdd, Calendar2Event, BookHalf, PersonCircle , SuitClub} from 'react-bootstrap-icons';
+import { House, Book, Envelope, BarChart, Award, PersonAdd, Calendar2Event, BookHalf, PersonCircle, SuitClub } from 'react-bootstrap-icons';
 import '../Side_Navigation_Bar/SideBar.styles.css'
+import { useContext } from 'react';
+import { UserContext } from '../../contexts/User.contexts';
+
 const StudentSidebar = () => {
     return (
         <div className="d-flex flex-column vh-100 p-3 bg-light container">
@@ -19,10 +22,10 @@ const StudentSidebar = () => {
                             <Nav.Link href="#homework"><Book className="me-2" /> Homework <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link href="#messages"><Calendar2Event className="me-2" /> Events <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                            <Nav.Link href="#events"><Calendar2Event className="me-2" /> Events <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link href="#messages"><Award className="me-1" /> Achievements <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                            <Nav.Link href="#achivements"><Award className="me-1" /> Achievements <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
                             <Nav.Link href="#results"><BarChart className="me-2" /> Results <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
@@ -34,7 +37,9 @@ const StudentSidebar = () => {
     );
 };
 
-export const TeacherSidebar = ({ is_admin }) => {
+export const TeacherSidebar = () => {
+    const { currentUser } = useContext(UserContext);
+    const { is_admin } = currentUser;
     if (is_admin) {
         return (
             <div className="d-flex flex-column vh-100 p-3 bg-light container">
@@ -53,19 +58,19 @@ export const TeacherSidebar = ({ is_admin }) => {
                                 <Nav.Link href="#homework"><PersonAdd className="me-2" /> Add User <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href="#messages"><Envelope className="me-2" /> Alerts <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                                <Nav.Link href="#alerts"><Envelope className="me-2" /> Alerts <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link href="#results"><BarChart className="me-2" /> Results <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href="#results"><Calendar2Event className="me-2" /> Events <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                                <Nav.Link href="#events"><Calendar2Event className="me-2" /> Events <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href="#results"><BookHalf className="me-2" /> Subjects <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                                <Nav.Link href="#subjects"><BookHalf className="me-2" /> Subjects <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href="#results"><SuitClub className="me-2" /> ClassRooms <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                                <Nav.Link href="#classrooms"><SuitClub className="me-2" /> ClassRooms <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Navbar.Collapse>
@@ -87,19 +92,19 @@ export const TeacherSidebar = ({ is_admin }) => {
                                 <Nav.Link href='#profile'><PersonCircle className="me-2" /> Profile</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href="#messages"><Envelope className="me-2" /> Alerts <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                                <Nav.Link href="#alerts"><Envelope className="me-2" /> Alerts <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link href="#results"><BarChart className="me-2" /> Class Results <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href="#results"><Calendar2Event className="me-2" /> Events <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                                <Nav.Link href="#events"><Calendar2Event className="me-2" /> Events <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href="#results"><BookHalf className="me-2" /> Subject <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                                <Nav.Link href="#subjects"><BookHalf className="me-2" /> Subject <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href="#results"><SuitClub className="me-1" /> Your ClassRoom <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                                <Nav.Link href="#classroom"><SuitClub className="me-1" /> Your ClassRoom <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                             </Nav.Item>
                         </Nav>
                     </Navbar.Collapse>

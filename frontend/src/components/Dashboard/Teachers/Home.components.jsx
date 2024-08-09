@@ -1,7 +1,7 @@
 import { Card, Container, Row, Col, ListGroup } from 'react-bootstrap';
 import { UserContext } from '../../../contexts/User.contexts';
 import { useContext } from 'react';
-const StudentHome = () => {
+const TeacherHome = () => {
     const { currentUser } = useContext(UserContext)
     const { username } = currentUser;
     return (
@@ -10,7 +10,7 @@ const StudentHome = () => {
                 <Col md={8}>
                     <Card className="p-3 mb-4 container-welcome" bg="primary" text='light' >
                         <Card.Body >
-                            <Card.Title>Welcome back, {username.replace('_', ' ')} 👋</Card.Title>
+                            <Card.Title>Welcome back, {username.replace('_',' ')} 👋</Card.Title>
                             <Card.Text>
                                 You've learned 70% of your goal this week! Keep it up and improve your progress.
                             </Card.Text>
@@ -63,4 +63,4 @@ const StudentHome = () => {
     );
 }
 
-export default StudentHome
+export default TeacherHome;
