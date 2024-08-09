@@ -82,6 +82,66 @@ const StudentDashboard = () => {
             </Container>
         );
     }
+    else if (location.hash === '#homework') {
+        return (
+            <Container fluid>
+                <Row>
+                    <Col md={2} className="bg-light">
+                        <StudentSidebar />
+                    </Col>
+                    <Col md={10}>
+                        <TopLevel searchHandler={SearchHandler} term={searchTerm} />
+                        {/* <Homework /> */}
+                    </Col>
+                </Row>
+            </Container>
+        );
+    }
+    else if (location.hash === '#events') {
+        return (
+            <Container fluid>
+                <Row>
+                    <Col md={2} className="bg-light">
+                        <StudentSidebar />
+                    </Col>
+                    <Col md={10}>
+                        <TopLevel searchHandler={SearchHandler} term={searchTerm} />
+                        {/* <StudentEvents /> */}
+                    </Col>
+                </Row>
+            </Container>
+        );
+    }
+    else if (location.hash === '#achivements') {
+        return (
+            <Container fluid>
+                <Row>
+                    <Col md={2} className="bg-light">
+                        <StudentSidebar />
+                    </Col>
+                    <Col md={10}>
+                        <TopLevel searchHandler={SearchHandler} term={searchTerm} />
+                        {/* <Achievements /> */}
+                    </Col>
+                </Row>
+            </Container>
+        );
+    }
+    else if (location.hash === '#results') {
+        return (
+            <Container fluid>
+                <Row>
+                    <Col md={2} className="bg-light">
+                        <StudentSidebar />
+                    </Col>
+                    <Col md={10}>
+                        <TopLevel searchHandler={SearchHandler} term={searchTerm} />
+                        {/* <StudentResults /> */}
+                    </Col>
+                </Row>
+            </Container>
+        );
+    }
 };
 
 export default StudentDashboard;
