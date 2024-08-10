@@ -1,13 +1,15 @@
 import { Card, Button, Col, Image, Modal, Row, Badge } from 'react-bootstrap';
 import { GenderFemale, GenderMale } from 'react-bootstrap-icons';
-import { BsThreeDots, BsArrowLeft } from "react-icons/bs";
-import { useState, useEffect } from 'react';
+import { BsThreeDots, BsArrowLeft, BsArrowReturnRight } from "react-icons/bs";
+import { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
+import { UserContext } from '../../contexts/User.contexts';
 
 const ProfileModal = ({ user, show, handleClose }) => {
     const { username, is_student_or_teacher, gender, profile_picture, user_class, birth_date, phone_number, email, address, id } = user;
     const current_date = new Date();
     const [offeringSubjects, setOfferingSubjects] = useState([]);
+
 
     useEffect(() => {
         const fetchOfferingSubjects = async () => {
@@ -92,10 +94,16 @@ const ProfileModal = ({ user, show, handleClose }) => {
     );
 }
 
+const UserUpdateModal = ({ user, show, handleClose }) => {
+    return (
+        <div></div>
+    )
+};
 
 const SearchedProfileCard = ({ user }) => {
     const { username, is_student_or_teacher, gender, profile_picture, user_class } = user;
     const [show, setShow] = useState(false);
+    const { currentUser } = useContext(UserContext);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -136,7 +144,12 @@ const SearchedProfileCard = ({ user }) => {
                             {is_student_or_teacher ? (`Class • ${user_class}`) : (`Assigned Class • ${user_class}`)}
                         </Card.Text>
                         <div className="mt-auto d-flex align-items-center">
-                            <Button variant="outline-dark" onClick={handleShow}><BsThreeDots /></Button>
+                            <Button variant="outline-dark" className='me-4' onClick={handleShow}><BsThreeDots /></Button>
+                            {!currentUser.is_student_or_teacher ?
+                                (
+                                    currentUser.user_class === user_class || currentUser.is_admin ? (<Button variant="outline-primary" ><BsArrowReturnRight /></Button>) : ('')
+                                )
+                                : ('')}
                         </div>
                     </Card.Body>
                 </Card>
@@ -146,4 +159,4 @@ const SearchedProfileCard = ({ user }) => {
     );
 }
 
-export default SearchedProfileCard;
+    export default SearchedProfileCard;
