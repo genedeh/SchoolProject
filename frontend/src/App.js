@@ -23,12 +23,31 @@ function App() {
       setLoading(false);
     };
   }, [currentUser])
+
+  if (!currentUser) {
+    return (
+      <>
+        <Routes>
+          <Route index Component={LoginForm} />
+          <Route path='/dashboard/home' element={null} />
+          <Route path='/dashboard/profile' element={null} />
+        </Routes>
+        <Navigation />
+      </>
+    )
+  }
+
   return (
     <Routes>
       <Route index Component={LoginForm} />
       <Route path='/dashboard' element={<Navigation />}>
         {loading ?
-          ('')
+          (
+            <>
+              <Route path='/dashboard/home' element={null} />
+              <Route path='/dashboard/profile' element={null} />
+            </>
+          )
           :
           (
             is_student_or_teacher ?

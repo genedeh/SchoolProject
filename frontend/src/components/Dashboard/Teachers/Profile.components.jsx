@@ -8,7 +8,6 @@ const TeacherProfile = () => {
     const { currentUser } = useContext(UserContext);
     const [teachingSubjects, setTeachingSubjects] = useState([]);
     const { id, first_name, last_name, username, address, phone_number, email, profile_picture, birth_date, gender, user_class } = currentUser;
-    console.log(currentUser.subjects)
     useEffect(() => {
         const fetchTeachingSubjects = async () => {
             if (currentUser) {
