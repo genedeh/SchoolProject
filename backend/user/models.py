@@ -28,5 +28,4 @@ class User(AbstractUser, models.Model):
     def save(self, *args, **kwargs):
         if not self.username:
             self.username = f'{self.first_name}_{self.last_name}'
-        # self.age = datetime.now().year - self.birth_date.year
         super().save(*args, **kwargs)
