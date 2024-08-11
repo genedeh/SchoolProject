@@ -1,11 +1,10 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState} from "react";
 import { Outlet } from "react-router-dom";
 import { UserContext } from "../../contexts/User.contexts";
 import { Container, Row, Col, Alert, Spinner } from 'react-bootstrap';
 import TopLevel from "./TopLevel.components";
 import { StudentSidebar, TeacherSidebar } from "./Side_Navigation_Bar/SideBar.components";
 import { UsersListContext } from "../../contexts/UsersList.contexts";
-import axios from "axios";
 import SearchedProfileCard from "../Dashboard/SearchedProfileCard.components";
 import { SignDeadEnd } from 'react-bootstrap-icons';
 
