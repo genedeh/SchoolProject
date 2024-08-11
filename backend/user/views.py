@@ -5,7 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
 from academics.models import ClassRoom
-from .serializers import UserSerializer, UserListSerializer
+from .serializers import UserSerializer, UserListSerializer, UserCreateSerializer
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -65,3 +65,6 @@ class UserProfileView(APIView):
 class UserSearchView(generics.ListAPIView):
     serializer_class = UserListSerializer
     queryset = User.objects.all()
+
+class AddUserView(generics.CreateAPIView):
+    serializer_class = UserCreateSerializer
