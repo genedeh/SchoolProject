@@ -16,6 +16,10 @@ class UserListSerializer(serializers.ModelSerializer):
 
 class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)  # Ensure password is write-only
+    classrooms = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
+    classes = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
+    subject = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
+    subjects = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
 
     class Meta:
         model = User

@@ -8,15 +8,15 @@ from user.models import User
 class ClassRoom(models.Model):
     name = models.CharField(max_length=8, unique=True)
     assigned_Teacher = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, related_name="classrooms")
-    students = models.ManyToManyField(User, related_name='classes')
+    students = models.ManyToManyField(User, related_name='classes', blank=True)
 
     def __str__(self) -> str:
         return self.name
     
 class Subject(models.Model):
     name = models.CharField(max_length=100)
-    assigned_teacher = models.ForeignKey(User, related_name='subject', on_delete=models.PROTECT)
-    students_offering = models.ManyToManyField(User,  related_name='subjects')
+    assigned_teacher = models.ForeignKey(User, related_name='subject', on_delete=models.PROTECT, null=True)
+    students_offering = models.ManyToManyField(User,  related_name='subjects', blank=True)
 
 
     def __str__(self) -> str:

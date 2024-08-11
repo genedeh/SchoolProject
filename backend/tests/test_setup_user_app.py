@@ -4,10 +4,29 @@ from django.urls import reverse
 class TestSetUp(APITestCase):
     def setUp(self):
         self.login_url = reverse("login")
+        self.add_user_url = reverse('add-user')
 
         self.login_data = {
             'username': 'Tester_1',
             'password': '1234',
+        }
+        self.user_data = {
+            "username": "Test_alpha",
+            "password": "1234",
+            "email": "testinemail@gmail.com",
+            "first_name": "Test",
+            "last_name": "alpha",
+            "profile_picture": None,
+            "is_student_or_teacher": False,
+            "birth_date": None,
+            "address": "test_adress",
+            "is_superuser": False,
+            "phone_number": "08129674178",
+            "gender": "male",
+            "classes": [],
+            "classrooms": None,
+            "subject": [],
+            "subjects": [],
         }
         return super().setUp()
     
