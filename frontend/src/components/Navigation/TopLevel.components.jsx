@@ -7,13 +7,11 @@ import { UsersListContext } from '../../contexts/UsersList.contexts';
 const TopLevel = ({ searchHandler, term }) => {
     const { currentUser, setCurrentUser } = useContext(UserContext);
     const { setUsersList } = useContext(UsersListContext);
-    const { profile_picture } = currentUser
-    let navigate = useNavigate()
+    const { profile_picture } = currentUser;
     const logoutHandler = () => {
         localStorage.removeItem('token');
         setCurrentUser(null);
         setUsersList([]);
-        return navigate("/");
     }
     return (
         <>

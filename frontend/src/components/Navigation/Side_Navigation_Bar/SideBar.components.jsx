@@ -1,10 +1,10 @@
 import { Nav, Navbar, Badge } from 'react-bootstrap';
 import { House, Book, Envelope, BarChart, Award, PersonAdd, Calendar2Event, BookHalf, PersonCircle, SuitClub } from 'react-bootstrap-icons';
-import '../Side_Navigation_Bar/SideBar.styles.css'
+import './SideBar.styles.css'
 import { useContext } from 'react';
-import { UserContext } from '../../contexts/User.contexts';
+import { UserContext } from '../../../contexts/User.contexts';
 
-const StudentSidebar = () => {
+export const StudentSidebar = () => {
     return (
         <div className="d-flex flex-column vh-100 p-3 bg-light container">
             <h4 className="text-primary">Dashboard</h4>
@@ -13,10 +13,10 @@ const StudentSidebar = () => {
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="flex-column" coll>
                         <Nav.Item>
-                            <Nav.Link href='#home'><House className="me-2" /> Home</Nav.Link>
+                            <Nav.Link href='/dashboard/home'><House className="me-2" /> Home</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link href='#profile'><PersonCircle className="me-2" /> Profile</Nav.Link>
+                            <Nav.Link href='/dashboard/profile'><PersonCircle className="me-2" /> Profile</Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
                             <Nav.Link href="#homework"><Book className="me-2" /> Homework <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
@@ -49,10 +49,10 @@ export const TeacherSidebar = () => {
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="flex-column" coll>
                             <Nav.Item>
-                                <Nav.Link href='#home'><House className="me-2" /> Home</Nav.Link>
+                                <Nav.Link href='/dashboard/home'><House className="me-2" /> Home</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href='#profile'><PersonCircle className="me-2" /> Profile</Nav.Link>
+                                <Nav.Link href='/dashboard/profile'><PersonCircle className="me-2" /> Profile</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link href="#add-user"><PersonAdd className="me-2" /> Add User <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
@@ -86,10 +86,10 @@ export const TeacherSidebar = () => {
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="flex-column" coll>
                             <Nav.Item>
-                                <Nav.Link href='#home'><House className="me-2" /> Home</Nav.Link>
+                                <Nav.Link href='/dashboard/home'><House className="me-2" /> Home</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
-                                <Nav.Link href='#profile'><PersonCircle className="me-2" /> Profile</Nav.Link>
+                                <Nav.Link href='/dashboard/profile'><PersonCircle className="me-2" /> Profile</Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link href="#alerts"><Envelope className="me-2" /> Alerts <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
@@ -114,5 +114,3 @@ export const TeacherSidebar = () => {
     }
 
 }
-
-export default StudentSidebar;
