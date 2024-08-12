@@ -74,3 +74,7 @@ class UpdateUserView(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserUpdateSerializer
     lookup_field = 'pk'
+
+class DeleteUserView(generics.DestroyAPIView):
+    queryset = User.objects.all()
+    lookup_field = 'pk'
