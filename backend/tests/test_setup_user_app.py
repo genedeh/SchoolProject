@@ -6,6 +6,13 @@ class TestSetUp(APITestCase):
         self.login_url = reverse("login")
         self.add_user_url = reverse('add-user')
 
+        self.update_data = {
+            "email": "updatedemail@example.com",
+            "first_name": "UpdatedFirstName",
+            "last_name": "UpdatedLastName"
+        }
+        self.update_user_url = "/api/update-user/1/"
+
         self.login_data = {
             'username': 'Tester_1',
             'password': '1234',
