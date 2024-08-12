@@ -31,3 +31,7 @@ class OfferingSubjectsListView(generics.GenericAPIView):
             for subject in subjects:
                subject_list.append(subject.name)
             return Response({'Subjects':f"{subject_list}"}, status=200)
+          
+class ClassRoomListView(generics.ListAPIView):
+   serializer_class = ClassRoomListSerializer
+   queryset = ClassRoom.objects.all()

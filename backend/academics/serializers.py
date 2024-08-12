@@ -6,7 +6,7 @@ from .models import ClassRoom, Subject
 class ClassRoomListSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassRoom
-        fields = ('id', 'name')
+        fields = '__all__'
         extra_kwargs = {'__all__': {'read_only': True}}
 
 class OfferingSubjectSerializer(serializers.ModelSerializer):
@@ -15,3 +15,4 @@ class OfferingSubjectSerializer(serializers.ModelSerializer):
         model = Subject
         fields = '__all__'
         extra_kwargs = {'name': {'read_only': True}, 'assigned_teacher': {'read_only': True}}
+
