@@ -9,7 +9,8 @@ import TeacherHome from './components/Dashboard/Teachers/Home.components';
 import { UserContext } from './contexts/User.contexts';
 import StudentProfile from './components/Dashboard/Students/Profile.components';
 import TeacherProfile from './components/Dashboard/Teachers/Profile.components';
-// import { Spinner } from 'react-bootstrap';
+import { AddUser } from './components/Dashboard/Teachers/AdminComponents/AddUser.components';
+
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
 
 function App() {
@@ -23,48 +24,19 @@ function App() {
       setLoading(false);
     };
   }, [currentUser])
-
-  if (!currentUser) {
-    return (
-      <>
-        <Routes>
-          <Route index Component={LoginForm} />
-          <Route path='/dashboard/home' element={null} />
-          <Route path='/dashboard/profile' element={null} />
-        </Routes>
-        <Navigation />
-      </>
-    )
-  }
-
+  console.log(is_student_or_teacher)
   return (
     <Routes>
       <Route index Component={LoginForm} />
       <Route path='/dashboard' element={<Navigation />}>
-        {loading ?
-          (
-            <>
-              <Route path='/dashboard/home' element={null} />
-              <Route path='/dashboard/profile' element={null} />
-            </>
-          )
-          :
-          (
-            is_student_or_teacher ?
-              (<>
-                <Route path='home' element={<StudentHome />} />
-                <Route path='profile' element={<StudentProfile />} />
-              </>
-              )
-              :
-              (
-                <>
-                  <Route path='home' element={<TeacherHome />} />
-                  <Route path='profile' element={<TeacherProfile />} />
-                </>
-              )
-          )
-        }
+        {is_student_or_teacher ? (
+          <Route path='home' element={<StudentHome />} />
+        ) : (
+          <Route path='home' element={<TeacherHome />} />
+        )}
+        <Route path='student-profile' element={<StudentProfile />} />
+        <Route path='teacher-profile' element={<TeacherProfile />} />
+        <Route path='add-user' element={<AddUser />} />
       </Route>
     </Routes>
   );
