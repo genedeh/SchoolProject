@@ -1,6 +1,6 @@
 from rest_framework import generics
 from rest_framework.response import Response
-from .serializers import ClassRoomListSerializer, OfferingSubjectSerializer
+from .serializers import ClassRoomListSerializer, OfferingSubjectSerializer, SubjectsListSerializer
 from .models import ClassRoom, Subject
 from user.models import User
 # Create your views here.
@@ -35,3 +35,7 @@ class OfferingSubjectsListView(generics.GenericAPIView):
 class ClassRoomListView(generics.ListAPIView):
    serializer_class = ClassRoomListSerializer
    queryset = ClassRoom.objects.all()
+
+class SubjectsListView(generics.ListAPIView):
+   serializer_class = SubjectsListSerializer
+   queryset = Subject.objects.all()
