@@ -17,7 +17,6 @@ class OfferingSubjectSerializer(serializers.ModelSerializer):
         extra_kwargs = {'name': {'read_only': True}, 'assigned_teacher': {'read_only': True}}
 
 class SubjectsListSerializer(serializers.ModelSerializer):
-    name_2 = serializers.CharField()
     class Meta:
         model = Subject
         fields = '__all__'
