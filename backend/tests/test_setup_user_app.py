@@ -14,12 +14,20 @@ class TestSetUp(APITestCase):
             first_name='test',
             last_name='user'
         )
+        self.update_user_url = reverse("update-user", kwargs={'pk': self.user.pk})
+        self.user_to_delete = User.objects.create_user(
+            username='test_beta',
+            email='testuser@example.com',
+            password='testpassword',
+            first_name='test',
+            last_name='beta'
+        )
+        self.delete_user_url = reverse("delete-user", kwargs={'pk': self.user_to_delete.pk})
         self.update_data = {
             "email": "updatedemail@example.com",
             "first_name": "UpdatedFirstName",
             "last_name": "UpdatedLastName"
         }
-        self.update_user_url = "/api/update-user/1/"
 
         self.login_data = {
             'username': 'Tester_1',
