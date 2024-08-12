@@ -48,3 +48,26 @@ class UserCreateSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])  # This handles password encryption
         user.save()
         return user
+    
+class UserUpdateSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=False)
+    username = serializers.CharField(read_only=True, required=False)
+
+
+    class Meta:
+        model = User
+        fields = ['username','email', 'first_name', 'last_name', 'password', 'profile_picture',  'birth_date', 'address', 'phone_number', 'gender','classes','classrooms', 'subjects', 'subject']
+
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get('email', instance.email)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.username = validated_data.get('username', f"{instance.first_name}_{instance.last_name}")
+        
+        # Handle password update
+        password = validated_data.get('password', None)
+        if password:
+            instance.set_password(password)
+        
+        instance.save() 
+        return instance

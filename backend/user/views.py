@@ -5,7 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
 from academics.models import ClassRoom
-from .serializers import UserSerializer, UserListSerializer, UserCreateSerializer
+from .serializers import UserSerializer, UserListSerializer, UserCreateSerializer, UserUpdateSerializer
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -54,8 +54,9 @@ class UserProfileView(APIView):
             dummy_value = str(user.classes.all().values_list('id', flat=True))
             dummy_array1 = dummy_value.split()
             dummy_array2 = dummy_array1[1].split(']')
-            class_id = int(dummy_array2[0].split('[')[1])
-            user_data.update({'user_class': ClassRoom.objects.get(id=class_id).name})
+            class_id = dummy_array2[0].split('[')[1]
+            print(class_id, dummy_value, dummy_array1, dummy_array2, user.classes)
+            user_data.update({'user_class': ClassRoom.objects.get(id=int(class_id)).name})
         else:
             print('Teacher: ',user.classrooms.name)
             user_data.update({'user_class': user.classrooms.name})
@@ -68,3 +69,8 @@ class UserSearchView(generics.ListAPIView):
 
 class AddUserView(generics.CreateAPIView):
     serializer_class = UserCreateSerializer
+
+class UpdateUserView(generics.RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserUpdateSerializer
+    lookup_field = 'pk'

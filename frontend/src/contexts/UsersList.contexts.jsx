@@ -12,8 +12,8 @@ export const UsersListProvider = ({ children }) => {
     
     const giveUserClass = (dummyArray, response) => {
         response.data.map(async ({ classes, classrooms, id, username, profile_picture, is_student_or_teacher, birth_date, gender, address, phone_number, email }) => {
-            if (Number(classes) !== 0) {
-                const classesresponse = await axios.get(`http://127.0.0.1:8000/api/classrooms/${Number(classes)}`)
+            if (classrooms) {
+                const classesresponse = await axios.get(`http://127.0.0.1:8000/api/classrooms/${Number(classrooms)}`)
                 dummyArray.push({
                     'id': id,
                     'username': username,
@@ -26,8 +26,8 @@ export const UsersListProvider = ({ children }) => {
                     'phone_number': phone_number,
                     'email': email,
                 })
-            } else {
-                const classroomsResponse = await axios.get(`http://127.0.0.1:8000/api/classrooms/${Number(classrooms)}/`)
+            }else if (classes.length !== 0) {
+                const classroomsResponse = await axios.get(`http://127.0.0.1:8000/api/classrooms/${Number(classes[0])}/`)
                 dummyArray.push({
                     'id': id,
                     'username': username,
@@ -36,6 +36,19 @@ export const UsersListProvider = ({ children }) => {
                     'birth_date': birth_date,
                     'gender': gender,
                     'user_class': classroomsResponse.data.name,
+                    'address': address,
+                    'phone_number': phone_number,
+                    'email': email,
+                })
+            } else {
+                dummyArray.push({
+                    'id': id,
+                    'username': username,
+                    'profile_picture': profile_picture,
+                    'is_student_or_teacher': is_student_or_teacher,
+                    'birth_date': birth_date,
+                    'gender': gender,
+                    'user_class': "None",
                     'address': address,
                     'phone_number': phone_number,
                     'email': email,
