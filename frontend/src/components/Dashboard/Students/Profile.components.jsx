@@ -148,7 +148,7 @@ const StudentProfile = () => {
             </>
         )
     } return (
-        <Navigate to='/' />
+        <Navigate to='/dashboard/home' />
     );
 }
 

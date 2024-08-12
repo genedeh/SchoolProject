@@ -64,7 +64,7 @@ const StudentHome = () => {
             </Container>
         );
     } return (
-        <Navigate to='/' />
+        <Navigate to='/dashboard/home' />
     )
 
 }

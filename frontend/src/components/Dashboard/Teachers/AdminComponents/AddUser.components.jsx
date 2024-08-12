@@ -8,12 +8,8 @@ export const AddUser = () => {
         return (
             <div>ADMIN ADD USER</div>
         );
-    } else if (currentUser.is_student_or_teacher) {
-        return (
-            <Navigate to="/dashboard/student-home" />
-        );
     } return (
-        <Navigate to="/dashboard/teacher-home" />
+        <Navigate to="/dashboard/home" />
     );
 };
 

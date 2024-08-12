@@ -26,20 +26,17 @@ const LoginForm = () => {
                 const response = await axios.post('http://127.0.0.1:8000/api/login/', { username, password });
                 localStorage.setItem('token', response.data.access);
                 setError('');
-                setTimeout(() => { 
-                    setLoading(false);
-                    return navigate("/dashboard/home")
-                }, 4000)
+                return navigate("/dashboard/home")
             } catch (err) {
                 if (err.message === "Network Error") {
                     setError('THERE SEEMS TO BE A PROBLEM WITH OUR SERVER NETWORK PLEASE TRY AGAIN!')
                 } else {
                     setError("Invalid Credentials")
                 }
-                setLoading(false)
             }
 
         }
+        setLoading(false)
     };
     return (
         <>

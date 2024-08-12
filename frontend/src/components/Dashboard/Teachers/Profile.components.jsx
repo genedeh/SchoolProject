@@ -93,7 +93,7 @@ const TeacherProfile = () => {
             </>
         );
     } return (
-        <Navigate to='/' />
+        <Navigate to='/dashboard/home' />
     );
 };
 
