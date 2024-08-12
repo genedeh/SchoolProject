@@ -1,4 +1,5 @@
 from rest_framework.test import APITestCase
+from user.models import User
 from django.urls import reverse
 
 class TestSetUp(APITestCase):
@@ -6,6 +7,13 @@ class TestSetUp(APITestCase):
         self.login_url = reverse("login")
         self.add_user_url = reverse('add-user')
 
+        self.user = User.objects.create_user(
+            username='test_user',
+            email='testuser@example.com',
+            password='testpassword',
+            first_name='test',
+            last_name='user'
+        )
         self.update_data = {
             "email": "updatedemail@example.com",
             "first_name": "UpdatedFirstName",
