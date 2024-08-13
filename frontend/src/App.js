@@ -11,6 +11,7 @@ import StudentProfile from './components/Dashboard/Students/Profile.components';
 import TeacherProfile from './components/Dashboard/Teachers/Profile.components';
 import { AddUser } from './components/Dashboard/Teachers/AdminComponents/AddUser.components';
 import PrivateRoute from './components/Routes/PrivateRoute.components';
+import { Subjects } from './components/Dashboard/Teachers/AdminComponents/Subjects.components';
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
         <Route path='student-profile' element={<StudentProfile />} />
         <Route path='teacher-profile' element={<TeacherProfile />} />
         <Route path='add-user' element={<AddUser />} />
+        <Route path='subjects' element={<Subjects />}/>
       </Route>
     </Routes>
   );
