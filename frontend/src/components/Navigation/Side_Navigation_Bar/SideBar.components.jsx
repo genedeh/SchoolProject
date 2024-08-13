@@ -6,34 +6,32 @@ import { UserContext } from '../../../contexts/User.contexts';
 
 export const StudentSidebar = () => {
     return (
-        <div className="d-flex flex-column vh-100 p-3 bg-light container">
-            <h4 className="text-primary">Dashboard</h4>
-            <Navbar collapseOnSelect expand="lg" fluid>
-                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                <Navbar.Collapse id="responsive-navbar-nav">
-                    <Nav className="flex-column" coll>
-                        <Nav.Item>
-                            <Nav.Link href='/dashboard/home'><House className="me-2" /> Home</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link href='/dashboard/student-profile'><PersonCircle className="me-2" /> Profile</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link href="#homework"><Book className="me-2" /> Homework <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link href="#events"><Calendar2Event className="me-2" /> Events <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link href="#achivements"><Award className="me-1" /> Achievements <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link href="#results"><BarChart className="me-2" /> Results <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
-                        </Nav.Item>
-                    </Nav>
-                </Navbar.Collapse>
-            </Navbar>
-        </div>
+        <Navbar collapseOnSelect expand="lg" fluid className="d-flex flex-column  bg-light container" >
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Navbar.Collapse id="responsive-navbar-nav">
+                <Nav className="flex-column" coll>
+                    <Navbar.Brand style={{ 'color': 'blue' }}>Dashboard</Navbar.Brand>
+                    <Nav.Item>
+                        <Nav.Link href='/dashboard/home'><House className="me-2" /> Home</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link href='/dashboard/student-profile'><PersonCircle className="me-2" /> Profile</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link href="#homework"><Book className="me-2" /> Homework <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link href="#events"><Calendar2Event className="me-2" /> Events <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link href="#achivements"><Award className="me-1" /> Achievements <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link href="#results"><BarChart className="me-2" /> Results <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                    </Nav.Item>
+                </Nav>
+            </Navbar.Collapse>
+        </Navbar>
     );
 };
 
@@ -42,74 +40,70 @@ export const TeacherSidebar = () => {
     const { is_admin } = currentUser;
     if (is_admin) {
         return (
-            <div className="d-flex flex-column vh-100 p-3 bg-light container">
-                <h4 className="text-primary">Dashboard</h4>
-                <Navbar collapseOnSelect expand="lg" fluid>
-                    <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                    <Navbar.Collapse id="responsive-navbar-nav">
-                        <Nav className="flex-column" coll>
-                            <Nav.Item>
-                                <Nav.Link href='/dashboard/home'><House className="me-2" /> Home</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link href='/dashboard/teacher-profile'><PersonCircle className="me-2" /> Profile</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link href="/dashboard/add-user"><PersonAdd className="me-2" /> Add User <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link href="#alerts"><Envelope className="me-2" /> Alerts <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link href="#results"><BarChart className="me-2" /> Results <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link href="#events"><Calendar2Event className="me-2" /> Events <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link href="#subjects"><BookHalf className="me-2" /> Subjects <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link href="#classrooms"><SuitClub className="me-2" /> ClassRooms <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
-                            </Nav.Item>
-                        </Nav>
-                    </Navbar.Collapse>
-                </Navbar>
-            </div>
+            <Navbar collapseOnSelect expand="lg" fluid className="d-flex flex-column  bg-light container" >
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="responsive-navbar-nav">
+                    <Nav className="flex-column" coll>
+                        <Navbar.Brand style={{ 'color': 'blue' }}>Dashboard</Navbar.Brand>
+                        <Nav.Item>
+                            <Nav.Link href='/dashboard/home'><House className="me-2" /> Home</Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link href='/dashboard/teacher-profile'><PersonCircle className="me-2" /> Profile</Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link href="/dashboard/add-user"><PersonAdd className="me-2" /> Add User <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link href="#alerts"><Envelope className="me-2" /> Alerts <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link href="#results"><BarChart className="me-2" /> Results <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link href="#events"><Calendar2Event className="me-2" /> Events <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link href="#subjects"><BookHalf className="me-2" /> Subjects <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link href="#classrooms"><SuitClub className="me-2" /> ClassRooms <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                        </Nav.Item>
+                    </Nav>
+                </Navbar.Collapse>
+            </Navbar>
         );
     } else {
         return (
-            <div className="d-flex flex-column vh-100 p-3 bg-light container">
-                <h4 className="text-primary">Dashboard</h4>
-                <Navbar collapseOnSelect expand="lg" fluid>
-                    <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                    <Navbar.Collapse id="responsive-navbar-nav">
-                        <Nav className="flex-column" coll>
-                            <Nav.Item>
-                                <Nav.Link href='/dashboard/home'><House className="me-2" /> Home</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link href='/dashboard/teacher-profile'><PersonCircle className="me-2" /> Profile</Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link href="#alerts"><Envelope className="me-2" /> Alerts <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link href="#results"><BarChart className="me-2" /> Class Results <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link href="#events"><Calendar2Event className="me-2" /> Events <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link href="#subject"><BookHalf className="me-2" /> Subject <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
-                            </Nav.Item>
-                            <Nav.Item>
-                                <Nav.Link href="#classroom"><SuitClub className="me-1" /> Your ClassRoom <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
-                            </Nav.Item>
-                        </Nav>
-                    </Navbar.Collapse>
-                </Navbar>
-            </div>
+            <Navbar collapseOnSelect expand="lg" fluid className="d-flex flex-column  bg-light container" >
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="responsive-navbar-nav">
+                    <Nav className="flex-column" coll>
+                        <Navbar.Brand style={{ 'color': 'blue' }}>Dashboard</Navbar.Brand>
+                        <Nav.Item>
+                            <Nav.Link href='/dashboard/home'><House className="me-2" /> Home</Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link href='/dashboard/teacher-profile'><PersonCircle className="me-2" /> Profile</Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link href="#alerts"><Envelope className="me-2" /> Alerts <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link href="#results"><BarChart className="me-2" /> Class Results <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link href="#events"><Calendar2Event className="me-2" /> Events <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link href="#subject"><BookHalf className="me-2" /> Subject <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                        </Nav.Item>
+                        <Nav.Item>
+                            <Nav.Link href="#classroom"><SuitClub className="me-1" /> Your ClassRoom <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                        </Nav.Item>
+                    </Nav>
+                </Navbar.Collapse>
+            </Navbar>
         );
     }
 
