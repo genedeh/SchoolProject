@@ -7,12 +7,15 @@ import { StudentSidebar, TeacherSidebar } from "./Side_Navigation_Bar/SideBar.co
 import { UsersListContext } from "../../contexts/UsersList.contexts";
 import SearchedProfileCard from "../Dashboard/SearchedProfileCard.components";
 import { SignDeadEnd } from 'react-bootstrap-icons';
+import { ErrorModal } from "../ErrorHandling/ErrorModal.components";
 
 
 const Navigation = () => {
     const { currentUser, error } = useContext(UserContext);
     const [searchTerm, setSearchTerm] = useState('');
     const { usersList } = useContext(UsersListContext);
+    const [show, setShow] = useState(true);
+    const handleClose = () => setShow(false);
 
     const SearchHandler = (e) => {
         setSearchTerm(e.target.value);
@@ -27,21 +30,15 @@ const Navigation = () => {
 
     if (error === "No token found") {
         return (
-            <Alert variant='warning' className='warning-container'>
-                <Alert.Heading>Missing Permission</Alert.Heading>
-                <hr />
-                PLEASE ENDEVOUR TO LOG IN BEFORE U CAN HAVE ACCESS TO THIS PAGE
+            <ErrorModal errorMessage={['MISSING PERMISSION', 'PLEASE ENDEVOUR TO LOG IN BEFORE U CAN HAVE ACCESS TO THIS PAGE ']} show={show} handleClose={handleClose} >
                 <Alert.Link href='/' className='m-2'>GO TO LOGIN PAGE</Alert.Link>
-            </Alert>
+            </ErrorModal>
         );
     } else if (error) {
         return (
-            <Alert variant='danger' className='error-container'>
-                <Alert.Heading>Failed Request</Alert.Heading>
-                <hr />
-                {error}
+            <ErrorModal errorMessage={['Failed Request', error]} show={show} handleClose={handleClose} >
                 <Alert.Link href='/' className='m-2'>GO TO LOGIN PAGE</Alert.Link>
-            </Alert>
+            </ErrorModal>
         );
     }
     if (!currentUser) {

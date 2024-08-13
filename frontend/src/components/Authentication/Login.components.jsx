@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import { ErrorModal } from '../ErrorHandling/ErrorModal.components';
 import { Container, Form, Row, Col, Button, Alert, Spinner } from 'react-bootstrap'
 import '../Authentication/Login.styles.css'
+
 
 const LoginForm = () => {
     const [username, setUsername] = useState('');
@@ -11,27 +12,33 @@ const LoginForm = () => {
     const [lastname, setLastname] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState([]);
+    const [show, setShow] = useState(false);
     let navigate = useNavigate();
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     useEffect(() => setUsername(`${firstname}_${lastname}`)
         , [firstname, lastname])
     const handleLogin = async (event) => {
         event.preventDefault();
         if (!firstname || !lastname || !password) {
-            setError('CREDENTIALS ARE REQUIRED')
+            setError(['FORM NOT FILLED COMPLETELY', 'CREDENTIALS ARE REQUIRED'])
+            handleShow();
         } else {
             setLoading(true);
             try {
                 const response = await axios.post('http://127.0.0.1:8000/api/login/', { username, password });
                 localStorage.setItem('token', response.data.access);
-                setError('');
+                setError([]);
                 return navigate("/dashboard/home")
             } catch (err) {
                 if (err.message === "Network Error") {
-                    setError('THERE SEEMS TO BE A PROBLEM WITH OUR SERVER NETWORK PLEASE TRY AGAIN!')
+                    setError(['NETWORK ISSUE', 'THERE SEEMS TO BE A PROBLEM WITH OUR SERVER NETWORK PLEASE TRY AGAIN!'])
+                    handleShow();
                 } else {
-                    setError("Invalid Credentials")
+                    setError(['AUTHENTICATION PROBLEM', "Invalid Credentials"])
+                    handleShow();
                 }
             }
 
@@ -51,7 +58,7 @@ const LoginForm = () => {
                                         <img src="" alt="logo" className="img-fluid" />
                                         <h1 className="login-title">Login</h1>
                                     </div >
-                                    {error && <Alert variant="danger" >&#9888;{error}&#9888;</Alert>}
+                                    {/* {error && <Alert variant="danger" >&#9888;{error}&#9888;</Alert>} */}
                                     <Form onSubmit={handleLogin}>
                                         <Form.Group controlId="formFirstname">
                                             <Form.Label>First Name</Form.Label>
@@ -79,6 +86,7 @@ const LoginForm = () => {
                     </Col >
                 </Row >
             </Container >
+            <ErrorModal errorMessage={error} show={show} handleClose={handleClose} />
         </>
 
     );
