@@ -5,7 +5,7 @@ from .models import ClassRoom, Subject
 from user.models import User
 # Create your views here.
 
-class ClassRoomRetrieveView(generics.RetrieveAPIView):
+class ClassRoomRetrieveView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ClassRoomListSerializer
     queryset = ClassRoom.objects.all()
     lookup_field = 'pk'
@@ -32,7 +32,7 @@ class OfferingSubjectsListView(generics.GenericAPIView):
                subject_list.append(subject.name)
             return Response({'Subjects':f"{subject_list}"}, status=200)
           
-class ClassRoomListView(generics.ListAPIView):
+class ClassRoomListView(generics.ListCreateAPIView):
    serializer_class = ClassRoomListSerializer
    queryset = ClassRoom.objects.all()
 
