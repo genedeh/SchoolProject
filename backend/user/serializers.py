@@ -1,4 +1,6 @@
 from .models import User
+from academics.models import ClassRoom, Subject
+from academics.serializers import ClassRoomListSerializer, SubjectsListSerializer
 from rest_framework import serializers
 
 
@@ -16,14 +18,12 @@ class UserListSerializer(serializers.ModelSerializer):
 
 class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)  # Ensure password is write-only
-    classrooms = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
-    classes = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
-    subject = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
-    subjects = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
+    classes = serializers.PrimaryKeyRelatedField(queryset=ClassRoom.objects.all(),many=True)
+    subjects = serializers.PrimaryKeyRelatedField(queryset=Subject.objects.all(), many=True)
 
     class Meta:
         model = User
-        fields = ['username','password', 'email', 'first_name', 'last_name', 'profile_picture', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes', 'classrooms', 'subject', 'subjects']
+        fields = ['username','password', 'email', 'first_name', 'last_name', 'profile_picture', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes',  'subjects']
 
     def validate_username(self, value):
         # Check if the username already exists
@@ -32,19 +32,12 @@ class UserCreateSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        user = User(
-            email=validated_data['email'],
-            username=validated_data['username'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
-            profile_picture=validated_data['profile_picture'],
-            is_student_or_teacher=validated_data['is_student_or_teacher'],
-            birth_date=validated_data['birth_date'],
-            address=validated_data['address'],
-            is_superuser=validated_data['is_superuser'],
-            phone_number=validated_data['phone_number'],
-            gender=validated_data['gender']
-        )
+        classes_data = validated_data.pop('classes')
+        subjects_data = validated_data.pop('subjects')
+
+        user = User.objects.create(**validated_data)
+        user.subjects.set(subjects_data)
+        user.classes.set(classes_data)
         user.set_password(validated_data['password'])  # This handles password encryption
         user.save()
         return user
@@ -52,10 +45,10 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class UserUpdateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
     username = serializers.CharField(read_only=True, required=False)
-    classrooms = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
-    classes = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
-    subject = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
-    subjects = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
+    classrooms = serializers.PrimaryKeyRelatedField(queryset=ClassRoom.objects.all(), required=False, allow_null=True)
+    classes = serializers.PrimaryKeyRelatedField(queryset=ClassRoom.objects.all(), many=True, required=False)
+    subject = serializers.PrimaryKeyRelatedField(queryset=Subject.objects.all(), many=True, required=False)
+    subjects = serializers.PrimaryKeyRelatedField(queryset=Subject.objects.all(), many=True, required=False)
 
     class Meta:
         model = User
