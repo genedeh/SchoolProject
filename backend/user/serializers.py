@@ -53,6 +53,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         instance.username = validated_data.get('username', f"{instance.first_name}_{instance.last_name}")
         classes_data = validated_data.pop('classes')
         subjects_data = validated_data.pop('subjects')
+        
         # Handle password update
         password = validated_data.get('password', None)
         if password:
