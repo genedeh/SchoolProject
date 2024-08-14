@@ -26,7 +26,9 @@ class TestSetUp(APITestCase):
         self.update_data = {
             "email": "updatedemail@example.com",
             "first_name": "UpdatedFirstName",
-            "last_name": "UpdatedLastName"
+            "last_name": "UpdatedLastName",
+            "classes":[],
+            "subjects":[]
         }
 
         self.login_data = {
