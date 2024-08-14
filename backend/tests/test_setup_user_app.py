@@ -5,7 +5,7 @@ from django.urls import reverse
 class TestSetUp(APITestCase):
     def setUp(self):
         self.login_url = reverse("login")
-        self.add_user_url = reverse('add-user')
+        self.add_user_url = reverse('users')
 
         self.user = User.objects.create_user(
             username='test_user',
@@ -14,7 +14,7 @@ class TestSetUp(APITestCase):
             first_name='test',
             last_name='user'
         )
-        self.update_user_url = reverse("update-user", kwargs={'pk': self.user.pk})
+        self.update_user_url = reverse("user", kwargs={'pk': self.user.pk})
         self.user_to_delete = User.objects.create_user(
             username='test_beta',
             email='testuser@example.com',
@@ -22,7 +22,7 @@ class TestSetUp(APITestCase):
             first_name='test',
             last_name='beta'
         )
-        self.delete_user_url = reverse("delete-user", kwargs={'pk': self.user_to_delete.pk})
+        self.delete_user_url = reverse("user", kwargs={'pk': self.user_to_delete.pk})
         self.update_data = {
             "email": "updatedemail@example.com",
             "first_name": "UpdatedFirstName",

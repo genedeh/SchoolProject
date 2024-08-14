@@ -4,17 +4,11 @@ from academics.serializers import ClassRoomListSerializer, SubjectsListSerialize
 from rest_framework import serializers
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username','password')
         extra_kwargs = {'password': {'write_only': True}}
-
-class UserListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'profile_picture', 'is_student_or_teacher', 'birth_date', 'gender', 'classes', 'classrooms', 'address', 'phone_number', 'email')
-        extra_kwargs = {'__all__': {'read_only': True}}
 
 class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)  # Ensure password is write-only
@@ -23,7 +17,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username','password', 'email', 'first_name', 'last_name', 'profile_picture', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes',  'subjects']
+        fields = ['id','username','password', 'email', 'first_name', 'last_name', 'profile_picture', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes',  'subjects']
 
     def validate_username(self, value):
         # Check if the username already exists

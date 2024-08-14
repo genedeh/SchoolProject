@@ -50,7 +50,7 @@ class TestUserViews(TestSetUp):
     
     # Delete User View Test
     def test_delete_nonexistent_user(self):
-        nonexistent_user_url = reverse('delete-user', kwargs={'pk': 999})
+        nonexistent_user_url = reverse('user', kwargs={'pk': 999})
         response = self.client.delete(nonexistent_user_url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
     

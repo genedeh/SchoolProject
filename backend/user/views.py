@@ -5,14 +5,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
 from academics.models import ClassRoom
-from .serializers import UserSerializer, UserListSerializer, UserCreateSerializer, UserUpdateSerializer
+from .serializers import UserLoginSerializer, UserCreateSerializer, UserUpdateSerializer
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 class LoginView(generics.GenericAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UserLoginSerializer
 
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
@@ -63,18 +63,12 @@ class UserProfileView(APIView):
             
         return Response(user_data, status=200)
     
-class UserSearchView(generics.ListAPIView):
-    serializer_class = UserListSerializer
+class CreateAndSearchUserView(generics.ListCreateAPIView):
+    serializer_class = UserCreateSerializer
     queryset = User.objects.all()
 
-class AddUserView(generics.CreateAPIView):
-    serializer_class = UserCreateSerializer
-
-class UpdateUserView(generics.RetrieveUpdateAPIView):
+class UpdateAndDeleteUserView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserUpdateSerializer
     lookup_field = 'pk'
 
-class DeleteUserView(generics.DestroyAPIView):
-    queryset = User.objects.all()
-    lookup_field = 'pk'
