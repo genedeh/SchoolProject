@@ -36,6 +36,11 @@ class ClassRoomListView(generics.ListCreateAPIView):
    serializer_class = ClassRoomListSerializer
    queryset = ClassRoom.objects.all()
 
-class SubjectsListView(generics.ListAPIView):
+class SubjectsListView(generics.ListCreateAPIView):
    serializer_class = SubjectsListSerializer
    queryset = Subject.objects.all()
+  
+class SubjectsRetrieveView(generics.RetrieveUpdateDestroyAPIView):
+   serializer_class = SubjectsListSerializer
+   queryset = Subject.objects.all()
+   lookup_field = 'pk'
