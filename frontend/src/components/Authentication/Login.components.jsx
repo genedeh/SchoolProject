@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ErrorModal } from '../ErrorHandling/ErrorModal.components';
-import { Container, Form, Row, Col, Button, Alert, Spinner } from 'react-bootstrap'
+import { Container, Form, Row, Col, Button,  Spinner } from 'react-bootstrap'
 import '../Authentication/Login.styles.css'
 
 
@@ -47,7 +47,7 @@ const LoginForm = () => {
     };
     return (
         <>
-            <Container fluid className="login-container" >
+            <Container fluid="true" className="login-container" >
                 <Row className="justify-content-center align-items-center min-vh-100">
                     <Col md={4} className="login-box text-center">
                         {loading ?
@@ -58,7 +58,6 @@ const LoginForm = () => {
                                         <img src="" alt="logo" className="img-fluid" />
                                         <h1 className="login-title">Login</h1>
                                     </div >
-                                    {/* {error && <Alert variant="danger" >&#9888;{error}&#9888;</Alert>} */}
                                     <Form onSubmit={handleLogin}>
                                         <Form.Group controlId="formFirstname">
                                             <Form.Label>First Name</Form.Label>
@@ -73,7 +72,7 @@ const LoginForm = () => {
                                             <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                                         </Form.Group>
                                         <br />
-                                        <Button variant="primary" type="submit" block>
+                                        <Button variant="primary" type="submit" block="true">
                                             Log In
                                         </Button>
                                     </Form>

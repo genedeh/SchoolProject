@@ -25,6 +25,5 @@ export const SubjectsProvider = ({ children }) => {
         }
         fetchSubjects();
     }, [])
-    console.log(subjects)
     return <SubjectsContext.Provider value={value}>{children}</SubjectsContext.Provider>
 }

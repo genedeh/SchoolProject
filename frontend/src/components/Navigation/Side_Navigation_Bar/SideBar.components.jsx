@@ -6,10 +6,10 @@ import { UserContext } from '../../../contexts/User.contexts';
 
 export const StudentSidebar = () => {
     return (
-        <Navbar collapseOnSelect expand="lg" fluid className="d-flex flex-column  bg-light container" >
+        <Navbar collapseOnSelect expand="lg" fluid="true" className="d-flex flex-column  bg-light container" >
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
-                <Nav className="flex-column" coll>
+                <Nav className="flex-column" coll="true">
                     <Navbar.Brand style={{ 'color': 'blue' }}>Dashboard</Navbar.Brand>
                     <Nav.Item>
                         <Nav.Link href='/dashboard/home'><House className="me-2" /> Home</Nav.Link>
@@ -40,10 +40,10 @@ export const TeacherSidebar = () => {
     const { is_admin } = currentUser;
     if (is_admin) {
         return (
-            <Navbar collapseOnSelect expand="lg" fluid className="d-flex flex-column  bg-light container" >
+            <Navbar collapseOnSelect expand="lg" fluid="true" className="d-flex flex-column  bg-light container" >
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
-                    <Nav className="flex-column" coll>
+                    <Nav className="flex-column" coll="true">
                         <Navbar.Brand style={{ 'color': 'blue' }}>Dashboard</Navbar.Brand>
                         <Nav.Item>
                             <Nav.Link href='/dashboard/home'><House className="me-2" /> Home</Nav.Link>
@@ -75,10 +75,10 @@ export const TeacherSidebar = () => {
         );
     } else {
         return (
-            <Navbar collapseOnSelect expand="lg" fluid className="d-flex flex-column  bg-light container" >
+            <Navbar collapseOnSelect expand="lg" fluid="true" className="d-flex flex-column  bg-light container" >
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
-                    <Nav className="flex-column" coll>
+                    <Nav className="flex-column" coll="true">
                         <Navbar.Brand style={{ 'color': 'blue' }}>Dashboard</Navbar.Brand>
                         <Nav.Item>
                             <Nav.Link href='/dashboard/home'><House className="me-2" /> Home</Nav.Link>
