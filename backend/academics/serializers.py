@@ -1,7 +1,13 @@
+from dataclasses import fields
 from rest_framework import serializers
 
 from user.models import User
 from .models import ClassRoom, Subject
+
+class ViewUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'gender']
 
 class ClassRoomListSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,6 +23,8 @@ class OfferingSubjectSerializer(serializers.ModelSerializer):
         extra_kwargs = {'name': {'read_only': True}, 'assigned_teacher': {'read_only': True}}
 
 class SubjectsListSerializer(serializers.ModelSerializer):
+    assigned_teacher = ViewUserSerializer()
+    students_offering = ViewUserSerializer(many=True)
     class Meta:
         model = Subject
         fields = '__all__'
