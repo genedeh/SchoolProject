@@ -49,6 +49,6 @@ class SubjectsRetrieveView(generics.RetrieveUpdateDestroyAPIView):
         try:
             subject = self.get_object()
             subject.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response({"detail": "Subject deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
-            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Failed to delete subject."}, status=status.HTTP_400_BAD_REQUEST)
