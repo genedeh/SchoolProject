@@ -30,3 +30,26 @@ class SubjectsListSerializer(serializers.ModelSerializer):
         fields = '__all__'
         extra_kwargs = {'__all__': {'read_only': True}}
 
+
+class SubjectUpdateSerializer(serializers.ModelSerializer):
+    students_offering = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
+    assigned_teacher = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
+
+    class Meta:
+        model = Subject
+        fields = '__all__'
+
+    def update(self, instance, validated_data):
+        # Update the name if provided
+        instance.name = validated_data.get('name', instance.name)
+        
+        # Update the teacher if provided (can also be null to remove the teacher)
+        instance.assigned_teacher = validated_data.get('assigned_teacher', instance.assigned_teacher)
+        
+        # Update students if provided
+        if 'students_offering' in validated_data:
+            students_offering = validated_data['students_offering']
+            instance.students_offering.set(students_offering)
+        
+        instance.save()
+        return instance

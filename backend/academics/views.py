@@ -1,6 +1,6 @@
 from rest_framework import generics
 from rest_framework.response import Response
-from .serializers import ClassRoomListSerializer, OfferingSubjectSerializer, SubjectsListSerializer
+from .serializers import ClassRoomListSerializer, OfferingSubjectSerializer, SubjectsListSerializer, SubjectUpdateSerializer
 from .models import ClassRoom, Subject
 from user.models import User
 # Create your views here.
@@ -41,6 +41,6 @@ class SubjectsListView(generics.ListCreateAPIView):
    queryset = Subject.objects.all()
   
 class SubjectsRetrieveView(generics.RetrieveUpdateDestroyAPIView):
-   serializer_class = SubjectsListSerializer
+   serializer_class = SubjectUpdateSerializer
    queryset = Subject.objects.all()
    lookup_field = 'pk'
