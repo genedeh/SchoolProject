@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.response import Response
 from .serializers import ClassRoomListSerializer, OfferingSubjectSerializer, SubjectsListSerializer, SubjectUpdateSerializer
 from .models import ClassRoom, Subject
@@ -44,3 +44,11 @@ class SubjectsRetrieveView(generics.RetrieveUpdateDestroyAPIView):
    serializer_class = SubjectUpdateSerializer
    queryset = Subject.objects.all()
    lookup_field = 'pk'
+
+   def delete(self, request, *args, **kwargs):
+        try:
+            subject = self.get_object()
+            subject.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
