@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, useContext } from "react";
+import { createContext, useEffect, useState} from "react";
 import axios from "axios";
 
 export const SubjectsContext = createContext({
@@ -8,7 +8,7 @@ export const SubjectsContext = createContext({
 
 export const SubjectsProvider = ({ children }) => {
     const [subjects, setSubjects] = useState([]);
-    const value = { subjects };
+    const value = { subjects, setSubjects };
 
     useEffect(() => {
         const fetchSubjects = async () => {
@@ -16,7 +16,7 @@ export const SubjectsProvider = ({ children }) => {
             if (token) {
                 try {
                     const response = await axios.get('http://127.0.0.1:8000/api/subjects/')
-                    
+
                     setSubjects(response.data)
                 } catch (err) {
                     console.log('There was an error fetching the items!', err)
