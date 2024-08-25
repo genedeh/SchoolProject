@@ -38,7 +38,12 @@ class ClassRoomListView(generics.ListCreateAPIView):
 
 class SubjectsListView(generics.ListCreateAPIView):
    serializer_class = SubjectsListSerializer
-   queryset = Subject.objects.all()
+
+   def get_queryset(self):
+        name = self.request.query_params.get('name', None)
+        if name is not None:
+            return Subject.objects.filter(name=name)
+        return Subject.objects.all()
   
 class SubjectsRetrieveView(generics.RetrieveUpdateDestroyAPIView):
    serializer_class = SubjectUpdateSerializer

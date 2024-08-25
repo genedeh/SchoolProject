@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { UserContext } from "../../../../contexts/User.contexts";
 import { Navigate } from "react-router-dom";
 import { SubjectsContext } from "../../../../contexts/Subjects.contexts";
-import { Accordion, Card, Button, ListGroup, Modal, Container } from 'react-bootstrap';
+import { Accordion, Card, Button, ListGroup, Modal, Container, Spinner, Row, Col } from 'react-bootstrap';
 import { Trash, PersonAdd, ReplyAll, Plus } from 'react-bootstrap-icons';
 import axios from "axios";
 
@@ -91,6 +91,11 @@ export const Subjects = () => {
         if (subjects.length !== 0) {
             return (
                 <>
+                    <div className="d-grid gap-2 m-2">
+                        <Button variant="outline-primary" size="lg" >
+                            <Plus/>
+                        </Button>
+                    </div>
                     <Accordion flush={true} className="m-3">
                         {subjects.map(({ assigned_teacher, id, name, students_offering }) => (
                             <Card key={id} className="mb-2">
@@ -127,7 +132,9 @@ export const Subjects = () => {
                 </>
             );
         } else {
-            return (<div>Loading...</div>)
+            return (<Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+            </Spinner>)
         }
     } return (
         <Navigate to='/dashboard/home' />
