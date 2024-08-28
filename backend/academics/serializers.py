@@ -30,6 +30,15 @@ class SubjectsListSerializer(serializers.ModelSerializer):
         fields = '__all__'
         extra_kwargs = {'__all__': {'read_only': True}}
 
+class SubjectCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
+        fields = ['name', 'assigned_teacher', 'students_offering']
+
+    def validate_name(self, value):
+        if Subject.objects.filter(name=value).exists():
+            raise serializers.ValidationError("Subject with this name already exists.")
+        return value
 
 class SubjectUpdateSerializer(serializers.ModelSerializer):
     students_offering = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
