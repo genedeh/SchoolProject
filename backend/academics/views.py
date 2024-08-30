@@ -73,3 +73,10 @@ class SubjectsRetrieveView(generics.RetrieveUpdateDestroyAPIView):
             return Response({"detail": "Subject deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             return Response({"detail": "Failed to delete subject."}, status=status.HTTP_400_BAD_REQUEST)
+      
+   def update(self, request, *args, **kwargs):
+        subject = self.get_object()
+        serializer = self.get_serializer(subject, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data, status=status.HTTP_200_OK)
