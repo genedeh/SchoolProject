@@ -33,7 +33,7 @@ class SubjectsListSerializer(serializers.ModelSerializer):
 class SubjectCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
-        fields = ['name', 'assigned_teacher', 'students_offering']
+        fields = '__all__'
 
     def validate_name(self, value):
         if Subject.objects.filter(name=value).exists():
