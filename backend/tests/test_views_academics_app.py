@@ -37,3 +37,13 @@ class TestAcademicViews(TestSetUp):
         self.assertEqual(response.data['assigned_teacher']['username'], self.subject_assigned_teacher.username)
         self.assertEqual(response.data['students_offering'][0]['username'], self.subject_student.username)
         self.assertEqual(response.status_code, 200)
+    
+    def test_get_subject_name(self):
+        self.client.post(self.create_subject_url, self.subject_create_data, format="json")
+        response = self.client.get(self.subject_name_retrieve)
+        self.assertEqual(response.data[0]['name'],self.subject_create_data['name'])
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_subject_name_does_not_exist(self):
+        response = self.client.get(f"{reverse("subjects")}?name={self.subject_create_data['name']}")
+        self.assertEqual(response.data.__len__(),0)

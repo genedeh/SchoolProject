@@ -19,6 +19,7 @@ class TestSetUp(APITestCase):
             "assigned_teacher": self.subject_assigned_teacher.pk,
             "students_offering":[self.subject_student.pk]
         }
+        self.subject_name_retrieve = f"{reverse("subjects")}?name={self.subject_create_data['name']}"
         return super().setUp()
     
     def tearDown(self):
