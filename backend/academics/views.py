@@ -62,10 +62,16 @@ class SubjectsListView(generics.ListCreateAPIView):
 
 
 class SubjectsRetrieveView(generics.RetrieveUpdateDestroyAPIView):
-   serializer_class = SubjectUpdateSerializer
+   serializer_class = SubjectsListSerializer
    queryset = Subject.objects.all()
    lookup_field = 'pk'
 
+   def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return SubjectsListSerializer
+        elif self.request.method == 'POST':
+            return SubjectUpdateSerializer
+      
    def delete(self, request, *args, **kwargs):
         try:
             subject = self.get_object()
