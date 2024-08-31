@@ -54,11 +54,15 @@ class SubjectsListView(generics.ListCreateAPIView):
             return SubjectCreateSerializer
 
    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        try:
+          serializer = self.get_serializer(data=request.data)
+          serializer.is_valid(raise_exception=True)
+          self.perform_create(serializer)
+          headers = self.get_success_headers(serializer.data)
+          return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        except Exception as e:
+          return Response({"detail": f"Failed to create subject."}, status=status.HTTP_400_BAD_REQUEST)
+            
 
 
 class SubjectsRetrieveView(generics.RetrieveUpdateDestroyAPIView):
