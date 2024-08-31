@@ -7,7 +7,7 @@ class TestAcademicViews(TestSetUp):
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.data['error'], "Invalid User.")
 
-    def test_create_user(self):
+    def test_create_subject(self):
         response = self.client.post(self.create_subject_url, self.subject_create_data, format="json")
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data['name'], 'SS2A_maths')
@@ -57,5 +57,17 @@ class TestAcademicViews(TestSetUp):
     def test_delete_subject(self):
         response = self.client.delete(self.subject_retrieve_url)
         self.assertEqual(response.data['detail'], 'Failed to delete subject.')
+        self.assertEqual(response.status_code, 400)
+    
+    def test_update_subject(self):
+        subject = self.client.post(self.create_subject_url, self.subject_create_data, format="json")
+        response = self.client.put(reverse("subjects", kwargs={'pk':subject.data['id']}),{"name":"SS3A_History"}, format="json")
+        self.assertEqual(response.data['name'], "SS3A_History")
+        self.assertEqual(response.status_code, 200)
+    
+    def test_update_subject_with_incorrect_data(self):
+        subject = self.client.post(self.create_subject_url, self.subject_create_data, format="json")
+        response = self.client.put(reverse("subjects", kwargs={'pk':subject.data['id']}),{"students_offering":"josh"}, format="json")
+        self.assertEqual(response.data['detail'], "Failed to update subject.")
         self.assertEqual(response.status_code, 400)
 
