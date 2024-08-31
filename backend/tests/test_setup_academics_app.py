@@ -7,6 +7,7 @@ class TestSetUp(APITestCase):
     def setUp(self):
         self.offering_subjects_url = reverse("offering-subjects")
         self.create_subject_url = reverse("subjects")
+        self.subject_retrieve_url = reverse("subjects", kwargs={'pk':"990"})
 
         self.subject_assigned_teacher = User.objects.create(username="Tester_1", first_name="Tester",last_name="1",is_student_or_teacher=False,password="1234")
         self.subject_student = User.objects.create(username="Tester_2", first_name="Tester",last_name="2",is_student_or_teacher=True,password="1234")

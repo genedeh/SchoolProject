@@ -3,27 +3,37 @@ import { UserContext } from "../../../../contexts/User.contexts";
 import { SubjectsContext } from "../../../../contexts/Subjects.contexts";
 import { Navigate } from "react-router-dom";
 import { Accordion, Card, Button, ListGroup, Spinner } from 'react-bootstrap';
-import { Trash, PersonAdd, ReplyAll, Plus } from 'react-bootstrap-icons';
+import { Trash, Pencil, Plus } from 'react-bootstrap-icons';
 import { DeleteSubjectModal } from "./SubjectTools/DeleteSubject.components";
 import { CreateSubjectModal } from "./SubjectTools/CreateSubject.components";
-
-
-
+import { UpdateSubjectModal } from "./SubjectTools/UpdateSubject.components";
 
 export const Subjects = () => {
     const { currentUser } = useContext(UserContext);
     const { subjects } = useContext(SubjectsContext);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [selectedSubjectId, setSelectedSubjectId] = useState(null);
+    const [selectedSubjectForUpdate, setSelectedSubjectForUpdate] = useState(null);
+
 
     const handleCreateShowModal = () => setShowCreateModal(true);
     const handleCreateCloseModal = () => setShowCreateModal(false);
+    const handleUpdateCloseModal = () => setShowUpdateModal(false);
 
     const handleDeleteClick = (subjectId) => {
         setSelectedSubjectId(subjectId);
         setShowDeleteModal(true);
     };
+    const handleUpdateClick = (subjectId) => {
+        subjects.map((subject) => {
+            if (subject.id === subjectId) {
+                setSelectedSubjectForUpdate(subject)
+            }
+        })
+        setShowUpdateModal(true)
+    }
 
     if (!currentUser.is_student_or_teacher && currentUser && currentUser.is_admin) {
         if (subjects.length !== 0) {
@@ -46,8 +56,7 @@ export const Subjects = () => {
 
                                     </Accordion.Header>
                                     <Button className="m-4" variant="outline-danger" onClick={() => handleDeleteClick(id)} ><Trash /></Button>
-                                    {/* <Button className="m-4" variant="outline-primary" onClick={() => handleDeleteClick(id)} ><PersonAdd /></Button>
-                                    <Button className="m-4" variant="outline-info" onClick={() => handleDeleteClick(id)} ><ReplyAll /></Button> */}
+                                    <Button className="m-4" variant="outline-info" onClick={() => handleUpdateClick(id)} ><Pencil /></Button>
                                     <Accordion.Body>
                                         <ListGroup>
                                             {students_offering.length !== 0 ? (students_offering.map((student) => (
@@ -68,6 +77,7 @@ export const Subjects = () => {
                         subjectId={selectedSubjectId}
                     />
                     <CreateSubjectModal show={showCreateModal} handleClose={handleCreateCloseModal} />
+                    <UpdateSubjectModal show={showUpdateModal} handleClose={handleUpdateCloseModal} subject={selectedSubjectForUpdate}/>
                 </>
             );
         } else {

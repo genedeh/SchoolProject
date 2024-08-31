@@ -1,6 +1,4 @@
-from urllib import response
-
-from user.models import User
+from django.urls import reverse
 from .test_setup_academics_app import TestSetUp
 
 class TestAcademicViews(TestSetUp):
@@ -26,3 +24,16 @@ class TestAcademicViews(TestSetUp):
         response = self.client.post(self.create_subject_url, {}, format="json")
         self.assertEqual(response.data['detail'], "Failed to create subject.")
         self.assertEqual(response.status_code, 400)
+
+    def test_404_subject_retrieve(self):
+        response = self.client.get(self.subject_retrieve_url)
+        self.assertEqual(response.data['detail'], "No Subject matches the given query.")
+        self.assertEqual(response.status_code, 404)
+    
+    def test_200_subject_retrieve(self):
+        self.client.post(self.create_subject_url, self.subject_create_data, format="json")
+        response = self.client.get(reverse("subjects", kwargs={'pk':1}))
+        self.assertEqual(response.data['name'], 'SS2A_maths')
+        self.assertEqual(response.data['assigned_teacher']['username'], self.subject_assigned_teacher.username)
+        self.assertEqual(response.data['students_offering'][0]['username'], self.subject_student.username)
+        self.assertEqual(response.status_code, 200)
