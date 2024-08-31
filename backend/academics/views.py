@@ -62,14 +62,17 @@ class SubjectsListView(generics.ListCreateAPIView):
 
 
 class SubjectsRetrieveView(generics.RetrieveUpdateDestroyAPIView):
-   serializer_class = SubjectsListSerializer
-   queryset = Subject.objects.all()
+   serializer_class = SubjectUpdateSerializer
+  #  queryset = Subject.objects.all()
    lookup_field = 'pk'
+
+   def get_queryset(self):
+      return Subject.objects.all()
 
    def get_serializer_class(self):
         if self.request.method == 'GET':
             return SubjectsListSerializer
-        elif self.request.method == 'POST':
+        elif self.request.method == 'PATCH' or self.request.method == 'PUT':
             return SubjectUpdateSerializer
       
    def delete(self, request, *args, **kwargs):
@@ -79,10 +82,13 @@ class SubjectsRetrieveView(generics.RetrieveUpdateDestroyAPIView):
             return Response({"detail": "Subject deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             return Response({"detail": "Failed to delete subject."}, status=status.HTTP_400_BAD_REQUEST)
-      
    def update(self, request, *args, **kwargs):
-        subject = self.get_object()
-        serializer = self.get_serializer(subject, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+          subject = self.get_object()
+          serializer = self.get_serializer(subject, data=request.data, partial=True)
+          serializer.is_valid(raise_exception=True)
+          self.perform_update(serializer)
+          detail_serializer = SubjectsListSerializer(subject)
+          return Response(detail_serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"detail": "Failed to update subject."}, status=status.HTTP_400_BAD_REQUEST)
