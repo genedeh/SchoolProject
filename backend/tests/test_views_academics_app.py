@@ -31,8 +31,8 @@ class TestAcademicViews(TestSetUp):
         self.assertEqual(response.status_code, 404)
     
     def test_200_subject_retrieve(self):
-        self.client.post(self.create_subject_url, self.subject_create_data, format="json")
-        response = self.client.get(reverse("subjects", kwargs={'pk':1}))
+        subject = self.client.post(self.create_subject_url, self.subject_create_data, format="json")
+        response = self.client.get(reverse("subjects", kwargs={'pk':subject.data['id']}))
         self.assertEqual(response.data['name'], 'SS2A_maths')
         self.assertEqual(response.data['assigned_teacher']['username'], self.subject_assigned_teacher.username)
         self.assertEqual(response.data['students_offering'][0]['username'], self.subject_student.username)
@@ -47,3 +47,15 @@ class TestAcademicViews(TestSetUp):
     def test_get_subject_name_does_not_exist(self):
         response = self.client.get(f"{reverse("subjects")}?name={self.subject_create_data['name']}")
         self.assertEqual(response.data.__len__(),0)
+    
+    def test_delete_subject(self):
+        subject = self.client.post(self.create_subject_url, self.subject_create_data, format="json")
+        response = self.client.delete(reverse("subjects", kwargs={'pk':subject.data['id']}))
+        self.assertEqual(response.data['detail'], 'Subject deleted successfully.')
+        self.assertEqual(response.status_code, 204)
+    
+    def test_delete_subject(self):
+        response = self.client.delete(self.subject_retrieve_url)
+        self.assertEqual(response.data['detail'], 'Failed to delete subject.')
+        self.assertEqual(response.status_code, 400)
+
