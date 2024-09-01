@@ -3,7 +3,7 @@ import { UserContext } from "../../../../contexts/User.contexts";
 import { SubjectsContext } from "../../../../contexts/Subjects.contexts";
 import { Navigate } from "react-router-dom";
 import { Accordion, Card, Button, ListGroup, Spinner } from 'react-bootstrap';
-import { Trash, Pencil, Plus } from 'react-bootstrap-icons';
+import { Trash, Pencil, PlusCircleFill, GenderFemale, GenderMale } from 'react-bootstrap-icons';
 import { DeleteSubjectModal } from "./SubjectTools/DeleteSubject.components";
 import { CreateSubjectModal } from "./SubjectTools/CreateSubject.components";
 import { UpdateSubjectModal } from "./SubjectTools/UpdateSubject.components";
@@ -36,6 +36,7 @@ export const Subjects = () => {
                 })
                 subjectClone['students_offering'] = newStudents
                 setSelectedSubjectForUpdate(subjectClone)
+                return subjectClone;
             }
         })
         setShowUpdateModal(true)
@@ -47,7 +48,7 @@ export const Subjects = () => {
                 <>
                     <div className="d-grid gap-2 m-2">
                         <Button variant="outline-primary" size="lg" onClick={handleCreateShowModal} >
-                            <Plus />
+                            New subject <PlusCircleFill />
                         </Button>
                     </div>
                     <Accordion flush={true} className="m-3">
@@ -61,13 +62,21 @@ export const Subjects = () => {
                                         </div>
 
                                     </Accordion.Header>
-                                    <Button className="m-4" variant="outline-danger" onClick={() => handleDeleteClick(id)} ><Trash /></Button>
-                                    <Button className="m-4" variant="outline-info" onClick={() => handleUpdateClick(id)} ><Pencil /></Button>
+                                    <Button style={{ marginLeft: '20px', marginBottom: '10px' }} variant="outline-danger" onClick={() => handleDeleteClick(id)} ><Trash /></Button>
+                                    <Button style={{ marginLeft: '20px', marginBottom: '10px' }} variant="outline-info" onClick={() => handleUpdateClick(id)} ><Pencil /></Button>
                                     <Accordion.Body>
+                                        <hr /><h5>Students</h5><hr />
                                         <ListGroup>
-                                            {students_offering.length !== 0 ? (students_offering.map((student) => (
-                                                <ListGroup.Item key={student.id}>
-                                                    {student.username.replace('_', ' ')} ---- {student.gender.toUpperCase()}
+                                            {students_offering.length !== 0 ? (students_offering.map(({ id, username, gender }) => (
+                                                <ListGroup.Item key={id}>
+                                                    {username.replace('_', ' ')}
+                                                    {gender === 'male' ?
+                                                        (<Button className="m-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
+                                                            <GenderMale/>
+                                                        </Button>) :
+                                                        (<Button className="m-2" size="sm" style={{ 'backgroundColor': 'pink', 'borderColor': 'white' }}>
+                                                            <GenderFemale />
+                                                        </Button>)}
                                                 </ListGroup.Item>
                                             ))) : ('NO Student Available')}
                                         </ListGroup>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Modal, Button, Form, Alert } from 'react-bootstrap';
+import { Modal, Button, Form, Alert, FormControl, InputGroup } from 'react-bootstrap';
 import { UsersListContext } from "../../../../../contexts/UsersList.contexts";
 import { SubjectsContext } from "../../../../../contexts/Subjects.contexts";
 import axios from 'axios';
@@ -8,7 +8,7 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
     const { usersList } = useContext(UsersListContext);
     const { setSubjects } = useContext(SubjectsContext);
     const [name, setName] = useState('');
-    const [assignedTeacher, setAssignedTeacher] = useState('');
+    const [assignedTeacher, setAssignedTeacher] = useState(null);
     const [students, setStudents] = useState([]);
     const [teachers, setTeachers] = useState([]);
     const [allStudents, setAllStudents] = useState([]);
@@ -18,7 +18,12 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
     useEffect(() => {
         if (subject) {
             setName(subject.name);
-            setAssignedTeacher(subject.assigned_teacher.id || {});
+            try {
+                setAssignedTeacher(subject.assigned_teacher.id || '');
+            } catch (error) {
+                setAssignedTeacher(null)
+            }
+
             setStudents(subject.students_offering);
         }
         const newSetOfTeachers =
@@ -38,7 +43,6 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
     }, [show]);
 
     const isStudentSelected = (studentId) => Array.isArray(students) && students.includes(studentId);
-
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
@@ -62,7 +66,6 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
             setSuccess(null)
             setError(null)
         } catch (error) {
-            console.log(error)
             setError('Failed to update subject.');
         }
     };
@@ -86,6 +89,7 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                             required
                         />
                     </Form.Group>
+                    <br />
                     <Form.Group controlId="formAssignedTeacher">
                         <Form.Label>Assigned Teacher</Form.Label>
                         <Form.Control
@@ -93,14 +97,16 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                             value={assignedTeacher}
                             onChange={(e) => setAssignedTeacher(e.target.value)}
                         >
-                            <option value="">{assignedTeacher.username}</option>
+                            <option value="">{assignedTeacher ? (assignedTeacher.username) : ('None')}</option>
+
                             {teachers.map((teacher) => (
                                 <option key={teacher.id} value={teacher.id}>
-                                    {teacher.username}
+                                    {teacher.username.replace('_', ' ')}
                                 </option>
                             ))}
                         </Form.Control>
                     </Form.Group>
+                    <br />
                     <Form.Group controlId="formStudents">
                         <Form.Label>Students Offering</Form.Label>
                         <Form.Control
@@ -110,6 +116,9 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                             onChange={(e) => setStudents(Array.from(e.target.selectedOptions, (option) => option.value))}
                         >
                             {/* First render selected students in gray */}
+                            <option key="d" onClick={() => setStudents([])}>
+                                None
+                            </option>
                             {allStudents
                                 .filter((student) => isStudentSelected(student.id))
                                 .map((student) => (
@@ -118,7 +127,7 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                                         value={student.id}
                                         style={{ color: 'gray' }} // Styling the selected students as gray
                                     >
-                                        {student.username} (selected)
+                                        {student.username.replace('_', ' ')} (selected)
                                     </option>
                                 ))}
                             {/* Render unselected students normally */}
@@ -126,11 +135,13 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                                 .filter((student) => !isStudentSelected(student.id))
                                 .map((student) => (
                                     <option key={student.id} value={student.id}>
-                                        {student.username}
+                                        {student.username.replace('_', ' ')}
                                     </option>
                                 ))}
+
                         </Form.Control>
                     </Form.Group>
+                    <br />
                     <Button variant="primary" type="submit">
                         Update Subject
                     </Button>

@@ -121,6 +121,7 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
                             placeholder="Enter subject name"
                         />
                     </Form.Group>
+                    <br />
                     <Form.Group controlId="subjectTeacher">
                         <Form.Label>Assign Teacher</Form.Label>
                         <DropdownButton
@@ -139,6 +140,7 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
                             ))}
                         </DropdownButton>
                     </Form.Group>
+                    <br />
                     <Form.Group controlId="subjectStudents">
                         <Form.Label>Students Offering</Form.Label>
                         <DropdownButton
@@ -175,6 +177,7 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
                             ))}
                         </div>
                     </Form.Group>
+                    <br />
                 </Form>
             </Modal.Body>
             <Modal.Footer>

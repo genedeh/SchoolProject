@@ -60,15 +60,14 @@ const LoginForm = () => {
                                     </div >
                                     <Form onSubmit={handleLogin}>
                                         <Form.Group controlId="formFirstname">
-                                            <Form.Label>First Name</Form.Label>
                                             <Form.Control type="text" placeholder="Enter firstname" value={firstname} onChange={(e) => setFirstname(e.target.value)} />
                                         </Form.Group>
+                                        <br />
                                         <Form.Group controlId="formLastname">
-                                            <Form.Label>Last Name</Form.Label>
                                             <Form.Control type="text" placeholder="Enter lastname" value={lastname} onChange={(e) => setLastname(e.target.value)} />
                                         </Form.Group>
+                                        <br />
                                         <Form.Group controlId="formPassword">
-                                            <Form.Label>Password</Form.Label>
                                             <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
                                         </Form.Group>
                                         <br />

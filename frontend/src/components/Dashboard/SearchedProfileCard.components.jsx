@@ -94,11 +94,7 @@ const ProfileModal = ({ user, show, handleClose }) => {
     );
 }
 
-const UserUpdateModal = ({ user, show, handleClose }) => {
-    return (
-        <div></div>
-    )
-};
+
 
 const SearchedProfileCard = ({ user }) => {
     const { username, is_student_or_teacher, gender, profile_picture, user_class } = user;
