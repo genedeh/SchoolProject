@@ -6,6 +6,7 @@ import axios from 'axios';
 
 export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
     const { usersList } = useContext(UsersListContext);
+    const { setSubjects } = useContext(SubjectsContext);
     const [name, setName] = useState('');
     const [assignedTeacher, setAssignedTeacher] = useState('');
     const [students, setStudents] = useState([]);
@@ -17,12 +18,12 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
     useEffect(() => {
         if (subject) {
             setName(subject.name);
-            setAssignedTeacher(subject.assigned_teacher);
-            setStudents(subject.offering_students);
+            setAssignedTeacher(subject.assigned_teacher.id || {});
+            setStudents(subject.students_offering);
         }
         const newSetOfTeachers =
             usersList.filter((user) => {
-                if (!user.is_student_or_teacher && user) {
+                if (!user.is_student_or_teacher) {
                     return user
                 }
             });
@@ -36,21 +37,32 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
         setAllStudents(newSetOfStudents);
     }, [show]);
 
+    const isStudentSelected = (studentId) => Array.isArray(students) && students.includes(studentId);
+
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://127.0.0.1:8000/api/subjects/${subject.id}/`, {
+            const data = {
                 name,
                 assigned_teacher: assignedTeacher,
-                offering_students: students,
-            })
+                students_offering: students.map((student) => {
+                    return student
+                }),
+            }
+            await axios.put(`http://127.0.0.1:8000/api/subjects/${subject.id}/`, data)
                 .then((response) => {
-                    console.log(response)
+                    setSubjects((prevSubjects) =>
+                        prevSubjects.map((subject) =>
+                            subject.id === response.data['id'] ? response.data : subject
+                        )
+                    );
                 });
             setSuccess('Subject updated successfully.');
-            // refreshSubjects();
             handleClose();
+            setSuccess(null)
+            setError(null)
         } catch (error) {
+            console.log(error)
             setError('Failed to update subject.');
         }
     };
@@ -97,11 +109,26 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                             value={students}
                             onChange={(e) => setStudents(Array.from(e.target.selectedOptions, (option) => option.value))}
                         >
-                            {allStudents.map((student) => (
-                                <option key={student.id} value={student.id}>
-                                    {student.username}
-                                </option>
-                            ))}
+                            {/* First render selected students in gray */}
+                            {allStudents
+                                .filter((student) => isStudentSelected(student.id))
+                                .map((student) => (
+                                    <option
+                                        key={student.id}
+                                        value={student.id}
+                                        style={{ color: 'gray' }} // Styling the selected students as gray
+                                    >
+                                        {student.username} (selected)
+                                    </option>
+                                ))}
+                            {/* Render unselected students normally */}
+                            {allStudents
+                                .filter((student) => !isStudentSelected(student.id))
+                                .map((student) => (
+                                    <option key={student.id} value={student.id}>
+                                        {student.username}
+                                    </option>
+                                ))}
                         </Form.Control>
                     </Form.Group>
                     <Button variant="primary" type="submit">

@@ -95,4 +95,5 @@ class SubjectsRetrieveView(generics.RetrieveUpdateDestroyAPIView):
           detail_serializer = SubjectsListSerializer(subject)
           return Response(detail_serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
+            print(e)
             return Response({"detail": "Failed to update subject."}, status=status.HTTP_400_BAD_REQUEST)

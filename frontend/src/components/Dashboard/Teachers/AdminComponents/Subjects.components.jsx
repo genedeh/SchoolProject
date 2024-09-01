@@ -29,7 +29,13 @@ export const Subjects = () => {
     const handleUpdateClick = (subjectId) => {
         subjects.map((subject) => {
             if (subject.id === subjectId) {
-                setSelectedSubjectForUpdate(subject)
+                const subjectClone = { ...subject }
+                const newStudents = []
+                subjectClone.students_offering.map((stundent) => {
+                    newStudents.push(stundent.id)
+                })
+                subjectClone['students_offering'] = newStudents
+                setSelectedSubjectForUpdate(subjectClone)
             }
         })
         setShowUpdateModal(true)
@@ -77,7 +83,7 @@ export const Subjects = () => {
                         subjectId={selectedSubjectId}
                     />
                     <CreateSubjectModal show={showCreateModal} handleClose={handleCreateCloseModal} />
-                    <UpdateSubjectModal show={showUpdateModal} handleClose={handleUpdateCloseModal} subject={selectedSubjectForUpdate}/>
+                    <UpdateSubjectModal show={showUpdateModal} handleClose={handleUpdateCloseModal} subject={selectedSubjectForUpdate} />
                 </>
             );
         } else {
