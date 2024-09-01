@@ -49,17 +49,15 @@ class UserProfileView(APIView):
             'is_student_or_teacher': user.is_student_or_teacher,
             'user_class': None,
             'is_admin':user.is_superuser,
+            'teaching_subjects': None
         }
         if user_data['is_student_or_teacher']:
-            dummy_value = str(user.classes.all().values_list('id', flat=True))
-            dummy_array1 = dummy_value.split()
-            dummy_array2 = dummy_array1[1].split(']')
-            class_id = dummy_array2[0].split('[')[1]
-            print(class_id, dummy_value, dummy_array1, dummy_array2, user.classes)
+            dummy_value = list(user.classes.all().values_list('id', flat=True))
+            class_id = dummy_value[0]
             user_data.update({'user_class': ClassRoom.objects.get(id=int(class_id)).name})
         else:
-            print('Teacher: ',user.classrooms.name)
             user_data.update({'user_class': user.classrooms.name})
+            user_data.update({'teaching_subjects':list(user.subject.all().values_list('id', flat=True)) })
             
         return Response(user_data, status=200)
     
