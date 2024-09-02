@@ -7,5 +7,6 @@ urlpatterns = [
     path("classrooms/", views.ClassRoomListView.as_view(), name="classrooms"),
     path("offering-subjects/", views.OfferingSubjectsListView.as_view(), name="offering-subjects"),
     path("subjects/", views.SubjectsListView.as_view(), name='subjects'),
-    path("subjects/<int:pk>/", views.SubjectsRetrieveView.as_view(), name='subjects')
+    path("subjects/<int:pk>/", views.SubjectsRetrieveView.as_view(), name='subjects'),
+    path('teacher/<int:teacher_id>/subjects/', views.GetTeacherAssignedSubjectView.as_view(), name='teacher-subjects'),
 ]

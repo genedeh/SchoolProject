@@ -9,9 +9,9 @@ export const UsersListContext = createContext({
 export const UsersListProvider = ({ children }) => {
     const [usersList, setUsersList] = useState([]);
     const value = { usersList, setUsersList };
-    
+
     const giveUserClass = (dummyArray, response) => {
-        response.data.map(async ({ classes, classrooms, id, username, profile_picture, is_student_or_teacher, birth_date, gender, address, phone_number, email }) => {
+        response.data.map(async ({ classes, classrooms, id, username, profile_picture, is_student_or_teacher, birth_date, gender, address, phone_number, email, subjects }) => {
             if (classrooms) {
                 const classesresponse = await axios.get(`http://127.0.0.1:8000/api/classrooms/${Number(classrooms)}`)
                 dummyArray.push({
@@ -25,8 +25,9 @@ export const UsersListProvider = ({ children }) => {
                     'address': address,
                     'phone_number': phone_number,
                     'email': email,
+                    'subjects': subjects
                 })
-            }else if (classes.length !== 0) {
+            } else if (classes.length !== 0) {
                 const classroomsResponse = await axios.get(`http://127.0.0.1:8000/api/classrooms/${Number(classes[0])}/`)
                 dummyArray.push({
                     'id': id,
@@ -39,6 +40,7 @@ export const UsersListProvider = ({ children }) => {
                     'address': address,
                     'phone_number': phone_number,
                     'email': email,
+                    'subjects': subjects
                 })
             } else {
                 dummyArray.push({
@@ -52,6 +54,7 @@ export const UsersListProvider = ({ children }) => {
                     'address': address,
                     'phone_number': phone_number,
                     'email': email,
+                    'subjects': subjects
                 })
             }
         })
