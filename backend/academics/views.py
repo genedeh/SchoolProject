@@ -50,16 +50,15 @@ class ClassRoomListView(generics.ListCreateAPIView):
         elif self.request.method == 'POST':
             return ClassRoomCreateSerializer
 
-  #  def create(self, request, *args, **kwargs):
-  #       try:
-  #         serializer = self.get_serializer(data=request.data)
-  #         serializer.is_valid(raise_exception=True)
-  #         print(serializer.data)
-  #         self.perform_create(serializer.data)
-  #         headers = self.get_success_headers(serializer.data)
-  #         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-  #       except Exception as e:
-  #         return Response({"detail": f"Failed to create subject."}, status=status.HTTP_400_BAD_REQUEST)
+   def create(self, request, *args, **kwargs):
+        try:
+          serializer = self.get_serializer(data=request.data)
+          serializer.is_valid(raise_exception=True)
+          self.perform_create(serializer.data)
+          headers = self.get_success_headers(serializer.data)
+          return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        except Exception as e:
+          return Response({"detail": f"Failed to create subject."}, status=status.HTTP_400_BAD_REQUEST)
 
 class SubjectsListView(generics.ListCreateAPIView):
    serializer_class = SubjectsListSerializer
