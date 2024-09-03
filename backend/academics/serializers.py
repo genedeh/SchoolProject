@@ -10,6 +10,8 @@ class ViewUserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'gender']
 
 class ClassRoomListSerializer(serializers.ModelSerializer):
+    assigned_Teacher = ViewUserSerializer()
+    students = ViewUserSerializer(many=True)
     class Meta:
         model = ClassRoom
         fields = '__all__'
@@ -39,7 +41,6 @@ class SubjectCreateSerializer(serializers.ModelSerializer):
         if Subject.objects.filter(name=value).exists():
             raise serializers.ValidationError("Subject with this name already exists.")
         return value
-
 
 class SubjectUpdateSerializer(serializers.ModelSerializer):
     students_offering = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
