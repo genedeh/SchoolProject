@@ -17,6 +17,16 @@ class ClassRoomListSerializer(serializers.ModelSerializer):
         fields = '__all__'
         extra_kwargs = {'__all__': {'read_only': True}} 
 
+class ClassRoomCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClassRoom
+        fields = '__all__'
+
+    def validate_name(self, value):
+        if ClassRoom.objects.filter(name=value).exists():
+            raise serializers.ValidationError("Classroom with this name already exists.")
+        return value
+
 class OfferingSubjectSerializer(serializers.ModelSerializer):
     students_offering = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(),many=True)
     class Meta:

@@ -2,7 +2,7 @@ from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from yaml import serialize
-from .serializers import ClassRoomListSerializer, OfferingSubjectSerializer, SubjectsListSerializer, SubjectUpdateSerializer,SubjectCreateSerializer
+from .serializers import ClassRoomListSerializer, OfferingSubjectSerializer, SubjectsListSerializer, SubjectUpdateSerializer,SubjectCreateSerializer, ClassRoomCreateSerializer
 from .models import ClassRoom, Subject
 from rest_framework.decorators import api_view
 from user.models import User
@@ -37,7 +37,29 @@ class OfferingSubjectsListView(generics.GenericAPIView):
           
 class ClassRoomListView(generics.ListCreateAPIView):
    serializer_class = ClassRoomListSerializer
-   queryset = ClassRoom.objects.all()
+   
+   def get_queryset(self):
+        name = self.request.query_params.get('name', None)
+        if name is not None:
+            return ClassRoom.objects.filter(name=name)
+        return ClassRoom.objects.all()
+   
+   def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return ClassRoomListSerializer
+        elif self.request.method == 'POST':
+            return ClassRoomCreateSerializer
+
+  #  def create(self, request, *args, **kwargs):
+  #       try:
+  #         serializer = self.get_serializer(data=request.data)
+  #         serializer.is_valid(raise_exception=True)
+  #         print(serializer.data)
+  #         self.perform_create(serializer.data)
+  #         headers = self.get_success_headers(serializer.data)
+  #         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+  #       except Exception as e:
+  #         return Response({"detail": f"Failed to create subject."}, status=status.HTTP_400_BAD_REQUEST)
 
 class SubjectsListView(generics.ListCreateAPIView):
    serializer_class = SubjectsListSerializer
@@ -63,8 +85,6 @@ class SubjectsListView(generics.ListCreateAPIView):
           return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         except Exception as e:
           return Response({"detail": f"Failed to create subject."}, status=status.HTTP_400_BAD_REQUEST)
-            
-
 
 class SubjectsRetrieveView(generics.RetrieveUpdateDestroyAPIView):
    serializer_class = SubjectUpdateSerializer
