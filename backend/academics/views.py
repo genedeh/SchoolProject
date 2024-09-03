@@ -13,6 +13,14 @@ class ClassRoomRetrieveView(generics.RetrieveUpdateDestroyAPIView):
     queryset = ClassRoom.objects.all()
     lookup_field = 'pk'
 
+    def delete(self, request, *args, **kwargs):
+        try:
+            subject = self.get_object()
+            subject.delete()
+            return Response({"detail": "Classroom deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+        except Exception as e:
+            return Response({"detail": "Failed to delete classroom."}, status=status.HTTP_400_BAD_REQUEST)
+
 class OfferingSubjectsListView(generics.GenericAPIView):
     serializer_class = OfferingSubjectSerializer
     def post(self, request):
