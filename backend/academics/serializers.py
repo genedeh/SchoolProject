@@ -10,7 +10,7 @@ class ViewUserSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'gender']
 
 class ClassRoomListSerializer(serializers.ModelSerializer):
-    assigned_Teacher = ViewUserSerializer()
+    assigned_teacher = ViewUserSerializer()
     students = ViewUserSerializer(many=True)
     class Meta:
         model = ClassRoom
@@ -26,6 +26,29 @@ class ClassRoomCreateSerializer(serializers.ModelSerializer):
         if ClassRoom.objects.filter(name=value).exists():
             raise serializers.ValidationError("Classroom with this name already exists.")
         return value
+
+class ClassroomUpdateSerializer(serializers.ModelSerializer):
+    students = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
+    assigned_teacher = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
+
+    class Meta:
+        model = ClassRoom
+        fields = '__all__'
+
+    def update(self, instance, validated_data):
+        # Update the name if provided
+        instance.name = validated_data.get('name', instance.name)
+        
+        # Update the teacher if provided (can also be null to remove the teacher)
+        instance.assigned_teacher = validated_data.get('assigned_teacher', instance.assigned_teacher)
+        
+        # Update students if provided
+        if 'students' in validated_data:
+            students = validated_data['students']
+            instance.students.set(students)
+        
+        instance.save()
+        return instance
 
 class OfferingSubjectSerializer(serializers.ModelSerializer):
     students_offering = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(),many=True)

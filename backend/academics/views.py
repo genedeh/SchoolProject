@@ -1,17 +1,23 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from yaml import serialize
-from .serializers import ClassRoomListSerializer, OfferingSubjectSerializer, SubjectsListSerializer, SubjectUpdateSerializer,SubjectCreateSerializer, ClassRoomCreateSerializer
+from .serializers import ClassRoomListSerializer, OfferingSubjectSerializer, SubjectsListSerializer, SubjectUpdateSerializer,SubjectCreateSerializer, ClassRoomCreateSerializer, ClassroomUpdateSerializer
 from .models import ClassRoom, Subject
-from rest_framework.decorators import api_view
 from user.models import User
 # Create your views here.
 
 class ClassRoomRetrieveView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = ClassRoomListSerializer
-    queryset = ClassRoom.objects.all()
+    serializer_class = ClassroomUpdateSerializer
+    #  queryset = Subject.objects.all()
     lookup_field = 'pk'
+
+    def get_queryset(self):
+      return ClassRoom.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return ClassRoomListSerializer
+        elif self.request.method == 'PATCH' or self.request.method == 'PUT':
+            return ClassroomUpdateSerializer
 
     def delete(self, request, *args, **kwargs):
         try:
@@ -20,6 +26,18 @@ class ClassRoomRetrieveView(generics.RetrieveUpdateDestroyAPIView):
             return Response({"detail": "Classroom deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             return Response({"detail": "Failed to delete classroom."}, status=status.HTTP_400_BAD_REQUEST)
+        
+    def update(self, request, *args, **kwargs):
+        try:
+          classroom = self.get_object()
+          serializer = self.get_serializer(classroom, data=request.data, partial=True)
+          serializer.is_valid(raise_exception=True)
+          self.perform_update(serializer)
+          detail_serializer = ClassroomUpdateSerializer(classroom)
+          return Response(detail_serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            print(e)
+            return Response({"detail": "Failed to update classroom."}, status=status.HTTP_400_BAD_REQUEST)
 
 class OfferingSubjectsListView(generics.GenericAPIView):
     serializer_class = OfferingSubjectSerializer
