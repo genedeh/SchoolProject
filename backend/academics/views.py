@@ -64,16 +64,7 @@ class SubjectsListView(generics.ListCreateAPIView):
         except Exception as e:
           return Response({"detail": f"Failed to create subject."}, status=status.HTTP_400_BAD_REQUEST)
             
-class GetTeacherAssignedSubjectView(APIView):
-    def get(self, request, teacher_id):
-        # Fetch the teacher's subjects based on the teacher's ID
-        try:
-            User.objects.get(id=teacher_id).DoesNotExist
-            subjects = Subject.objects.filter(assigned_teacher=teacher_id)
-            serializer = GetTeacherAssignedSubjectSerializer(subjects, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except User.DoesNotExist:
-            return Response({"error": "Teacher not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 class SubjectsRetrieveView(generics.RetrieveUpdateDestroyAPIView):
    serializer_class = SubjectUpdateSerializer

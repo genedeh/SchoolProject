@@ -40,11 +40,6 @@ class SubjectCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Subject with this name already exists.")
         return value
 
-class GetTeacherAssignedSubjectSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Subject
-        fields = ['id', 'name', 'students_offering']
 
 class SubjectUpdateSerializer(serializers.ModelSerializer):
     students_offering = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
