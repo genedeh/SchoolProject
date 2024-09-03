@@ -80,11 +80,15 @@ class ClassRoomListView(generics.ListCreateAPIView):
         try:
           serializer = self.get_serializer(data=request.data)
           serializer.is_valid(raise_exception=True)
-          self.perform_create(serializer.data)
+          serializer.save()
+          print(serializer.data)
           headers = self.get_success_headers(serializer.data)
           return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         except Exception as e:
-          return Response({"detail": f"Failed to create subject."}, status=status.HTTP_400_BAD_REQUEST)
+          print(e)
+          return Response({"detail": f"Failed to create classroom."}, status=status.HTTP_400_BAD_REQUEST)
+   def perform_create(self, serializer):
+        serializer.save()
 
 class SubjectsListView(generics.ListCreateAPIView):
    serializer_class = SubjectsListSerializer
