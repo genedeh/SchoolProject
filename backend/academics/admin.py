@@ -5,10 +5,10 @@ from user.models import User
 
 
 class ClassRoomAdmin(admin.ModelAdmin):
-    list_display = ("id","name", "assigned_Teacher")
+    list_display = ("id","name", "assigned_teacher")
     search_fields = ['name']
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "assigned_Teacher":
+        if db_field.name == "assigned_teacher":
             kwargs["queryset"] = User.objects.filter(is_student_or_teacher=False)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
     def formfield_for_manytomany(self, db_field, request, **kwargs):

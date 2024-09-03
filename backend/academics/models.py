@@ -7,7 +7,7 @@ from user.models import User
 
 class ClassRoom(models.Model):
     name = models.CharField(max_length=8, unique=True)
-    assigned_Teacher = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, related_name="classrooms")
+    assigned_teacher = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, related_name="classrooms")
     students = models.ManyToManyField(User, related_name='classes', blank=True)
 
     def __str__(self) -> str:
