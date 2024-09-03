@@ -15,7 +15,7 @@ export const SubjectsProvider = ({ children }) => {
             const token = localStorage.getItem('token')
             if (token) {
                 try {
-                    const response = await axios.get('http://127.0.0.1:8000/api/subjects/')
+                    const response = await axios.get('api/subjects/')
 
                     setSubjects(response.data)
                 } catch (err) {

@@ -13,7 +13,7 @@ export const UsersListProvider = ({ children }) => {
     const giveUserClass = (dummyArray, response) => {
         response.data.map(async ({ classes, classrooms, id, username, profile_picture, is_student_or_teacher, birth_date, gender, address, phone_number, email, subjects }) => {
             if (classrooms) {
-                const classesresponse = await axios.get(`http://127.0.0.1:8000/api/classrooms/${Number(classrooms)}`)
+                const classesresponse = await axios.get(`api/classrooms/${Number(classrooms)}`)
                 dummyArray.push({
                     'id': id,
                     'username': username,
@@ -28,7 +28,7 @@ export const UsersListProvider = ({ children }) => {
                     'subjects': subjects
                 })
             } else if (classes.length !== 0) {
-                const classroomsResponse = await axios.get(`http://127.0.0.1:8000/api/classrooms/${Number(classes[0])}/`)
+                const classroomsResponse = await axios.get(`api/classrooms/${Number(classes[0])}/`)
                 dummyArray.push({
                     'id': id,
                     'username': username,
@@ -64,7 +64,7 @@ export const UsersListProvider = ({ children }) => {
             const token = localStorage.getItem('token');
             if (token) {
                 try {
-                    const response = await axios.get('http://127.0.0.1:8000/api/users/')
+                    const response = await axios.get('api/users/')
                     const dummyArray = []
                     giveUserClass(dummyArray, response);
                     setUsersList(dummyArray);

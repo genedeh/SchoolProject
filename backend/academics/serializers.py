@@ -41,14 +41,10 @@ class SubjectCreateSerializer(serializers.ModelSerializer):
         return value
 
 class GetTeacherAssignedSubjectSerializer(serializers.ModelSerializer):
-    # students_offering = serializers.SerializerMethodField()
 
     class Meta:
         model = Subject
         fields = ['id', 'name', 'students_offering']
-
-    # def get_student_ids(self, obj):
-    #     return [student.id for student in Subject.students_offering.all()]
 
 class SubjectUpdateSerializer(serializers.ModelSerializer):
     students_offering = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, required=False)
