@@ -7,6 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import { UserProvider } from './contexts/User.contexts';
 import { UsersListProvider } from './contexts/UsersList.contexts';
 import { SubjectsProvider } from './contexts/Subjects.contexts';
+import { ClassroomsProvider } from './contexts/Classrooms.context';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -15,7 +16,9 @@ root.render(
       <UserProvider>
         <UsersListProvider>
           <SubjectsProvider>
-            <App />
+            <ClassroomsProvider>
+              <App />
+            </ClassroomsProvider>
           </SubjectsProvider>
         </UsersListProvider>
       </UserProvider>

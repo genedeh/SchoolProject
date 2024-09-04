@@ -18,6 +18,7 @@ export const SubjectsProvider = ({ children }) => {
                     const response = await axios.get('api/subjects/')
 
                     setSubjects(response.data)
+                    console.log(subjects)
                 } catch (err) {
                     console.log('There was an error fetching the items!', err)
                 }
