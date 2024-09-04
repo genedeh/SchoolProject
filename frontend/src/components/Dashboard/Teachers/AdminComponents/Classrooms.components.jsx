@@ -1,17 +1,25 @@
 import { UserContext } from "../../../../contexts/User.contexts";
 import { ClassroomsContext } from "../../../../contexts/Classrooms.contexts";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { Button, Accordion, Card, ListGroup, Spinner } from "react-bootstrap";
 import { GenderFemale, GenderMale, Trash, Pencil, PlusCircleFill } from "react-bootstrap-icons";
-
-
+import { DeleteClassroomModal } from "./ClassroomTools/DeleteClassroom.components";
 
 export const Classrooms = () => {
     const { currentUser } = useContext(UserContext);
     const { classrooms } = useContext(ClassroomsContext);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [selectedSubjectId, setSelectedSubjectId] = useState(null);
+    const [selectedSubjectForUpdate, setSelectedSubjectForUpdate] = useState(null);
 
-    const handleDeleteClick = (classId) => { };
+
+    const handleDeleteClick = (classId) => {
+        setSelectedSubjectId(classId);
+        setShowDeleteModal(true);
+    };
     const handleUpdateClick = (classId) => { }
     const handleCreateShowModal = () => {};
 
@@ -60,6 +68,11 @@ export const Classrooms = () => {
                             </Card>
                         ))}
                     </Accordion>
+                    <DeleteClassroomModal
+                        show={showDeleteModal}
+                        handleClose={() => setShowDeleteModal(false)}
+                        classroomId={selectedSubjectId}
+                    />
                 </>
             );
         } else {

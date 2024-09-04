@@ -1,17 +1,17 @@
 import { Modal, Button } from 'react-bootstrap';
 import { useState, useContext } from 'react';
-import { SubjectsContext } from '../../../../../contexts/Subjects.contexts';
+import { ClassroomsContext } from '../../../../../contexts/Classrooms.contexts';
 import axios from 'axios';
 
-export const DeleteSubjectModal = ({ show, handleClose, subjectId }) => {
+export const DeleteClassroomModal = ({ show, handleClose, classroomId }) => {
     const [deleteStatus, setDeleteStatus] = useState(null);
-    const { subjects, setSubjects } = useContext(SubjectsContext);
+    const { classrooms, setClassrooms } = useContext(ClassroomsContext);
 
     const handleDelete = async () => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/subjects/${subjectId}/`);
+            await axios.delete(`http://127.0.0.1:8000/api/classrooms/${classroomId}/`);
             setDeleteStatus("success");
-            setSubjects(subjects.filter(subject => subject.id !== subjectId));
+            setClassrooms(classrooms.filter(subject => subject.id !== classroomId));
         } catch (error) {
             setDeleteStatus("failed");
         }
@@ -28,10 +28,10 @@ export const DeleteSubjectModal = ({ show, handleClose, subjectId }) => {
                     (
                         <>
                             <Modal.Header closeButton>
-                                <Modal.Title>Delete Subject</Modal.Title>
+                                <Modal.Title>Delete Classroom</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                                Are you sure you want to delete this subject?
+                                Are you sure you want to delete this classroom?
                             </Modal.Body>
                             <Modal.Footer>
                                 <Button variant="secondary" onClick={handleClose}>
@@ -48,8 +48,8 @@ export const DeleteSubjectModal = ({ show, handleClose, subjectId }) => {
                         </Modal.Header>
                         <Modal.Body>
                             {deleteStatus === "success"
-                                ? "The subject was deleted successfully."
-                                : "Failed to delete the subject."}
+                                ? "The classroom was deleted successfully."
+                                : "Failed to delete the classroom."}
                         </Modal.Body>
                         <Modal.Footer>
                             <Button variant="primary" onClick={() => {
