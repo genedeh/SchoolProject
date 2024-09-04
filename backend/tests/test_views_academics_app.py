@@ -127,3 +127,15 @@ class TestAcademicViews(TestSetUp):
         self.assertEqual(response.data['detail'], 'Failed to delete classroom.')
         self.assertEqual(response.status_code, 400)
 # SUBJECT UPDATE TEST 
+    def test_update_classroom(self):
+        classroom = self.client.post(self.create_classroom_url, self.classroom_create_data, format="json")
+        response = self.client.put(reverse("classrooms", kwargs={'pk':classroom.data['id']}),{"name":"SS3A"}, format="json")
+        self.assertEqual(response.data['name'], "SS3A")
+        self.assertEqual(response.status_code, 200)
+    
+    def test_update_classroom_with_incorrect_data(self):
+        classroom = self.client.post(self.create_classroom_url, self.classroom_create_data, format="json")
+        response = self.client.put(reverse("classrooms", kwargs={'pk':classroom.data['id']}),{"students":"josh"}, format="json")
+        self.assertEqual(response.data['detail'], "Failed to update classroom.")
+        self.assertEqual(response.status_code, 400)
+
