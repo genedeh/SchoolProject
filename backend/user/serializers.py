@@ -1,8 +1,11 @@
 from .models import User
 from academics.models import ClassRoom, Subject
-from academics.serializers import ClassRoomListSerializer, SubjectsListSerializer
 from rest_framework import serializers
 
+class ViewClassRoomNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClassRoom
+        fields = ['name']
 
 class UserLoginSerializer(serializers.ModelSerializer):
     class Meta:
@@ -62,3 +65,9 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         instance.classes.set(classes_data)
         instance.save() 
         return instance
+
+class UserListSerializer(serializers.ModelSerializer):
+    classrooms = ViewClassRoomNameSerializer()
+    class Meta:
+        model = User
+        fields = ['username','password', 'email', 'first_name', 'last_name', 'profile_picture', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes',  'subjects', 'classrooms']

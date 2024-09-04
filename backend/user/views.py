@@ -1,3 +1,4 @@
+from urllib.parse import uses_relative
 from rest_framework import generics
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
@@ -5,7 +6,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import User
 from academics.models import ClassRoom
-from .serializers import UserLoginSerializer, UserCreateSerializer, UserUpdateSerializer
+from .serializers import UserLoginSerializer, UserCreateSerializer, UserUpdateSerializer, UserListSerializer
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -62,8 +63,16 @@ class UserProfileView(APIView):
         return Response(user_data, status=200)
     
 class CreateAndSearchUserView(generics.ListCreateAPIView):
-    serializer_class = UserCreateSerializer
-    queryset = User.objects.all()
+    serializer_class = UserListSerializer
+
+    def get_queryset(self):
+      return User.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return UserListSerializer
+        elif self.request.method == 'POST':
+            return UserCreateSerializer
 
 class UpdateAndDeleteUserView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
