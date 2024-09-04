@@ -24,6 +24,6 @@ export const SubjectsProvider = ({ children }) => {
             }
         }
         fetchSubjects();
-    }, [subjects])
+    }, [])
     return <SubjectsContext.Provider value={value}>{children}</SubjectsContext.Provider>
 }

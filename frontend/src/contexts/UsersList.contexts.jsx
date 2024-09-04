@@ -13,7 +13,6 @@ export const UsersListProvider = ({ children }) => {
     const giveUserClass = (dummyArray, response) => {
         response.data.map(async ({ classes, classrooms, id, username, profile_picture, is_student_or_teacher, birth_date, gender, address, phone_number, email, subjects }) => {
             if (classrooms) {
-                const classesresponse = await axios.get(`api/classrooms/${Number(classrooms)}`)
                 dummyArray.push({
                     'id': id,
                     'username': username,
@@ -21,14 +20,14 @@ export const UsersListProvider = ({ children }) => {
                     'is_student_or_teacher': is_student_or_teacher,
                     'birth_date': birth_date,
                     'gender': gender,
-                    'user_class': classesresponse.data.name,
+                    'user_class': classrooms.name,
                     'address': address,
                     'phone_number': phone_number,
                     'email': email,
                     'subjects': subjects
                 })
             } else if (classes.length !== 0) {
-                const classroomsResponse = await axios.get(`api/classrooms/${Number(classes[0])}/`)
+                const classResponse = await axios.get(`api/classrooms/${Number(classes[0])}/`)
                 dummyArray.push({
                     'id': id,
                     'username': username,
@@ -36,7 +35,7 @@ export const UsersListProvider = ({ children }) => {
                     'is_student_or_teacher': is_student_or_teacher,
                     'birth_date': birth_date,
                     'gender': gender,
-                    'user_class': classroomsResponse.data.name,
+                    'user_class': classResponse.data.name,
                     'address': address,
                     'phone_number': phone_number,
                     'email': email,

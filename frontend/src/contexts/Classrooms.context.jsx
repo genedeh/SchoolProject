@@ -24,6 +24,6 @@ export const ClassroomsProvider = ({ children }) => {
             }
         }
         fetchClassrooms();
-    }, [classrooms])
+    }, [])
     return <ClassroomsContext.Provider value={value}>{children}</ClassroomsContext.Provider>
 }
