@@ -1,3 +1,4 @@
+import random
 from rest_framework.test import APITestCase
 from django.urls import reverse
 
@@ -23,7 +24,7 @@ class TestSetUp(APITestCase):
             "students_offering": [1]
         }
         self.subject_create_data = {
-            "name":"SS2A_maths",
+            "name":f"SS2A_maths{random.randint(1,10)}",
             "assigned_teacher": self.subject_assigned_teacher.pk,
             "students_offering":[self.subject_student.pk]
         }
@@ -31,7 +32,7 @@ class TestSetUp(APITestCase):
         self.subject_name_retrieve = f"{reverse("subjects")}?name={self.subject_create_data['name']}"
         # Classroom Test Data
         self.classroom_create_data = {
-            "name":"SS2A",
+            "name":f"SS2A{random.randint(1,10)}",
             "assigned_teacher": self.classroom_assigned_teacher.pk,
             "students":[self.classroom_student.pk]
         }

@@ -12,7 +12,7 @@ class TestAcademicViews(TestSetUp):
     def test_create_subject(self):
         response = self.client.post(self.create_subject_url, self.subject_create_data, format="json")
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data['name'], 'SS2A_maths')
+        self.assertEqual(response.data['name'], self.subject_create_data['name'])
         self.assertEqual(response.data['assigned_teacher'], self.subject_assigned_teacher.pk)
         self.assertEqual(response.data['students_offering'], [self.subject_student.pk])
 
@@ -35,7 +35,7 @@ class TestAcademicViews(TestSetUp):
     def test_200_subject_retrieve(self):
         subject = self.client.post(self.create_subject_url, self.subject_create_data, format="json")
         response = self.client.get(reverse("subjects", kwargs={'pk':subject.data['id']}))
-        self.assertEqual(response.data['name'], 'SS2A_maths')
+        self.assertEqual(response.data['name'], self.subject_create_data['name'])
         self.assertEqual(response.data['assigned_teacher']['username'], self.subject_assigned_teacher.username)
         self.assertEqual(response.data['students_offering'][0]['username'], self.subject_student.username)
         self.assertEqual(response.status_code, 200)
@@ -79,7 +79,7 @@ class TestAcademicViews(TestSetUp):
         response = self.client.post(self.create_classroom_url, self.classroom_create_data, format="json")
         # print(response.data, response.status_code, self.classroom_create_data)
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.data['name'], 'SS2A')
+        self.assertEqual(response.data['name'], self.classroom_create_data['name'])
         self.assertEqual(response.data['assigned_teacher'], self.classroom_assigned_teacher.pk)
         self.assertEqual(response.data['students'], [self.classroom_student.pk])
 
@@ -93,4 +93,26 @@ class TestAcademicViews(TestSetUp):
         response = self.client.post(self.create_classroom_url, {}, format="json")
         self.assertEqual(response.data['detail'], "Failed to create classroom.")
         self.assertEqual(response.status_code, 400)
+# SUBJECT RETRIEVE DATA (GET) TEST
+    def test_404_classroom_retrieve(self):
+        response = self.client.get(self.classroom_retrieve_url)
+        self.assertEqual(response.status_code, 404)
+    
+    def test_200_classroom_retrieve(self):
+        classroom = self.client.post(self.create_classroom_url, self.classroom_create_data, format="json")
+        response = self.client.get(reverse("classrooms", kwargs={'pk':classroom.data['id']}))
+        self.assertEqual(response.data['name'], self.classroom_create_data['name'])
+        self.assertEqual(response.data['assigned_teacher']['username'], self.classroom_assigned_teacher.username)
+        self.assertEqual(response.data['students'][0]['username'], self.classroom_student.username)
+        self.assertEqual(response.status_code, 200)
+    
+    def test_get_classroom_name(self):
+        self.client.post(self.create_classroom_url, self.classroom_create_data, format="json")
+        response = self.client.get(self.classroom_name_retrieve)
+        self.assertEqual(response.data[0]['name'],self.classroom_create_data['name'])
+        self.assertEqual(response.status_code, 200)
 
+    def test_get_classroom_name_does_not_exist(self):
+        response = self.client.get(f"{reverse("classrooms")}?name={self.classroom_create_data['name']}")
+        self.assertEqual(response.data.__len__(),0)
+# SUBJECT DELETE TEST 

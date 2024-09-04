@@ -7,7 +7,6 @@ from user.models import User
 
 class ClassRoomRetrieveView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ClassroomUpdateSerializer
-    #  queryset = Subject.objects.all()
     lookup_field = 'pk'
 
     def get_queryset(self):
@@ -21,8 +20,8 @@ class ClassRoomRetrieveView(generics.RetrieveUpdateDestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         try:
-            subject = self.get_object()
-            subject.delete()
+            classroom = self.get_object()
+            classroom.delete()
             return Response({"detail": "Classroom deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             return Response({"detail": "Failed to delete classroom."}, status=status.HTTP_400_BAD_REQUEST)
@@ -117,7 +116,6 @@ class SubjectsListView(generics.ListCreateAPIView):
 
 class SubjectsRetrieveView(generics.RetrieveUpdateDestroyAPIView):
    serializer_class = SubjectUpdateSerializer
-  #  queryset = Subject.objects.all()
    lookup_field = 'pk'
 
    def get_queryset(self):
