@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import LoginForm from './components/Authentication/Login.components';
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -12,6 +12,8 @@ import { AddUser } from './components/Dashboard/Teachers/AdminComponents/AddUser
 import  {AdminPrivateRoute, PrivateRoute} from './components/Routes/PrivateRoute.components';
 import { Subjects } from './components/Dashboard/Teachers/AdminComponents/Subjects.components';
 import { AssignedSubjects } from './components/Dashboard/Teachers/BasicComponents/AssignedSubject.components';
+import { Classrooms } from './components/Dashboard/Teachers/AdminComponents/Classroom.components';
+import { AssignedClassrooms } from './components/Dashboard/Teachers/BasicComponents/AssignedClassroom.components';
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
 
 function App() {
@@ -24,6 +26,7 @@ function App() {
         <Route path='teacher-profile' element={<TeacherProfile />} />
         <Route path='add-user' element={<AddUser />} />
         <Route path='subjects' element={<AdminPrivateRoute Component={Subjects} AltComponent={AssignedSubjects} />} />
+        <Route path='classrooms' element={<AdminPrivateRoute Component={Classrooms} AltComponent={AssignedClassrooms} />} />
       </Route>
     </Routes>
   );

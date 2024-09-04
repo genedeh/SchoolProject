@@ -67,7 +67,7 @@ export const TeacherSidebar = () => {
                             <Nav.Link href="/dashboard/subjects"><BookHalf className="me-2" /> Subjects <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link href="#classrooms"><SuitClub className="me-2" /> ClassRooms <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                            <Nav.Link href="/dashboard/classrooms"><SuitClub className="me-2" /> ClassRooms </Nav.Link>
                         </Nav.Item>
                     </Nav>
                 </Navbar.Collapse>
@@ -99,7 +99,7 @@ export const TeacherSidebar = () => {
                             <Nav.Link href="/dashboard/subjects"><BookHalf className="me-2" /> Subject <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                         </Nav.Item>
                         <Nav.Item>
-                            <Nav.Link href="#classroom"><SuitClub className="me-1" /> Your ClassRoom <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                            <Nav.Link href="/dashboard/classrooms"><SuitClub className="me-1" /> Your ClassRoom </Nav.Link>
                         </Nav.Item>
                     </Nav>
                 </Navbar.Collapse>
