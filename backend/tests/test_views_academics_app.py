@@ -116,3 +116,14 @@ class TestAcademicViews(TestSetUp):
         response = self.client.get(f"{reverse("classrooms")}?name={self.classroom_create_data['name']}")
         self.assertEqual(response.data.__len__(),0)
 # SUBJECT DELETE TEST 
+    def test_delete_classroom(self):
+        classroom = self.client.post(self.create_classroom_url, self.classroom_create_data, format="json")
+        response = self.client.delete(reverse("classrooms", kwargs={'pk':classroom.data['id']}))
+        self.assertEqual(response.data['detail'], 'Classroom deleted successfully.')
+        self.assertEqual(response.status_code, 204)
+    
+    def test_failed_delete_classroom(self):
+        response = self.client.delete(self.classroom_retrieve_url)
+        self.assertEqual(response.data['detail'], 'Failed to delete classroom.')
+        self.assertEqual(response.status_code, 400)
+# SUBJECT UPDATE TEST 
