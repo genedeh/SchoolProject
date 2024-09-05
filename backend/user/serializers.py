@@ -54,6 +54,13 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.username = validated_data.get('username', f"{instance.first_name}_{instance.last_name}")
+        instance.profile_picture = validated_data.get('profile_picture', instance.profile_picture)
+        instance.is_student_or_teacher = validated_data.get('is_student_or_teacher', instance.is_student_or_teacher)
+        instance.birth_date = validated_data.get('birth_date', instance.birth_date)
+        instance.address = validated_data.get('address', instance.address)
+        instance.is_superuser = validated_data.get('is_superuser', instance.is_superuser)
+        instance.phone_number = validated_data.get('phone_number', instance.phone_number)
+        instance.gender = validated_data.get('gender', instance.gender)
         classes_data = validated_data.pop('classes')
         subjects_data = validated_data.pop('subjects')
         
