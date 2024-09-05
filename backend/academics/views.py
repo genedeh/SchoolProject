@@ -32,7 +32,7 @@ class ClassRoomRetrieveView(generics.RetrieveUpdateDestroyAPIView):
           serializer = self.get_serializer(classroom, data=request.data, partial=True)
           serializer.is_valid(raise_exception=True)
           self.perform_update(serializer)
-          detail_serializer = ClassroomUpdateSerializer(classroom)
+          detail_serializer = ClassRoomListSerializer(classroom)
           return Response(detail_serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             print(e)
