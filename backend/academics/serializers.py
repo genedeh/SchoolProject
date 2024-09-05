@@ -7,7 +7,7 @@ from .models import ClassRoom, Subject
 class ViewUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'gender']
+        fields = ['id', 'username', 'gender', 'profile_picture']
 
 class ClassRoomListSerializer(serializers.ModelSerializer):
     assigned_teacher = ViewUserSerializer()

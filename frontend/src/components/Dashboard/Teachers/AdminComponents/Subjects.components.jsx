@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { UserContext } from "../../../../contexts/User.contexts";
 import { SubjectsContext } from "../../../../contexts/Subjects.contexts";
 import { Navigate } from "react-router-dom";
-import { Accordion, Card, Button, ListGroup, Spinner } from 'react-bootstrap';
+import { Accordion, Card, Button, ListGroup, Spinner, Image } from 'react-bootstrap';
 import { Trash, Pencil, PlusCircleFill, GenderFemale, GenderMale } from 'react-bootstrap-icons';
 import { DeleteSubjectModal } from "./SubjectTools/DeleteSubject.components";
 import { CreateSubjectModal } from "./SubjectTools/CreateSubject.components";
@@ -64,8 +64,19 @@ export const Subjects = () => {
                                     <Accordion.Body>
                                         <hr /><h5>Students</h5><hr />
                                         <ListGroup>
-                                            {students_offering.length !== 0 ? (students_offering.map(({ id, username, gender }) => (
+                                            {students_offering.length !== 0 ? (students_offering.map(({ id, username, gender, profile_picture }) => (
                                                 <ListGroup.Item key={id}>
+                                                    {profile_picture ? (<Image
+                                                        src={profile_picture.includes('http://') ? (profile_picture) : (`http://127.0.0.1:8000/media/${profile_picture}`)}
+                                                        roundedCircle
+                                                        style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+                                                        className="me-3" />)
+                                                        : (<Image
+                                                            src="http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg"
+                                                            roundedCircle
+                                                            style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+                                                            className="me-3" />)
+                                                    }
                                                     {username.replace('_', ' ')}
                                                     {gender === 'male' ?
                                                         (<Button className="m-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>

@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { UserContext } from "../../../../contexts/User.contexts";
 import { SubjectsContext } from "../../../../contexts/Subjects.contexts"
-import { Card, Spinner, Button, ListGroup, Accordion } from 'react-bootstrap'
+import { Card, Spinner, Button, ListGroup, Accordion, Image } from 'react-bootstrap'
 import { GenderFemale, GenderMale } from "react-bootstrap-icons"
 
 export const AssignedSubjects = () => {
@@ -32,8 +32,19 @@ export const AssignedSubjects = () => {
                                             <Accordion.Body>
                                                 <hr /><h5>Students</h5><hr />
                                                 <ListGroup>
-                                                    {students_offering && students_offering.length !== 0 ? (students_offering.map(({ id, username, gender }) => (
+                                                    {students_offering && students_offering.length !== 0 ? (students_offering.map(({ id, username, gender,profile_picture }) => (
                                                         <ListGroup.Item key={id}>
+                                                            {profile_picture ? (<Image
+                                                                src={profile_picture.includes('http://') ? (profile_picture) : (`http://127.0.0.1:8000/media/${profile_picture}`)}
+                                                                roundedCircle
+                                                                style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+                                                                className="me-3" />)
+                                                                : (<Image
+                                                                    src="http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg"
+                                                                    roundedCircle
+                                                                    style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+                                                                    className="me-3" />)
+                                                            }
                                                             {username.replace('_', ' ')}
                                                             {gender === 'male' ?
                                                                 (<Button className="m-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
