@@ -70,4 +70,4 @@ class UserListSerializer(serializers.ModelSerializer):
     classrooms = ViewClassRoomNameSerializer()
     class Meta:
         model = User
-        fields = ['username','password', 'email', 'first_name', 'last_name', 'profile_picture', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes',  'subjects', 'classrooms']
+        fields = ['id','username', 'email', 'first_name', 'last_name', 'profile_picture', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes',  'subjects', 'classrooms']

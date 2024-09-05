@@ -5,6 +5,7 @@ import { Navigate } from "react-router-dom";
 import { Button, Accordion, Card, ListGroup, Spinner } from "react-bootstrap";
 import { GenderFemale, GenderMale, Trash, Pencil, PlusCircleFill } from "react-bootstrap-icons";
 import { DeleteClassroomModal } from "./ClassroomTools/DeleteClassroom.components";
+import { CreateClassroomModal } from "./ClassroomTools/CreateClassroom.components";
 
 export const Classrooms = () => {
     const { currentUser } = useContext(UserContext);
@@ -21,7 +22,6 @@ export const Classrooms = () => {
         setShowDeleteModal(true);
     };
     const handleUpdateClick = (classId) => { }
-    const handleCreateShowModal = () => {};
 
 
     if (!currentUser.is_student_or_teacher && currentUser && currentUser.is_admin) {
@@ -29,7 +29,7 @@ export const Classrooms = () => {
             return (
                 <>
                     <div className="d-grid gap-2 m-2">
-                        <Button variant="outline-primary" size="lg" onClick={handleCreateShowModal} >
+                        <Button variant="outline-primary" size="lg" onClick={() => setShowCreateModal(true)} >
                             New classroom <PlusCircleFill />
                         </Button>
                     </div>
@@ -73,6 +73,7 @@ export const Classrooms = () => {
                         handleClose={() => setShowDeleteModal(false)}
                         classroomId={selectedSubjectId}
                     />
+                    <CreateClassroomModal show={showCreateModal} handleClose={() => setShowCreateModal(false)} />
                 </>
             );
         } else {

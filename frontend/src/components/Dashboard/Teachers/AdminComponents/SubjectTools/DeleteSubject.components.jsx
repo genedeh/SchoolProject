@@ -9,7 +9,7 @@ export const DeleteSubjectModal = ({ show, handleClose, subjectId }) => {
 
     const handleDelete = async () => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/subjects/${subjectId}/`);
+            await axios.delete(`api/subjects/${subjectId}/`);
             setDeleteStatus("success");
             setSubjects(subjects.filter(subject => subject.id !== subjectId));
         } catch (error) {

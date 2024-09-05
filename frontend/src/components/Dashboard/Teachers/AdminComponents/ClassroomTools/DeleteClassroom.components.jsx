@@ -9,7 +9,7 @@ export const DeleteClassroomModal = ({ show, handleClose, classroomId }) => {
 
     const handleDelete = async () => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/api/classrooms/${classroomId}/`);
+            await axios.delete(`api/classrooms/${classroomId}/`);
             setDeleteStatus("success");
             setClassrooms(classrooms.filter(subject => subject.id !== classroomId));
         } catch (error) {

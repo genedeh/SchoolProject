@@ -18,9 +18,6 @@ export const Subjects = () => {
     const [selectedSubjectForUpdate, setSelectedSubjectForUpdate] = useState(null);
 
 
-    const handleCreateShowModal = () => setShowCreateModal(true);
-    const handleCreateCloseModal = () => setShowCreateModal(false);
-    const handleUpdateCloseModal = () => setShowUpdateModal(false);
 
     const handleDeleteClick = (subjectId) => {
         setSelectedSubjectId(subjectId);
@@ -47,7 +44,7 @@ export const Subjects = () => {
             return (
                 <>
                     <div className="d-grid gap-2 m-2">
-                        <Button variant="outline-primary" size="lg" onClick={handleCreateShowModal} >
+                        <Button variant="outline-primary" size="lg" onClick={() => setShowCreateModal(true)} >
                             New subject <PlusCircleFill />
                         </Button>
                     </div>
@@ -91,8 +88,8 @@ export const Subjects = () => {
                         handleClose={() => setShowDeleteModal(false)}
                         subjectId={selectedSubjectId}
                     />
-                    <CreateSubjectModal show={showCreateModal} handleClose={handleCreateCloseModal} />
-                    <UpdateSubjectModal show={showUpdateModal} handleClose={handleUpdateCloseModal} subject={selectedSubjectForUpdate} />
+                    <CreateSubjectModal show={showCreateModal} handleClose={() => setShowCreateModal(false)} />
+                    <UpdateSubjectModal show={showUpdateModal} handleClose={() => setShowUpdateModal(false)} subject={selectedSubjectForUpdate} />
                 </>
             );
         } else {
