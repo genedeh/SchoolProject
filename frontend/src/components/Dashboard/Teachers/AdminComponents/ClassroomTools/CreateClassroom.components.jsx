@@ -5,7 +5,7 @@ import axios from "axios";
 import { Modal, Button, Alert, Form, DropdownButton, Dropdown } from 'react-bootstrap'
 
 export const CreateClassroomModal = ({ show, handleClose }) => {
-    const { usersList } = useContext(UsersListContext);
+    const { usersList, refresh, setRefresh } = useContext(UsersListContext);
     const { setClassrooms, classrooms } = useContext(ClassroomsContext);
     const [name, setName] = useState('');
     const [teachers, setTeachers] = useState([]);
@@ -24,14 +24,13 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
             });
         const newSetOfStudents =
             usersList.filter((user) => {
-                if (user.is_student_or_teacher) {
+                if (user.is_student_or_teacher && user.user_class === "None") {
                     return user
                 }
             });
 
         if (show) {
             setTeachers(newSetOfTeachers);
-            console.log(newSetOfTeachers)
             setStudents(newSetOfStudents);
         }
     }, [show]);
@@ -41,6 +40,7 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
     };
 
     const createClassroomCloseHandler = () => {
+        setRefresh(!refresh)
         setSuccess('Subject created successfully.');
         setName('');
         setSelectedTeacher(null);

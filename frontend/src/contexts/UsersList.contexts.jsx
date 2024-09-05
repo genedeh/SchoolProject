@@ -4,11 +4,14 @@ import axios from 'axios';
 export const UsersListContext = createContext({
     usersList: [],
     setUsersList: () => [],
+    refresh: false,
+    setRefresh: () => { },
 });
 
 export const UsersListProvider = ({ children }) => {
     const [usersList, setUsersList] = useState([]);
-    const value = { usersList, setUsersList };
+    const [refresh, setRefresh] = useState(false)
+    const value = { usersList, setUsersList, refresh, setRefresh };
 
     const giveUserClass = (dummyArray, response) => {
         response.data.map(async ({ classes, classrooms, id, username, profile_picture, is_student_or_teacher, birth_date, gender, address, phone_number, email, subjects }) => {
@@ -73,6 +76,6 @@ export const UsersListProvider = ({ children }) => {
             }
         };
         fetchUserProfilesList();
-    }, []);
+    }, [refresh]);
     return <UsersListContext.Provider value={value}>{children}</UsersListContext.Provider>;
 }

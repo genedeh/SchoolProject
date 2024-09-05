@@ -5,7 +5,7 @@ import { ClassroomsContext } from "../../../../../contexts/Classrooms.contexts";
 import axios from 'axios';
 
 export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
-    const { usersList } = useContext(UsersListContext);
+    const { usersList, refresh, setRefresh } = useContext(UsersListContext);
     const { setClassrooms } = useContext(ClassroomsContext);
     const [name, setName] = useState('');
     const [assignedTeacher, setAssignedTeacher] = useState(null);
@@ -70,6 +70,7 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
             handleClose();
             setSuccess(null)
             setError(null)
+            setRefresh(!refresh)
         } catch (error) {
             setError('Failed to update classroom.');
         }
