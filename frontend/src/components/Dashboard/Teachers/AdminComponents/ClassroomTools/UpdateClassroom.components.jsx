@@ -1,12 +1,12 @@
 import { useState, useEffect, useContext } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
 import { UsersListContext } from "../../../../../contexts/UsersList.contexts";
-import { SubjectsContext } from "../../../../../contexts/Subjects.contexts";
+import { ClassroomsContext } from "../../../../../contexts/Classrooms.contexts";
 import axios from 'axios';
 
-export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
+export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
     const { usersList } = useContext(UsersListContext);
-    const { setSubjects } = useContext(SubjectsContext);
+    const { setClassrooms } = useContext(ClassroomsContext);
     const [name, setName] = useState('');
     const [assignedTeacher, setAssignedTeacher] = useState(null);
     const [students, setStudents] = useState([]);
@@ -16,25 +16,29 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
     const [success, setSuccess] = useState('');
 
     useEffect(() => {
-        if (subject) {
-            setName(subject.name);
+        if (classroom) {
+            setName(classroom.name);
             try {
-                setAssignedTeacher(subject.assigned_teacher.id || '');
+                setAssignedTeacher(classroom.assigned_teacher || '');
             } catch (error) {
                 setAssignedTeacher(null)
             }
 
-            setStudents(subject.students_offering);
+            setStudents(classroom.students);
         }
         const newSetOfTeachers =
             usersList.filter((user) => {
-                if (!user.is_student_or_teacher) {
-                    return user
+                if (!user.is_student_or_teacher && user.user_class === "None") {
+                    if (assignedTeacher && user.id === assignedTeacher.id) {
+                        return user
+                    } else {
+                        return user
+                    }
                 }
             });
         const newSetOfStudents =
             usersList.filter((user) => {
-                if (user.is_student_or_teacher) {
+                if (user.is_student_or_teacher && user.user_class === "None") {
                     return user
                 }
             });
@@ -42,48 +46,49 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
         setAllStudents(newSetOfStudents);
     }, [show]);
 
-    const isStudentSelected = (studentId) => Array.isArray(students) && students.includes(studentId);
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
+            students.map((student) => {
+                classroom.students.push(Number(student))
+            })
             const data = {
                 name,
-                assigned_teacher: assignedTeacher,
-                students_offering: students.map((student) => {
-                    return student
-                }),
+                assigned_teacher: assignedTeacher.id,
+                students: classroom.students.includes(NaN) ? [] : classroom.students,
             }
-            await axios.put(`api/subjects/${subject.id}/`, data)
+            console.log(data)
+            await axios.put(`api/classrooms/${classroom.id}/`, data)
                 .then((response) => {
-                    setSubjects((prevSubjects) =>
-                        prevSubjects.map((subject) =>
-                            subject.id === response.data['id'] ? response.data : subject
+                    setClassrooms((prevClassrooms) =>
+                        prevClassrooms.map((classroom) =>
+                            classroom.id === response.data['id'] ? response.data : classroom
                         )
                     );
                 });
-            setSuccess('Subject updated successfully.');
+            setSuccess('Classroom updated successfully.');
             handleClose();
             setSuccess(null)
             setError(null)
         } catch (error) {
-            setError('Failed to update subject.');
+            setError('Failed to update classroom.');
         }
     };
 
     return (
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Update Subject</Modal.Title>
+                <Modal.Title>Update Classroom</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {error && <Alert variant="danger">{error}</Alert>}
                 {success && <Alert variant="success">{success}</Alert>}
                 <Form onSubmit={handleUpdate}>
                     <Form.Group controlId="formName">
-                        <Form.Label>Subject Name</Form.Label>
+                        <Form.Label>Classroom Name</Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="Enter subject name"
+                            placeholder="Enter classroom name"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             required
@@ -108,31 +113,18 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                     </Form.Group>
                     <br />
                     <Form.Group controlId="formStudents">
-                        <Form.Label>Students Offering</Form.Label>
+                        <Form.Label>Students </Form.Label>
                         <Form.Control
                             as="select"
                             multiple
                             value={students}
                             onChange={(e) => setStudents(Array.from(e.target.selectedOptions, (option) => option.value))}
                         >
-                            {/* First render selected students in gray */}
-                            <option key="d" onClick={() => setStudents([])}>
+                            {/* First render selected classroom in gray */}
+                            <option key="d" onClick={() => classroom.students = []}>
                                 None
                             </option>
                             {allStudents
-                                .filter((student) => isStudentSelected(student.id))
-                                .map((student) => (
-                                    <option
-                                        key={student.id}
-                                        value={student.id}
-                                        style={{ color: 'gray' }} // Styling the selected students as gray
-                                    >
-                                        {student.username.replace('_', ' ')} (selected)
-                                    </option>
-                                ))}
-                            {/* Render unselected students normally */}
-                            {allStudents
-                                .filter((student) => !isStudentSelected(student.id))
                                 .map((student) => (
                                     <option key={student.id} value={student.id}>
                                         {student.username.replace('_', ' ')}
@@ -143,7 +135,7 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                     </Form.Group>
                     <br />
                     <Button variant="primary" type="submit">
-                        Update Subject
+                        Update Classroom
                     </Button>
                 </Form>
             </Modal.Body>

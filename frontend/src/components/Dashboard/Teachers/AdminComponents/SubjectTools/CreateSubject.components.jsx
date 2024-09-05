@@ -51,7 +51,7 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
 
     const handleSubmit = () => {
         // Check if the subject name already exists
-        axios.get(`http://127.0.0.1:8000/api/subjects/?name=${name}`)
+        axios.get(`api/subjects/?name=${name}`)
             .then(response => {
                 if (response.data.length > 0) {
                     setError('Subject name already exists.');
@@ -87,7 +87,7 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
                             )
                         })
                     }
-                    axios.post('http://127.0.0.1:8000/api/subjects/', data)
+                    axios.post('api/subjects/', data)
                         .then((response) => {
                             data_refined["id"] = response.data.id
                             setSubjects([...subjects, data_refined]);

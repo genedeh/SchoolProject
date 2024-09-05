@@ -2,10 +2,11 @@ import { UserContext } from "../../../../contexts/User.contexts";
 import { ClassroomsContext } from "../../../../contexts/Classrooms.contexts";
 import { useContext, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { Button, Accordion, Card, ListGroup, Spinner,Image } from "react-bootstrap";
+import { Button, Accordion, Card, ListGroup, Spinner, Image } from "react-bootstrap";
 import { GenderFemale, GenderMale, Trash, Pencil, PlusCircleFill } from "react-bootstrap-icons";
 import { DeleteClassroomModal } from "./ClassroomTools/DeleteClassroom.components";
 import { CreateClassroomModal } from "./ClassroomTools/CreateClassroom.components";
+import { UpdateClassroomModal } from "./ClassroomTools/UpdateClassroom.components";
 
 export const Classrooms = () => {
     const { currentUser } = useContext(UserContext);
@@ -13,15 +14,29 @@ export const Classrooms = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
-    const [selectedSubjectId, setSelectedSubjectId] = useState(null);
-    const [selectedSubjectForUpdate, setSelectedSubjectForUpdate] = useState(null);
+    const [selectedClassroomId, setSelectedClassroomId] = useState(null);
+    const [selectedClassroomForUpdate, setSelectedClassroomForUpdate] = useState(null);
 
 
     const handleDeleteClick = (classId) => {
-        setSelectedSubjectId(classId);
+        setSelectedClassroomId(classId);
         setShowDeleteModal(true);
     };
-    const handleUpdateClick = (classId) => { }
+    const handleUpdateClick = (classId) => {
+        classrooms.map((classroom) => {
+            if (classroom.id === classId) {
+                const classroomClone = { ...classroom }
+                const newStudents = []
+                classroomClone.students.map((stundent) => {
+                    newStudents.push(stundent.id)
+                })
+                classroomClone['students'] = newStudents
+                setSelectedClassroomForUpdate(classroomClone)
+                return classroomClone;
+            }
+        })
+        setShowUpdateModal(true)
+    }
 
 
     if (!currentUser.is_student_or_teacher && currentUser && currentUser.is_admin) {
@@ -56,11 +71,11 @@ export const Classrooms = () => {
                                                         roundedCircle
                                                         style={{ width: '40px', height: '40px', objectFit: 'cover' }}
                                                         className="me-3" />)
-                                                    : (<Image
-                                                        src="http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg"
-                                                        roundedCircle
-                                                        style={{ width: '40px', height: '40px', objectFit: 'cover' }}
-                                                        className="me-3" />)
+                                                        : (<Image
+                                                            src="http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg"
+                                                            roundedCircle
+                                                            style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+                                                            className="me-3" />)
                                                     }
                                                     {username.replace('_', ' ')}
                                                     {gender === 'male' ?
@@ -82,9 +97,10 @@ export const Classrooms = () => {
                     <DeleteClassroomModal
                         show={showDeleteModal}
                         handleClose={() => setShowDeleteModal(false)}
-                        classroomId={selectedSubjectId}
+                        classroomId={selectedClassroomId}
                     />
                     <CreateClassroomModal show={showCreateModal} handleClose={() => setShowCreateModal(false)} />
+                    <UpdateClassroomModal show={showUpdateModal} handleClose={() => setShowUpdateModal(false)} classroom={selectedClassroomForUpdate} />
                 </>
             );
         } else {
