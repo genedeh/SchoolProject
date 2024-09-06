@@ -1,9 +1,9 @@
 import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { UserContext } from "../../../../contexts/User.contexts";
-import { SubjectsContext } from "../../../../contexts/Subjects.contexts"
-import { Card, Spinner, Button, ListGroup, Accordion, Image } from 'react-bootstrap'
-import { GenderFemale, GenderMale } from "react-bootstrap-icons"
+import { SubjectsContext } from "../../../../contexts/Subjects.contexts";
+import { Card, Spinner, Button, ListGroup, Accordion, Image } from 'react-bootstrap';
+import { GenderFemale, GenderMale } from "react-bootstrap-icons";
 
 export const AssignedSubjects = () => {
     const { currentUser } = useContext(UserContext);

@@ -57,7 +57,10 @@ class UserProfileView(APIView):
             class_id = dummy_value[0]
             user_data.update({'user_class': ClassRoom.objects.get(id=int(class_id)).name})
         else:
-            user_data.update({'user_class': user.classrooms.name})
+            try:
+              user_data.update({'user_class': user.classrooms.name})
+            except Exception as e:
+                user_data.update({'user_class': None})
             user_data.update({'teaching_subjects':list(user.subject.all().values_list('id', flat=True)) })
             
         return Response(user_data, status=200)
