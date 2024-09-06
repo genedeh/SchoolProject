@@ -19,7 +19,7 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
         if (classroom) {
             setName(classroom.name);
             try {
-                setAssignedTeacher(classroom.assigned_teacher || '');
+                setAssignedTeacher(classroom.assigned_teacher.id || '');
             } catch (error) {
                 setAssignedTeacher(null)
             }
@@ -29,7 +29,7 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
         const newSetOfTeachers =
             usersList.filter((user) => {
                 if (!user.is_student_or_teacher && user.user_class === "None" && !user.is_superuser) {
-                    if (assignedTeacher && user.id === assignedTeacher.id) {
+                    if (assignedTeacher && user.id === assignedTeacher) {
                         return user
                     } else {
                         return user
@@ -54,7 +54,7 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
             })
             const data = {
                 name,
-                assigned_teacher: assignedTeacher.id,
+                assigned_teacher: assignedTeacher,
                 students: classroom.students.includes(NaN) ? [] : classroom.students,
             }
             console.log(data)
@@ -103,7 +103,7 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
                             value={assignedTeacher}
                             onChange={(e) => setAssignedTeacher(e.target.value)}
                         >
-                            <option value="">{assignedTeacher ? (assignedTeacher.username) : ('None')}</option>
+                            <option value="">{assignedTeacher ? (classroom.assigned_teacher.username) : ('None')}</option>
 
                             {teachers.map((teacher) => (
                                 <option key={teacher.id} value={teacher.id}>
