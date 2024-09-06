@@ -28,7 +28,7 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
         }
         const newSetOfTeachers =
             usersList.filter((user) => {
-                if (!user.is_student_or_teacher && user.user_class === "None") {
+                if (!user.is_student_or_teacher && user.user_class === "None" && !user.is_superuser) {
                     if (assignedTeacher && user.id === assignedTeacher.id) {
                         return user
                     } else {

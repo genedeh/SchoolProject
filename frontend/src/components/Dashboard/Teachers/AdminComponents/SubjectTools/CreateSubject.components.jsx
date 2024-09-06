@@ -18,7 +18,7 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
     useEffect(() => {
         const newSetOfTeachers =
             usersList.filter((user) => {
-                if (!user.is_student_or_teacher) {
+                if (!user.is_student_or_teacher && !user.is_superuser) {
                     return user
                 }
             });

@@ -18,7 +18,7 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
     useEffect(() => {
         const newSetOfTeachers =
             usersList.filter((user) => {
-                if (!user.is_student_or_teacher && user.user_class === "None") {
+                if (!user.is_student_or_teacher && user.user_class === "None" && !user.is_superuser) {
                     return user
                 }
             });
