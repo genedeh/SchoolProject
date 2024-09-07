@@ -1,9 +1,8 @@
-import { Button, Modal, Col, Card, Row, Container } from 'react-bootstrap';
+import { Button,  Col, Card, Row, Container } from 'react-bootstrap';
 import { useState } from 'react';
 
 
-export const SelectUserTypeStep = ({ updateFormData, nextStep }) => {
-    const [selectedOption, setSelectedOption] = useState(1);
+export const SelectUserTypeStep = ({ updateFormData, nextStep, selectedOption, setSelectedOption }) => {
 
     const options = [
         { id: 1, title: 'Students', description: 'View and manage student data' },
