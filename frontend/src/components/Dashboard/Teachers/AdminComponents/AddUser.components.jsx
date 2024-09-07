@@ -99,10 +99,20 @@ export const AddUser = () => {
     const { currentUser } = useContext(UserContext);
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        goal: ''
+        "username": "",
+        "password": "",
+        "email": "",
+        "first_name": "",
+        "last_name": "",
+        "profile_picture": null,
+        "is_student_or_teacher": false,
+        "birth_date": null,
+        "address": "",
+        "is_superuser": false,
+        "phone_number": "",
+        "gender": "male",
+        "classes": [],
+        "subjects": []
     });
     const nextStep = () => setStep(step + 1);
     const prevStep = () => setStep(step - 1);
