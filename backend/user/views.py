@@ -1,9 +1,7 @@
-from urllib.parse import uses_relative
 from rest_framework import generics
 from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from .models import User
 from academics.models import ClassRoom
 from .serializers import UserLoginSerializer, UserCreateSerializer, UserUpdateSerializer, UserListSerializer
@@ -69,8 +67,11 @@ class CreateAndSearchUserView(generics.ListCreateAPIView):
     serializer_class = UserListSerializer
 
     def get_queryset(self):
-      return User.objects.all()
-
+        username = self.request.query_params.get('username', None)
+        if username is not None:
+            return User.objects.filter(username=username)
+        return User.objects.all()
+    
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return UserListSerializer
