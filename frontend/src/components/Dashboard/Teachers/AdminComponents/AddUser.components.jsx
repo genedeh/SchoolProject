@@ -91,8 +91,6 @@ export const AddUser = () => {
             case 1:
                 return (
                     <SelectUserTypeStep
-                        formData={formData}
-                        setFormData={setFormData}
                         nextStep={nextStep}
                         updateFormData={updateFormData}
                     />

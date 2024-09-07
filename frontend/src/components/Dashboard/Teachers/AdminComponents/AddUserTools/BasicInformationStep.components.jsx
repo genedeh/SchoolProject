@@ -1,4 +1,4 @@
-export const BasicInformationStep = ({ formData, setFormData, nextStep, prevStep, userType }) => {
+export const BasicInformationStep = ({ formData, nextStep, prevStep }) => {
     return (
         <div>Basic Infromation</div>
     )
