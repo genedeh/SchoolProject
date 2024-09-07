@@ -3,7 +3,7 @@ import { UserContext } from "../../../../contexts/User.contexts";
 import { Navigate } from "react-router-dom";
 import { Form, Button } from 'react-bootstrap';
 import { SelectUserTypeStep } from "./AddUserTools/SelectUserTypeStep.components";
-
+import { BasicInformationStep } from "./AddUserTools/BasicInformationStep.components";
 
 const MainGoal = ({ formData, setFormData, nextStep, prevStep }) => {
     const handleChange = (e) => {
@@ -56,6 +56,7 @@ const Confirmation = ({ formData, prevStep, submitForm }) => {
 export const AddUser = () => {
     const { currentUser } = useContext(UserContext);
     const [step, setStep] = useState(1);
+    const [selectedOption, setSelectedOption] = useState(1);
     const [formData, setFormData] = useState({
         "username": "",
         "password": "",
@@ -93,13 +94,15 @@ export const AddUser = () => {
                     <SelectUserTypeStep
                         nextStep={nextStep}
                         updateFormData={updateFormData}
+                        selectedOption={selectedOption}
+                        setSelectedOption={setSelectedOption}
                     />
                 );
             case 2:
                 return (
-                    <MainGoal
+                    <BasicInformationStep
                         formData={formData}
-                        setFormData={setFormData}
+                        updateFormData={updateFormData}
                         nextStep={nextStep}
                         prevStep={prevStep}
                     />
