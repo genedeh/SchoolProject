@@ -1,51 +1,9 @@
 import { useContext, useState } from "react";
 import { UserContext } from "../../../../contexts/User.contexts";
 import { Navigate } from "react-router-dom";
-import { Form, Button } from 'react-bootstrap'
-// import './AddUser.styles.scss'
-const BasicInformation = ({ formData, setFormData, nextStep }) => {
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
+import { Form, Button } from 'react-bootstrap';
+import { SelectUserTypeStep } from "./AddUserTools/SelectUserTypeStep.components";
 
-    return (
-        <div className="p-4 container">
-            <h2>Let's get to know each other 👋</h2>
-            <Form>
-                <Form.Group className="mb-3">
-                    <Form.Control
-                        type="text"
-                        placeholder="Name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                    />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                    <Form.Control
-                        type="email"
-                        placeholder="Email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                    />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                    <Form.Control
-                        type="password"
-                        placeholder="Password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                    />
-                </Form.Group>
-                <Button variant="primary" onClick={nextStep}>
-                    Next
-                </Button>
-            </Form>
-        </div>
-    );
-};
 
 const MainGoal = ({ formData, setFormData, nextStep, prevStep }) => {
     const handleChange = (e) => {
@@ -105,7 +63,7 @@ export const AddUser = () => {
         "first_name": "",
         "last_name": "",
         "profile_picture": null,
-        "is_student_or_teacher": false,
+        "is_student_or_teacher": true,
         "birth_date": null,
         "address": "",
         "is_superuser": false,
@@ -120,15 +78,23 @@ export const AddUser = () => {
     const submitForm = () => {
         console.log('Form Submitted', formData);
     };
+    const updateFormData = (field, value) => {
+        setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+        }));
+    };
+    console.log(formData)
 
     if (currentUser.is_admin && currentUser) {
         switch (step) {
             case 1:
                 return (
-                    <BasicInformation
+                    <SelectUserTypeStep
                         formData={formData}
                         setFormData={setFormData}
                         nextStep={nextStep}
+                        updateFormData={updateFormData}
                     />
                 );
             case 2:
