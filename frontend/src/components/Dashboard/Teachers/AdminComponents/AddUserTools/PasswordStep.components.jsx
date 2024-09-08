@@ -11,6 +11,7 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
     const handleChange = (e) => {
         const { name, value } = e.target;
         updateFormData(name, value)
+        
     };
 
     // Handle form submission
@@ -26,7 +27,6 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
 
     return (
         <Form onSubmit={handleSubmit} className="p-3">
-            {error && <Alert className="text-danger m-2" variant="danger" onClose={() => setError(null)} dismissible>{error}</Alert>}
             <Form.Group className="m-4">
                 <InputGroup>
                     <Form.Control
@@ -35,6 +35,7 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
+                        isInvalid={!!error}
                         required
                     />
                     <Button
@@ -43,6 +44,7 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
                     >
                         {showPassword ? 'Hide' : 'Show'}
                     </Button>
+                    <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
                 </InputGroup>
             </Form.Group>
 
@@ -53,6 +55,7 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
                         placeholder="Confirm your password"
                         name="confirmPassword"
                         value={confirmPassword}
+                        isInvalid={!!error}
                         onChange={(e)=> setConfirmPassword(e.target.value)}
                         required
                     />
@@ -62,6 +65,7 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
                     >
                         {showConfirmPassword ? 'Hide' : 'Show'}
                     </Button>
+                    <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
                 </InputGroup>
             </Form.Group>
 

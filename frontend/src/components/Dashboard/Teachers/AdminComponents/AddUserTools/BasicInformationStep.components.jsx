@@ -8,7 +8,6 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
     const [error, setError] = useState({
         'username': '',
         'email': '',
-        'required': '',
     });
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     useEffect(() => {
@@ -67,27 +66,27 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
     return (
         <Container fluid={true}>
             <hr /><h1 className="login-title">Fill In Needed Information</h1><hr />
-            <Form>
-                {error.username && <small className="text-danger m-4" >{error.username}</small>}<br/>
-                {error.required && <Alert className="text-danger m-2" variant="danger" dismissible>{error.required}</Alert>}
+            <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="formFirstname">
-                    <Form.Control type="text" required={true} placeholder="Enter firstname" value={firstName} onChange={(e) => setFirstname(e.target.value)} />
+                    <Form.Control type="text" required placeholder="Enter firstname" value={firstName} onChange={(e) => setFirstname(e.target.value)} isInvalid={!!error.username} />
+                    <Form.Control.Feedback type="invalid">{error.username}</Form.Control.Feedback>
                 </Form.Group>
                 <br />
                 <Form.Group controlId="formLastname">
-                    <Form.Control type="text" required={true} placeholder="Enter lastname" value={lastName} onChange={(e) => setLastname(e.target.value)} />
+                    <Form.Control type="text" required placeholder="Enter lastname" value={lastName} onChange={(e) => setLastname(e.target.value)} isInvalid={!!error.username} />
+                    <Form.Control.Feedback type="invalid">{error.username}</Form.Control.Feedback>
                 </Form.Group>
                 <br />
                 <Form.Group controlId="formEmail">
-                    <Form.Control type="email" required={true} placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    {error.email && <small className="text-danger mt-4" >{error.email}</small>}
+                    <Form.Control type="email" required placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} isInvalid={!!error.email} />
+                    <Form.Control.Feedback type="invalid">{error.email}</Form.Control.Feedback>
                 </Form.Group>
                 <br />
                 <div className="d-flex justify-content-between mt-4">
                     <Button variant="secondary" onClick={prevStep}>
                         Back
                     </Button>
-                    <Button variant="primary" onClick={handleSubmit}  >
+                    <Button variant="primary" type="submit"   >
                         Next
                     </Button>
                 </div>
