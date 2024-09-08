@@ -8,38 +8,7 @@ import { PasswordStep } from "./AddUserTools/PasswordStep.components";
 import { ProfilePictureStep } from "./AddUserTools/ProfilePictureStep.components";
 import { PersonalInfromationStep } from "./AddUserTools/PersonalInformationStep.components";
 import { ClassSelectStep } from "./AddUserTools/ClassSelectStep.componets";
-
-const MainGoal = ({ formData, setFormData, nextStep, prevStep }) => {
-    const handleChange = (e) => {
-        setFormData({ ...formData, goal: e.target.value });
-    };
-
-    return (
-        <div className="p-4">
-            <h2>What's your main goal?</h2>
-            <Form>
-                {['Reduce stress', 'Improve focus', 'Manage anxiety', "I'm just checking it out"].map((goal) => (
-                    <Form.Check
-                        key={goal}
-                        type="radio"
-                        label={goal}
-                        value={goal}
-                        checked={formData.goal === goal}
-                        onChange={handleChange}
-                    />
-                ))}
-                <div className="d-flex justify-content-between mt-4">
-                    <Button variant="secondary" onClick={prevStep}>
-                        Back
-                    </Button>
-                    <Button variant="primary" onClick={nextStep}>
-                        Continue
-                    </Button>
-                </div>
-            </Form>
-        </div>
-    );
-};
+import { SubjectSelectStep } from "./AddUserTools/SubjectSelectStep.componets";
 
 const Confirmation = ({ formData, prevStep, submitForm }) => {
     return (
@@ -151,6 +120,18 @@ export const AddUser = () => {
                     );
                 }
             case 7:
+                if (formData.is_student_or_teacher) {
+                    return (
+
+                        <SubjectSelectStep
+                            formData={formData}
+                            updateFormData={updateFormData}
+                            nextStep={nextStep}
+                            prevStep={prevStep}
+                        />
+                    );
+                }
+            case 8:
                 return (
                     <Confirmation
                         formData={formData}

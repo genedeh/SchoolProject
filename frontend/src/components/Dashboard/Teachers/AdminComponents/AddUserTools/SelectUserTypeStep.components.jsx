@@ -1,5 +1,4 @@
 import { Button,  Col, Card, Row, Container } from 'react-bootstrap';
-import { useState } from 'react';
 
 
 export const SelectUserTypeStep = ({ updateFormData, nextStep, selectedOption, setSelectedOption }) => {

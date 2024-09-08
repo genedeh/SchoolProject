@@ -22,7 +22,6 @@ export const ClassSelectStep = ({ formData, updateFormData, nextStep, prevStep }
             nextStep();
         } else {
             setError('Select A Class');
-            console.log(error)
         }
     }
 
