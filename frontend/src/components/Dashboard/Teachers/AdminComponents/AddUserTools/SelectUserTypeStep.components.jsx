@@ -17,9 +17,11 @@ export const SelectUserTypeStep = ({ updateFormData, nextStep, selectedOption, s
         } else if (id === 2) {
             updateFormData('is_student_or_teacher', false);
             updateFormData('is_superuser', false);
+            updateFormData('classes', [])
         } else {
             updateFormData('is_student_or_teacher', false);
             updateFormData('is_superuser', true);
+            updateFormData('classes', [])
         }
         setSelectedOption(id);
     };

@@ -7,6 +7,7 @@ import { BasicInformationStep } from "./AddUserTools/BasicInformationStep.compon
 import { PasswordStep } from "./AddUserTools/PasswordStep.components";
 import { ProfilePictureStep } from "./AddUserTools/ProfilePictureStep.components";
 import { PersonalInfromationStep } from "./AddUserTools/PersonalInformationStep.components";
+import { ClassSelectStep } from "./AddUserTools/ClassSelectStep.componets";
 
 const MainGoal = ({ formData, setFormData, nextStep, prevStep }) => {
     const handleChange = (e) => {
@@ -138,6 +139,18 @@ export const AddUser = () => {
                     />
                 );
             case 6:
+                if (formData.is_student_or_teacher) {
+                    return (
+
+                        <ClassSelectStep
+                            formData={formData}
+                            updateFormData={updateFormData}
+                            nextStep={nextStep}
+                            prevStep={prevStep}
+                        />
+                    );
+                }
+            case 7:
                 return (
                     <Confirmation
                         formData={formData}
