@@ -6,6 +6,7 @@ import { SelectUserTypeStep } from "./AddUserTools/SelectUserTypeStep.components
 import { BasicInformationStep } from "./AddUserTools/BasicInformationStep.components";
 import { PasswordStep } from "./AddUserTools/PasswordStep.components";
 import { ProfilePictureStep } from "./AddUserTools/ProfilePictureStep.components";
+import { PersonalInfromationStep } from "./AddUserTools/PersonalInformationStep.components";
 
 const MainGoal = ({ formData, setFormData, nextStep, prevStep }) => {
     const handleChange = (e) => {
@@ -128,6 +129,15 @@ export const AddUser = () => {
                     />
                 );
             case 5:
+                return (
+                    <PersonalInfromationStep
+                        formData={formData}
+                        updateFormData={updateFormData}
+                        nextStep={nextStep}
+                        prevStep={prevStep}
+                    />
+                );
+            case 6:
                 return (
                     <Confirmation
                         formData={formData}
