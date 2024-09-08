@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 import { Form, Button } from 'react-bootstrap';
 import { SelectUserTypeStep } from "./AddUserTools/SelectUserTypeStep.components";
 import { BasicInformationStep } from "./AddUserTools/BasicInformationStep.components";
-
+import { PasswordStep } from "./AddUserTools/PasswordStep.components";
 const MainGoal = ({ formData, setFormData, nextStep, prevStep }) => {
     const handleChange = (e) => {
         setFormData({ ...formData, goal: e.target.value });
@@ -108,6 +108,15 @@ export const AddUser = () => {
                     />
                 );
             case 3:
+                return (
+                    <PasswordStep
+                        formData={formData}
+                        updateFormData={updateFormData}
+                        nextStep={nextStep}
+                        prevStep={prevStep}
+                    />
+                );
+            case 4:
                 return (
                     <Confirmation
                         formData={formData}
