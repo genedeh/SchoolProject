@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { ClassroomsContext } from "../../../../../contexts/Classrooms.contexts";
-import { Button, ListGroup, Badge } from "react-bootstrap";
+import { Button, ListGroup, Badge, Alert } from "react-bootstrap";
 
 
 const getRandomColor = () => {
@@ -9,22 +9,27 @@ const getRandomColor = () => {
 };
 export const ClassSelectStep = ({ formData, updateFormData, nextStep, prevStep }) => {
     const { classrooms } = useContext(ClassroomsContext);
+    const [error, setError] = useState(null);
     const [selectedClassRoom, setSelectedClassRoom] = useState(formData.classes[0]);
     const toggleSelectClassroom = (id) => {
         setSelectedClassRoom(id)
         updateFormData('classes', [id])
     };
 
-    // Unselect all classrooms
-    const unselectAll = () => {
-        setSelectedClassRoom([]);
-        updateFormData('classes', [])
-    };
+    const handleSubmit = (e) => {
+        if (formData.classes.length !== 0) {
+            setError(null);
+            nextStep();
+        } else {
+            setError('Select A Class');
+            console.log(error)
+        }
+    }
 
     return (
         <div className="p-4 bg-light rounded shadow-sm">
             <h3 className="mb-4">Classroom List</h3>
-
+            {error && <Alert variant="danger" dismissible>{error}</Alert>}
             <ListGroup variant="flush">
                 {classrooms.map((classroom) => (
                     <ListGroup.Item
@@ -44,25 +49,18 @@ export const ClassSelectStep = ({ formData, updateFormData, nextStep, prevStep }
                                 Assigned Teacher : {classroom.assigned_teacher ? (classroom.assigned_teacher.username.replace('_', ' ')) : ("NO ASSIGNE TEACHER")}
                             </p>
                             <p className="mb-0">
-                               No Of Students : <Badge bg="info">{classroom.students.length}</Badge>
+                                No Of Students : <Badge bg="info">{classroom.students.length}</Badge>
                             </p>
                         </div>
                     </ListGroup.Item>
                 ))}
             </ListGroup>
 
-            {/* Unselect All Button */}
-            {selectedClassRoom !== 0 && (
-                <Button variant="danger" className="mt-3" onClick={unselectAll}>
-                    Unselect
-                </Button>
-            )}
-
             <div className="d-flex justify-content-between mt-4">
                 <Button variant="secondary" onClick={prevStep}>
                     Back
                 </Button>
-                <Button variant="primary" onClick={nextStep}>
+                <Button variant="primary" onClick={handleSubmit}>
                     Next
                 </Button>
             </div>
