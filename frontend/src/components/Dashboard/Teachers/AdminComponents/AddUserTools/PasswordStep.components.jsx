@@ -74,7 +74,7 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
                     Back
                 </Button>
                 <Button variant="primary"  type="submit">
-                    Continue
+                    Next
                 </Button>
             </div>
         </Form>

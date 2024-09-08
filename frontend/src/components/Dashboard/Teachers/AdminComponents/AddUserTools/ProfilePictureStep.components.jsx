@@ -77,7 +77,7 @@ export const ProfilePictureStep = ({ formData, updateFormData, nextStep, prevSte
                     Back
                 </Button>
                 <Button variant="primary" onClick={nextStep}>
-                    Continue
+                    Next
                 </Button>
             </div>
         </Form>

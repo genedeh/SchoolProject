@@ -125,7 +125,7 @@ export const PersonalInfromationStep = ({ formData, updateFormData, nextStep, pr
                         !formData.birth_date || !formData.address || !!errors.phoneNumber
                     }
                 >
-                    Continue
+                    Next
                 </Button>
             </div>
         </Form>
