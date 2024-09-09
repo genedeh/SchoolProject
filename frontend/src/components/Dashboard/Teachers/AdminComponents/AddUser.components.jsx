@@ -1,7 +1,6 @@
 import { useContext, useState } from "react";
 import { UserContext } from "../../../../contexts/User.contexts";
 import { Navigate } from "react-router-dom";
-import { Form, Button } from 'react-bootstrap';
 import { SelectUserTypeStep } from "./AddUserTools/SelectUserTypeStep.components";
 import { BasicInformationStep } from "./AddUserTools/BasicInformationStep.components";
 import { PasswordStep } from "./AddUserTools/PasswordStep.components";
@@ -9,23 +8,8 @@ import { ProfilePictureStep } from "./AddUserTools/ProfilePictureStep.components
 import { PersonalInfromationStep } from "./AddUserTools/PersonalInformationStep.components";
 import { ClassSelectStep } from "./AddUserTools/ClassSelectStep.componets";
 import { SubjectSelectStep } from "./AddUserTools/SubjectSelectStep.componets";
+import { ConfirmationStep } from "./AddUserTools/ConfirmationStep.components";
 
-const Confirmation = ({ formData, prevStep, submitForm }) => {
-    return (
-        <div className="p-4">
-            <h2>You are all set</h2>
-            <p>We are now creating your curated list of guided meditation sessions and mindfulness tips 💡</p>
-            <div className="d-flex justify-content-between mt-4">
-                <Button variant="secondary" onClick={prevStep}>
-                    Back
-                </Button>
-                <Button variant="primary" onClick={submitForm}>
-                    View sessions
-                </Button>
-            </div>
-        </div>
-    );
-};
 export const AddUser = () => {
     const { currentUser } = useContext(UserContext);
     const [step, setStep] = useState(1);
@@ -133,10 +117,10 @@ export const AddUser = () => {
                 }
             case 8:
                 return (
-                    <Confirmation
+                    <ConfirmationStep
                         formData={formData}
                         prevStep={prevStep}
-                        submitForm={submitForm}
+                        setStep={setStep}
                     />
                 );
             default:
