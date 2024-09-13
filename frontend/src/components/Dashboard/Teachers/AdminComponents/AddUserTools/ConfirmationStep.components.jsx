@@ -2,9 +2,9 @@ import { Card, ListGroup, Button, Table, Row, Col, Badge } from 'react-bootstrap
 import { ClassroomsContext } from '../../../../../contexts/Classrooms.contexts';
 import { SubjectsContext } from '../../../../../contexts/Subjects.contexts';
 import { useState, useContext, useEffect } from 'react';
+import axios from 'axios';
 
-
-export const ConfirmationStep = ({ formData, prevStep, setStep }) => {
+export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) => {
     const { username, first_name, last_name, password, email, address, birth_date,
         is_student_or_teacher, is_superuser, phone_number, profile_picture, classes, gender
     } = formData;
@@ -12,8 +12,44 @@ export const ConfirmationStep = ({ formData, prevStep, setStep }) => {
     const { subjects } = useContext(SubjectsContext);
     const { classrooms } = useContext(ClassroomsContext);
     const [currentClassroom, setCurrentClassroom] = useState('');
+    const [displayProfilePicture, setDisplayProfilePicture] = useState(null)
     const [userType, setUserType] = useState('');
-    const test = [4, 6]
+
+    const handleSubmit = async () => {
+        console.log(formData)
+        axios.post('api/users/', formData, 
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data', // Ensure correct content-type
+                },
+            }
+        )
+            .then(response => {
+                if (response.data['username'] === username) {
+                    setStep(1);
+                    setFormData({
+                        "username": "",
+                        "password": "",
+                        "email": "",
+                        "first_name": "",
+                        "last_name": "",
+                        "profile_picture": null,
+                        "is_student_or_teacher": true,
+                        "birth_date": null,
+                        "address": "",
+                        "is_superuser": false,
+                        "phone_number": "",
+                        "gender": "male",
+                        "classes": [],
+                        "subjects": []
+                    })
+                    alert("New User Was Succesfully Added")
+                }
+            }).catch(e => {
+                console.log(e)
+                alert("Failed To Add New User");
+            })
+    }
 
     useEffect(() => {
         if (is_student_or_teacher) {
@@ -28,6 +64,13 @@ export const ConfirmationStep = ({ formData, prevStep, setStep }) => {
 
         setCurrentClassroom(classrooms.filter(({ id }) => id === classes[0]))
 
+        if (profile_picture) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setDisplayProfilePicture(reader.result); // Display selected image
+            };
+            reader.readAsDataURL(profile_picture);
+        }
     }, [])
 
 
@@ -41,7 +84,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep }) => {
                             <Col md={2} className="text-center">
                                 <img
                                     src={
-                                        profile_picture ||
+                                        displayProfilePicture ||
                                         'http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg' // Default placeholder image
                                     }
                                     alt="Profile"
@@ -111,8 +154,8 @@ export const ConfirmationStep = ({ formData, prevStep, setStep }) => {
                 <Button variant="secondary" onClick={prevStep}>
                     Back
                 </Button>
-                <Button variant="primary" >
-                    View sessions
+                <Button variant="primary" onClick={handleSubmit} >
+                    Submit
                 </Button>
             </div>
             <br />

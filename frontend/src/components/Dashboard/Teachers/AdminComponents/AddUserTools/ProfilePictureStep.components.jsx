@@ -4,22 +4,32 @@ import { Trash, Pencil } from "react-bootstrap-icons";
 
 export const ProfilePictureStep = ({ formData, updateFormData, nextStep, prevStep }) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [displayProfilePicture, setDisplayProfilePicture] = useState(formData.profile_picture)
 
     // Handle file change event for updating the profile picture
     const handleFileChange = (event) => {
         const file = event.target.files[0];
+        setSelectedFile(file)
         if (file) {
             const reader = new FileReader();
             reader.onload = () => {
-                updateFormData('profile_picture', reader.result); // Display selected image
+                setDisplayProfilePicture(reader.result); // Display selected image
+                updateFormData('profile_picture', file);
             };
             reader.readAsDataURL(file);
         }
+        if (!selectedFile) return;
+
+        // Create a FormData object to hold the file
+        // const formData = new FormData();
+        // console.log(formData)
     };
 
     // Handle delete picture
     const handleDeletePicture = () => {
         updateFormData('profile_picture', null)
+        setDisplayProfilePicture(null)
         setShowDeleteModal(false);
     };
 
@@ -28,7 +38,7 @@ export const ProfilePictureStep = ({ formData, updateFormData, nextStep, prevSte
             <div className="me-3">
                 <Image
                     src={
-                        formData.profile_picture ||
+                        displayProfilePicture ||
                         'http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg' // Default placeholder image
                     }
                     roundedCircle

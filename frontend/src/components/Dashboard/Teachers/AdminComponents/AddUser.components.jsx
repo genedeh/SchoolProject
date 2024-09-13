@@ -33,16 +33,12 @@ export const AddUser = () => {
     const nextStep = () => setStep(step + 1);
     const prevStep = () => setStep(step - 1);
 
-    const submitForm = () => {
-        console.log('Form Submitted', formData);
-    };
     const updateFormData = (field, value) => {
         setFormData((prevData) => ({
             ...prevData,
             [field]: value,
         }));
     };
-    console.log(formData)
 
     if (currentUser.is_admin && currentUser) {
         switch (step) {
@@ -106,7 +102,6 @@ export const AddUser = () => {
             case 7:
                 if (formData.is_student_or_teacher) {
                     return (
-
                         <SubjectSelectStep
                             formData={formData}
                             updateFormData={updateFormData}
@@ -121,6 +116,7 @@ export const AddUser = () => {
                         formData={formData}
                         prevStep={prevStep}
                         setStep={setStep}
+                        setFormData={setFormData}
                     />
                 );
             default:
