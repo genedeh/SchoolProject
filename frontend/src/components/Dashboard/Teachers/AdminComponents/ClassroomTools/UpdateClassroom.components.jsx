@@ -38,7 +38,7 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
             });
         const newSetOfStudents =
             usersList.filter((user) => {
-                if (user.is_student_or_teacher && user.user_class === "None") {
+                if (user.is_student_or_teacher && user.user_class === "None" || user.user_class === name) {
                     return user
                 }
             });
@@ -55,7 +55,7 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
             const data = {
                 name,
                 assigned_teacher: assignedTeacher,
-                students: classroom.students.includes(NaN) ? [] : classroom.students,
+                students: classroom.students.includes(NaN) ? [] : students,
             }
             console.log(data)
             await axios.put(`api/classrooms/${classroom.id}/`, data)
