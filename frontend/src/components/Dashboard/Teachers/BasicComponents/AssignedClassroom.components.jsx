@@ -67,11 +67,11 @@ export const AssignedClassrooms = () => {
                     </Accordion>
                 </div>
             )
+        } else {
+            return (<Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+            </Spinner>)
         }
-    } else {
-        return (<Spinner animation="border" role="status">
-            <span className="visually-hidden">Loading...</span>
-        </Spinner>)
     } return (
         <Navigate to='/dashboard/home' />
     );
