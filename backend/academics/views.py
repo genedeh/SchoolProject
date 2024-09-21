@@ -1,6 +1,6 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .serializers import ClassRoomListSerializer, OfferingSubjectSerializer, SubjectsListSerializer, SubjectUpdateSerializer,SubjectCreateSerializer, ClassRoomCreateSerializer, ClassroomUpdateSerializer, ResultListSerializer
+from .serializers import ClassRoomListSerializer, OfferingSubjectSerializer, SubjectsListSerializer, SubjectUpdateSerializer,SubjectCreateSerializer, ClassRoomCreateSerializer, ClassroomUpdateSerializer, ResultListSerializer, ResultCreateSerializer
 from .models import ClassRoom, Result, Subject
 from user.models import User
 # Create your views here.
@@ -80,7 +80,6 @@ class ClassRoomListView(generics.ListCreateAPIView):
           serializer = self.get_serializer(data=request.data)
           serializer.is_valid(raise_exception=True)
           serializer.save()
-          print(serializer.data)
           headers = self.get_success_headers(serializer.data)
           return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
         except Exception as e:
@@ -156,4 +155,17 @@ class ResultsListView(generics.ListCreateAPIView):
         if self.request.method == 'GET':
             return ResultListSerializer
         elif self.request.method == 'POST':
-            return ResultListSerializer
+            return ResultCreateSerializer
+   def create(self, request, *args, **kwargs):
+        try:
+          serializer = self.get_serializer(data=request.data)
+          serializer.is_valid(raise_exception=True)
+          serializer.save()
+          headers = self.get_success_headers(serializer.data)
+          return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        except Exception as e:
+          print(e)
+          return Response({"detail": f"Failed to create result."}, status=status.HTTP_400_BAD_REQUEST)
+        
+   def perform_create(self, serializer):
+        serializer.save()

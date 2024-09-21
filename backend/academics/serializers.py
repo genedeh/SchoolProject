@@ -14,6 +14,16 @@ class ResultListSerializer(serializers.ModelSerializer):
         model = Result
         fields = '__all__'
 
+class ResultCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Result
+        fields = '__all__'
+
+    def validate_name(self, value):
+        if Result.objects.filter(name=value).exists():
+            raise serializers.ValidationError("Result with this name already exists.")
+        return value
+
 class ClassRoomListSerializer(serializers.ModelSerializer):
     assigned_teacher = ViewUserSerializer()
     students = ViewUserSerializer(many=True)
