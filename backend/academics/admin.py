@@ -30,7 +30,7 @@ class SubjectAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 class ResultAdmin(admin.ModelAdmin):
-    list_display = ("id", "assigned_class", "term", "year_span", "assigned_student")
+    list_display = ("id",  "term", "year_span", "assigned_student")
     search_fields = ['name']
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -40,7 +40,6 @@ class ResultAdmin(admin.ModelAdmin):
 
 class UploadListAdmin(admin.ModelAdmin):
     list_display = ('name', 'created_at', 'updated_at')
-    search_fields = ['assigned_class']
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "assigned_teacher":

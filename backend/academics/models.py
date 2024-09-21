@@ -30,7 +30,6 @@ class Result(models.Model):
     ]
 
     year_span = models.CharField(max_length=10, help_text="For Example: 2023/2024", blank=True)
-    assigned_class = models.ForeignKey(ClassRoom, on_delete=models.CASCADE, related_name='results')
     assigned_student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='results')
     term = models.CharField(max_length=10, choices=TERM_CHOICES, default='1st_term')
     name = models.CharField(max_length=50, blank=True)
@@ -51,8 +50,7 @@ class Result(models.Model):
 
 class UploadList(models.Model):
     name = models.CharField(max_length=60, unique=True, blank=True)
-    assigned_teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uploalists')
-    assigned_class = models.ForeignKey(ClassRoom, on_delete=models.PROTECT, related_name="uploadlists", null=True)
+    assigned_teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='uploadlists')
     results_to_be_uploaded = models.ManyToManyField(Result, related_name='uploalists', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -62,5 +60,5 @@ class UploadList(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.name:
-            self.name = f"{self.assigned_class}_{self.assigned_teacher}_UploadList"
+            self.name = f"{self.assigned_teacher}_UploadList"
         super().save(*args, **kwargs)
