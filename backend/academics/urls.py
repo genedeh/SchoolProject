@@ -8,4 +8,5 @@ urlpatterns = [
     path("offering-subjects/", views.OfferingSubjectsListView.as_view(), name="offering-subjects"),
     path("subjects/", views.SubjectsListView.as_view(), name='subjects'),
     path("subjects/<int:pk>/", views.SubjectsRetrieveView.as_view(), name='subjects'),
+    path("results/", views.ResultsListView.as_view(), name="results"),
 ]

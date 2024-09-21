@@ -1,7 +1,7 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
-from .serializers import ClassRoomListSerializer, OfferingSubjectSerializer, SubjectsListSerializer, SubjectUpdateSerializer,SubjectCreateSerializer, ClassRoomCreateSerializer, ClassroomUpdateSerializer
-from .models import ClassRoom, Subject
+from .serializers import ClassRoomListSerializer, OfferingSubjectSerializer, SubjectsListSerializer, SubjectUpdateSerializer,SubjectCreateSerializer, ClassRoomCreateSerializer, ClassroomUpdateSerializer, ResultListSerializer
+from .models import ClassRoom, Result, Subject
 from user.models import User
 # Create your views here.
 
@@ -144,4 +144,16 @@ class SubjectsRetrieveView(generics.RetrieveUpdateDestroyAPIView):
           return Response(detail_serializer.data, status=status.HTTP_200_OK)
         except Exception as e:
             print(e)
-            return Response({"detail": "Failed to update subject."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Failed to update subject."}, status=status.HTTP_400_BAD_REQUEST),
+
+class ResultsListView(generics.ListCreateAPIView):
+   serializer_class = ResultListSerializer
+   
+   def get_queryset(self):
+      return Result.objects.all()
+   
+   def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return ResultListSerializer
+        elif self.request.method == 'POST':
+            return ResultListSerializer

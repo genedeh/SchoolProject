@@ -1,13 +1,18 @@
-from dataclasses import fields
 from rest_framework import serializers
 
 from user.models import User
-from .models import ClassRoom, Subject
+from .models import ClassRoom, Subject, Result
 
 class ViewUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'gender', 'profile_picture']
+
+class ResultListSerializer(serializers.ModelSerializer):
+    assigned_student = ViewUserSerializer()
+    class Meta:
+        model = Result
+        fields = '__all__'
 
 class ClassRoomListSerializer(serializers.ModelSerializer):
     assigned_teacher = ViewUserSerializer()
