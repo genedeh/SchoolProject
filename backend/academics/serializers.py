@@ -17,7 +17,7 @@ class ResultListSerializer(serializers.ModelSerializer):
 class ResultCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Result
-        fields = '__all__'
+        fields = ['id','year_span', 'term', 'result_file', 'assigned_student']
 
     def validate_name(self, value):
         if Result.objects.filter(name=value).exists():

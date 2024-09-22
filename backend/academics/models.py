@@ -1,4 +1,3 @@
-from datetime import datetime
 from django.db import models
 from user.models import User
 
@@ -42,7 +41,6 @@ class Result(models.Model):
         return self.name
     
     def save(self, *args, **kwargs):
-        self.year_span = f"{datetime.now().year}/{datetime.now().year + 1}"
         if not self.name:
             self.name = f"{self.assigned_student}_{self.year_span}_{self.term}_Result"
         super().save(*args, **kwargs)
