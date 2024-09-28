@@ -29,6 +29,7 @@ class Result(models.Model):
     ]
 
     year_span = models.CharField(max_length=10, help_text="For Example: 2023/2024", blank=True)
+    classroom = models.ForeignKey(ClassRoom, on_delete=models.CASCADE, related_name='classroom', null=True)
     assigned_student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='results')
     term = models.CharField(max_length=10, choices=TERM_CHOICES, default='1st_term')
     name = models.CharField(max_length=50, blank=True)
