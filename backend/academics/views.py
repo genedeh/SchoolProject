@@ -1,4 +1,5 @@
 from rest_framework import generics, status
+from collections import defaultdict
 from rest_framework.response import Response
 from .serializers import ClassRoomListSerializer, OfferingSubjectSerializer, SubjectsListSerializer, SubjectUpdateSerializer,SubjectCreateSerializer, ClassRoomCreateSerializer, ClassroomUpdateSerializer, ResultListSerializer, ResultCreateSerializer
 from .models import ClassRoom, Result, Subject
@@ -149,20 +150,37 @@ class ResultsListView(generics.ListCreateAPIView):
    serializer_class = ResultListSerializer
    
    def get_queryset(self):
-      return Result.objects.all()
+        return Result.objects.select_related('classroom', 'assigned_student').order_by('classroom__name','year_span', 'assigned_student__username')
    
    def get_serializer_class(self):
         if self.request.method == 'GET':
             return ResultListSerializer
         elif self.request.method == 'POST':
             return ResultCreateSerializer
+        
+   def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+
+        # Dictionary to hold class names as keys and lists of result objects as values
+        results_by_class = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
+
+        for result in serializer.data:
+            year_span = result['year_span']
+            assigned_student = result['assigned_student']['username']
+            if result['classroom']:
+              class_name = result['classroom']['name']
+              results_by_class[class_name][year_span][assigned_student].append(result)
+            else:
+              results_by_class["None"][year_span][assigned_student].append(result)
+
+        return Response(results_by_class, status=200)
+   
    def create(self, request, *args, **kwargs):
         try:
           current_student_id = request.data['assigned_student']
           result_name = f'{User.objects.get(id=current_student_id).username}_{request.data['year_span']}_{request.data['term']}_Result'
           results_names = list(Result.objects.filter(assigned_student=current_student_id).values_list('name', flat=True))
-          print(results_names)
-          print(result_name)
           if result_name in results_names:
             return Response({"detail": f"Student cannot have the two equal terms in one year."}, status=status.HTTP_400_BAD_REQUEST)
           serializer = self.get_serializer(data=request.data)

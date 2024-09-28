@@ -7,17 +7,29 @@ class ViewUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'gender', 'profile_picture']
+        
+class ViewClassroomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClassRoom
+        fields = ['id', 'name']
 
 class ResultListSerializer(serializers.ModelSerializer):
     assigned_student = ViewUserSerializer()
+    classroom = ViewClassroomSerializer()
     class Meta:
         model = Result
-        fields = '__all__'
+        fields = [
+            'id', 'name', 'term', 'year_span', 'result_file', 'uploaded', 'created_at',
+            'uploaded_at', 'assigned_student', 'classroom'
+        ]
 
 class ResultCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Result
-        fields = ['id','year_span', 'term', 'result_file', 'assigned_student']
+        fields = fields = [
+            'id', 'name', 'term', 'year_span', 'result_file', 'uploaded', 'created_at',
+            'uploaded_at', 'assigned_student', 'classroom'
+        ]
 
     def validate_name(self, value):
         if Result.objects.filter(name=value).exists():
