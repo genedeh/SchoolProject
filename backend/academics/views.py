@@ -162,6 +162,11 @@ class ResultsListView(generics.ListCreateAPIView):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
 
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+          serializer = self.get_serializer(page, many=True)
+        else:
+          serializer = self.get_serializer(queryset, many=True)
         # Dictionary to hold class names as keys and lists of result objects as values
         results_by_class = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
 
