@@ -6,6 +6,8 @@ from .models import ClassRoom, Result, Subject
 from user.models import User
 # Create your views here.
 
+
+
 class ClassRoomRetrieveView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.ClassroomUpdateSerializer
     lookup_field = 'pk'
@@ -63,6 +65,7 @@ class OfferingSubjectsListView(generics.GenericAPIView):
           
 class ClassRoomListView(generics.ListCreateAPIView):
    serializer_class = serializers.ClassRoomListSerializer
+   pagination_class = None
    
    def get_queryset(self):
         name = self.request.query_params.get('name', None)
@@ -91,6 +94,7 @@ class ClassRoomListView(generics.ListCreateAPIView):
 
 class SubjectsListView(generics.ListCreateAPIView):
    serializer_class = serializers.SubjectsListSerializer
+   pagination_class = None
    
    def get_queryset(self):
         name = self.request.query_params.get('name', None)

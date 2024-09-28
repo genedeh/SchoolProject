@@ -50,10 +50,12 @@ class UserProfileView(APIView):
             'is_admin':user.is_superuser,
             'teaching_subjects': None
         }
+
         if user_data['is_student_or_teacher']:
             dummy_value = list(user.classes.all().values_list('id', flat=True))
-            class_id = dummy_value[0]
-            user_data.update({'user_class': ClassRoom.objects.get(id=int(class_id)).name})
+            if dummy_value:
+              class_id = dummy_value[0]
+              user_data.update({'user_class': ClassRoom.objects.get(id=int(class_id)).name})
         else:
             try:
               user_data.update({'user_class': user.classrooms.name})
@@ -65,7 +67,7 @@ class UserProfileView(APIView):
     
 class CreateAndSearchUserView(generics.ListCreateAPIView):
     serializer_class = UserListSerializer
-
+    pagination_class = None
     def get_queryset(self):
         username = self.request.query_params.get('username', None)
         if username is not None:
