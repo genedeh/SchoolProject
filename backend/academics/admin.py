@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ClassRoom, Subject, Result, UploadList
+from .models import ClassRoom, Subject, Result
 from user.models import User
 # Register your models here.
 
@@ -38,15 +38,8 @@ class ResultAdmin(admin.ModelAdmin):
             kwargs["queryset"] = User.objects.filter(is_student_or_teacher=True)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
-class UploadListAdmin(admin.ModelAdmin):
-    list_display = ('name', 'created_at', 'updated_at')
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "assigned_teacher":
-            kwargs["queryset"] = User.objects.filter(is_student_or_teacher=False)
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 admin.site.register(ClassRoom, ClassRoomAdmin)
 admin.site.register(Subject, SubjectAdmin)
 admin.site.register(Result, ResultAdmin)
-admin.site.register(UploadList, UploadListAdmin)
