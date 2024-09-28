@@ -76,6 +76,13 @@ class ClassroomUpdateSerializer(serializers.ModelSerializer):
         
         instance.save()
         return instance
+    
+class ResultUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Result
+        fields = ['uploaded']
+
 
 class OfferingSubjectSerializer(serializers.ModelSerializer):
     students_offering = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(),many=True)
