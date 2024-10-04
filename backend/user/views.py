@@ -67,7 +67,6 @@ class UserProfileView(APIView):
     
 class CreateAndSearchUserView(generics.ListCreateAPIView):
     serializer_class = UserListSerializer
-    pagination_class = None
     def get_queryset(self):
         username = self.request.query_params.get('username', None)
         if username is not None:
