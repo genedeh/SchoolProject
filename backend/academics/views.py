@@ -40,28 +40,6 @@ class ClassRoomRetrieveView(generics.RetrieveUpdateDestroyAPIView):
         except Exception as e:
             print(e)
             return Response({"detail": "Failed to update classroom."}, status=status.HTTP_400_BAD_REQUEST)
-
-class OfferingSubjectsListView(generics.GenericAPIView):
-    serializer_class = serializers.OfferingSubjectSerializer
-    def post(self, request):
-        id = request.data.get('students_offering') 
-        try:
-          user = User.objects.get(id=id)
-        except:
-          return Response({'error': "Invalid User.", 'detail':f'No such User with id = {id}'}, status=404)
-        if user is not None:
-          if user.is_student_or_teacher:  
-            subjects = Subject.objects.filter(students_offering=id)
-            subject_list = []
-            for subject in subjects:
-               subject_list.append(subject.name)
-            return Response({'Subjects':f"{subject_list}"}, status=200)
-          else:
-            subjects = Subject.objects.filter(assigned_teacher=id)
-            subject_list = []
-            for subject in subjects:
-               subject_list.append(subject.name)
-            return Response({'Subjects':f"{subject_list}"}, status=200)
           
 class ClassRoomListView(generics.ListCreateAPIView):
    serializer_class = serializers.ClassRoomListSerializer

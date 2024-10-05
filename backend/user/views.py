@@ -70,7 +70,7 @@ class CreateAndSearchUserView(generics.ListCreateAPIView):
     def get_queryset(self):
         username = self.request.query_params.get('username', None)
         if username is not None:
-            return User.objects.filter(username=username)
+            return User.objects.filter(username__icontains=username)
         return User.objects.all()
     
     def get_serializer_class(self):

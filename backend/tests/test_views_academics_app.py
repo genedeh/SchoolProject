@@ -3,11 +3,6 @@ from .test_setup_academics_app import TestSetUp
 
 class TestAcademicViews(TestSetUp):
 
-#    SUBJECT TESTS 
-    def test_invalid_user(self):
-        response = self.client.post(self.offering_subjects_url,self.offering_subject_no_such_user_data, format="json")
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.data['error'], "Invalid User.")
 # SUBJECT CREATE (POST) TEST 
     def test_create_subject(self):
         response = self.client.post(self.create_subject_url, self.subject_create_data, format="json")
@@ -66,12 +61,6 @@ class TestAcademicViews(TestSetUp):
         response = self.client.put(reverse("subjects", kwargs={'pk':subject.data['id']}),{"name":"SS3A_History"}, format="json")
         self.assertEqual(response.data['name'], "SS3A_History")
         self.assertEqual(response.status_code, 200)
-    
-    def test_update_subject_with_incorrect_data(self):
-        subject = self.client.post(self.create_subject_url, self.subject_create_data, format="json")
-        response = self.client.put(reverse("subjects", kwargs={'pk':subject.data['id']}),{"students_offering":"josh"}, format="json")
-        self.assertEqual(response.data['detail'], "Failed to update subject.")
-        self.assertEqual(response.status_code, 400)
 
     # CLASSROOM TESTS 
 # ClASSROOM CREATE (POST) TEST 

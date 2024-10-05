@@ -84,12 +84,7 @@ class ResultUpdateSerializer(serializers.ModelSerializer):
         fields = ['uploaded']
 
 
-class OfferingSubjectSerializer(serializers.ModelSerializer):
-    students_offering = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(),many=True)
-    class Meta:
-        model = Subject
-        fields = '__all__'
-        extra_kwargs = {'name': {'read_only': True}, 'assigned_teacher': {'read_only': True}}
+
 
 class SubjectsListSerializer(serializers.ModelSerializer):
     assigned_teacher = ViewUserSerializer()

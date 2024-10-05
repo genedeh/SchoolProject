@@ -7,7 +7,6 @@ from user.models import User
 class TestSetUp(APITestCase):
     def setUp(self):
         # Subject urls
-        self.offering_subjects_url = reverse("offering-subjects")
         self.create_subject_url = reverse("subjects")
         self.subject_retrieve_url = reverse("subjects", kwargs={'pk':"990"})
         # Classroom urls

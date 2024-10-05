@@ -5,7 +5,12 @@ from rest_framework import serializers
 class ViewClassRoomNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassRoom
-        fields = ['name']
+        fields = ['id','name']
+
+class ViewSubjectNameSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subject
+        fields = ['id','name']
 
 class UserLoginSerializer(serializers.ModelSerializer):
     class Meta:
@@ -75,6 +80,8 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 class UserListSerializer(serializers.ModelSerializer):
     classrooms = ViewClassRoomNameSerializer()
+    classes = ViewClassRoomNameSerializer(many=True)
+    subjects = ViewSubjectNameSerializer(many=True)
     class Meta:
         model = User
         fields = ['id','username', 'email', 'first_name', 'last_name', 'profile_picture', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes',  'subjects', 'classrooms']
