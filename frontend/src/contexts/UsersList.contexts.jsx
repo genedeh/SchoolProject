@@ -1,81 +1,61 @@
 import { createContext, useEffect, useState } from 'react';
 import axios from 'axios';
 
-export const UsersListContext = createContext({
-    usersList: [],
-    setUsersList: () => [],
-    refresh: false,
-    setRefresh: () => { },
-});
+export const UsersListContext = createContext();
 
 export const UsersListProvider = ({ children }) => {
     const [usersList, setUsersList] = useState([]);
     const [refresh, setRefresh] = useState(false)
-    const value = { usersList, setUsersList, refresh, setRefresh };
+    const [currentPage, setCurrentPage] = useState(1); // Current page
+    const [term, setTerm] = useState(""); // Current page
+    const [nextPage, setNextPage] = useState(null);   // URL of next page
+    const [prevPage, setPrevPage] = useState(null);   // URL of previous page
+    const [totalUsers, setTotalUsers] = useState(0);  // Total number of users
+    const [loading, setLoading] = useState(false);    // Loading state
 
-    const giveUserClass = (dummyArray, response) => {
-        response.data.map(async ({ classes, classrooms, id, username, profile_picture, is_student_or_teacher, birth_date, gender, address, phone_number, email, subjects }) => {
-            if (classrooms) {
-                dummyArray.push({
-                    'id': id,
-                    'username': username,
-                    'profile_picture': profile_picture,
-                    'is_student_or_teacher': is_student_or_teacher,
-                    'birth_date': birth_date,
-                    'gender': gender,
-                    'user_class': classrooms.name,
-                    'address': address,
-                    'phone_number': phone_number,
-                    'email': email,
-                    'subjects': subjects
-                })
-            } else if (classes.length !== 0) {
-                const classResponse = await axios.get(`api/classrooms/${Number(classes[0])}/`)
-                dummyArray.push({
-                    'id': id,
-                    'username': username,
-                    'profile_picture': profile_picture,
-                    'is_student_or_teacher': is_student_or_teacher,
-                    'birth_date': birth_date,
-                    'gender': gender,
-                    'user_class': classResponse.data.name,
-                    'address': address,
-                    'phone_number': phone_number,
-                    'email': email,
-                    'subjects': subjects
-                })
-            } else {
-                dummyArray.push({
-                    'id': id,
-                    'username': username,
-                    'profile_picture': profile_picture,
-                    'is_student_or_teacher': is_student_or_teacher,
-                    'birth_date': birth_date,
-                    'gender': gender,
-                    'user_class': "None",
-                    'address': address,
-                    'phone_number': phone_number,
-                    'email': email,
-                    'subjects': subjects
-                })
+    // Functions to handle pagination
+    const goToNextPage = () => {
+        if (nextPage) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const goToPrevPage = () => {
+        if (prevPage) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+    const value = {
+        usersList, setUsersList, refresh, setRefresh, currentPage,setCurrentPage,
+        totalUsers,
+        nextPage,
+        prevPage,
+        loading,
+        goToNextPage,
+        goToPrevPage,setTerm
+    };
+
+    const fetchUserProfilesList = async (page = 1) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            setLoading(true);
+            try {
+                const response = await axios.get(`/api/users/?page=${page}&username=${term}`)
+                const data = await response.data;
+                setUsersList(data.results);
+                setNextPage(data.next);
+                setPrevPage(data.previous);
+                setTotalUsers(data.count);
+            } catch (err) {
+                console.error('There was an error fetching the items!', err);
             }
-        })
-    }
+            setLoading(false);
+        }
+    };
     useEffect(() => {
-        const fetchUserProfilesList = async () => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                try {
-                    const response = await axios.get('api/users/')
-                    const dummyArray = []
-                    giveUserClass(dummyArray, response);
-                    setUsersList(dummyArray);
-                } catch (err) {
-                    console.error('There was an error fetching the items!', err);
-                }
-            }
-        };
-        fetchUserProfilesList();
-    }, [refresh]);
+        fetchUserProfilesList(currentPage);
+    }, [refresh, currentPage, term]);
+
+
     return <UsersListContext.Provider value={value}>{children}</UsersListContext.Provider>;
 }

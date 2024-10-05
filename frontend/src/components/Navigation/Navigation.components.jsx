@@ -1,7 +1,7 @@
-import { useContext, useState} from "react";
+import { useContext, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { UserContext } from "../../contexts/User.contexts";
-import { Container, Row, Col, Alert, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Alert, Button, Image, Spinner } from 'react-bootstrap';
 import TopLevel from "./TopLevel.components";
 import { StudentSidebar, TeacherSidebar } from "./Side_Navigation_Bar/SideBar.components";
 import { UsersListContext } from "../../contexts/UsersList.contexts";
@@ -13,21 +13,23 @@ import { ErrorModal } from "../ErrorHandling/ErrorModal.components";
 const Navigation = () => {
     const { currentUser, error } = useContext(UserContext);
     const [searchTerm, setSearchTerm] = useState('');
-    const { usersList } = useContext(UsersListContext);
+    const {
+        usersList,
+        currentPage,
+        totalUsers,
+        nextPage,
+        prevPage,
+        goToNextPage,
+        goToPrevPage, setCurrentPage, setTerm
+    } = useContext(UsersListContext);
     const [show, setShow] = useState(true);
     const handleClose = () => setShow(false);
 
     const SearchHandler = (e) => {
         setSearchTerm(e.target.value);
+        setTerm(e.target.value);
+        setCurrentPage(1);
     }
-    const filteredUsers = usersList.filter(({ username }) => {
-        if (searchTerm.length !== 0 || searchTerm === null) {
-            if (username !== currentUser.username) {
-                return username.toLowerCase().includes(searchTerm.replace(' ', '_').toLowerCase())
-            }
-        }
-    });
-
     if (error === "No token found") {
         return (
             <ErrorModal errorMessage={['MISSING PERMISSION', 'PLEASE ENDEVOUR TO LOG IN BEFORE U CAN HAVE ACCESS TO THIS PAGE ']} show={show} handleClose={handleClose} >
@@ -61,25 +63,42 @@ const Navigation = () => {
                             <Container fluid>
                                 {usersList.length !== 0 ?
                                     (
-                                        filteredUsers.length === 0 ?
-                                            (<div style={{ 'margin': '5rem' }}><h1><SignDeadEnd color='red' size={96} /> 404 NO USER OF USERNAME "{searchTerm}" EXISTS</h1></div>)
-                                            : (<Row className='m-3'>
-                                                {filteredUsers.map((user) => (
-                                                    <SearchedProfileCard key={user.id} user={user} />
-                                                ))}
-                                            </Row>
-                                            )
+                                        <Row className='m-3'>
+                                            {usersList.map((user) => (
+                                                <SearchedProfileCard key={user.id} user={user} />
+                                            ))}
+                                            <div className="d-flex justify-content-between align-items-center my-4">
+                                                <Button onClick={goToPrevPage} disabled={!prevPage}>
+                                                    Previous
+                                                </Button>
+                                                <span>Page {currentPage}</span>
+                                                <Button onClick={goToNextPage} disabled={!nextPage}>
+                                                    Next
+                                                </Button>
+                                            </div>
+
+                                            <p>Total Users: {totalUsers}</p>
+                                        </Row>
                                     )
                                     :
                                     (<Row className='m-3'>
-                                        <Spinner animation="border" role="status">
-                                            <span className="visually-hidden">Loading...</span>
-                                        </Spinner>
+                                        <Col md={6}>
+                                            <Image
+                                                src="https://via.placeholder.com/400x300.png?text=404+Not+Found"
+                                                alt="404 Not Found"
+                                                fluid
+                                                className="mb-4"
+                                            />
+                                            <h2>Oops! No Results Found</h2>
+                                            <p className="text-muted">
+                                                We couldn't find any results matching your search.
+                                            </p>
+                                        </Col>
                                     </Row>)}
                             </Container>
                         </Col>
                     </Row>
-                </Container>
+                </Container >
             </>
         );
     } else {

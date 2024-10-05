@@ -2,27 +2,21 @@ import { Card, Button, Col, Image, Modal, Row, Badge } from 'react-bootstrap';
 import { GenderFemale, GenderMale } from 'react-bootstrap-icons';
 import { BsThreeDots, BsArrowLeft, BsArrowReturnRight } from "react-icons/bs";
 import { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
 import { UserContext } from '../../contexts/User.contexts';
 
 const ProfileModal = ({ user, show, handleClose }) => {
-    const { username, is_student_or_teacher, gender, profile_picture, user_class, birth_date, phone_number, email, address, id } = user;
+    const { username, is_student_or_teacher, gender, profile_picture, classes, classrooms, birth_date, subjects, phone_number, email, address, id } = user;
     const current_date = new Date();
-    const [offeringSubjects, setOfferingSubjects] = useState([]);
-
-
+    let className = "None"
+    let classroomName = "None"
     useEffect(() => {
-        const fetchOfferingSubjects = async () => {
-            if (user) {
-                try {
-                    const respone = await axios.post("api/offering-subjects/", { "students_offering": id })
-                    setOfferingSubjects(respone.data.Subjects.replace('[', '').replace(']', '').split(','))
-                } catch (err) {
-                    console.log("Error: ", err)
-                }
-            }
-        };
-        fetchOfferingSubjects();
+        if (classes.length !== 0) {
+            const dummy = classes[0]
+            className = dummy.name
+        }
+        if (classrooms) {
+            classroomName = classrooms.name
+        }
     }, [])
 
     return (
@@ -55,7 +49,7 @@ const ProfileModal = ({ user, show, handleClose }) => {
                         </Button>)
                     }</span></h4>
                 <h5 className="text-muted">{is_student_or_teacher ? ("Student") : ("Teacher")}</h5>
-                <p className='fw-bold text-muted'>{is_student_or_teacher ? (`Class • ${user_class}`) : (`Assigned Class • ${user_class}`)}</p>
+                <p className='fw-bold text-muted'>{is_student_or_teacher ? (`Class • ${className}`) : (`Assigned Class • ${classroomName}`)}</p>
                 <hr />
                 <Row className="text-start mb-3">
                     <Col><strong>Address • </strong></Col>
@@ -81,11 +75,12 @@ const ProfileModal = ({ user, show, handleClose }) => {
                 <Card className="mb-4">
                     <Card.Body>
                         <Card.Title>{is_student_or_teacher ? ("Offering Subjects") : ('Teaching Subjects')}</Card.Title>
-                        {offeringSubjects.map(subject => (
-                            <Badge pill bg="primary" className="me-2 mb-2" key={subject.replace(`'`, '').replace(`'`, '')} >
-                                {subject.replace(`'`, '').replace(`'`, '')}
-                            </Badge>
-                        ))}
+                        {subjects.length !== 0 ? (
+                            subjects.map(({ name, id }) => (
+                                <Badge pill bg="primary" key={id} className="me-2 mb-2" >
+                                    {name.replace(`'`, '').replace(`'`, '')}
+                                </Badge>
+                            ))) : ("")}
                     </Card.Body>
                 </Card>
                 <hr />
@@ -97,12 +92,21 @@ const ProfileModal = ({ user, show, handleClose }) => {
 
 
 const SearchedProfileCard = ({ user }) => {
-    const { username, is_student_or_teacher, gender, profile_picture, user_class } = user;
+    const { username, is_student_or_teacher, gender, profile_picture, classes, classrooms } = user;
     const [show, setShow] = useState(false);
     const { currentUser } = useContext(UserContext);
-
+    let className = "None"
+    let classroomName = "None"
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    if (classes.length !== 0) {
+        const dummy = classes[0]
+        className = dummy.name
+    }
+    if (classrooms) {
+        classroomName = classrooms.name
+    }
 
     return (
         <>
@@ -137,13 +141,13 @@ const SearchedProfileCard = ({ user }) => {
                             </div>
                         </div>
                         <Card.Text className="fw-bold text-muted">
-                            {is_student_or_teacher ? (`Class • ${user_class}`) : (`Assigned Class • ${user_class}`)}
+                            {is_student_or_teacher ? (`Class • ${className}`) : (`Assigned Class • ${classroomName}`)}
                         </Card.Text>
                         <div className="mt-auto d-flex align-items-center">
                             <Button variant="outline-dark" className='me-4' onClick={handleShow}><BsThreeDots /></Button>
                             {!currentUser.is_student_or_teacher ?
                                 (
-                                    currentUser.user_class === user_class || currentUser.is_admin ? (<Button variant="outline-primary" ><BsArrowReturnRight /></Button>) : ('')
+                                    currentUser.user_class === className || currentUser.is_admin ? (<Button variant="outline-primary" ><BsArrowReturnRight /></Button>) : ('')
                                 )
                                 : ('')}
                         </div>
@@ -155,4 +159,4 @@ const SearchedProfileCard = ({ user }) => {
     );
 }
 
-    export default SearchedProfileCard;
+export default SearchedProfileCard;

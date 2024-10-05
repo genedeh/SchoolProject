@@ -1,4 +1,4 @@
-import { Stack, Form, Image, Button } from 'react-bootstrap'
+import { Stack, Form, Image, Button, InputGroup } from 'react-bootstrap'
 import { UserContext } from '../../contexts/User.contexts';
 import { useContext } from 'react';
 import { UsersListContext } from '../../contexts/UsersList.contexts';
