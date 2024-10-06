@@ -4,14 +4,14 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
 from academics.models import ClassRoom
-from .serializers import UserLoginSerializer, UserCreateSerializer, UserUpdateSerializer, UserListSerializer
+from . import serializers
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 class LoginView(generics.GenericAPIView):
-    serializer_class = UserLoginSerializer
+    serializer_class = serializers.UserLoginSerializer
 
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
@@ -66,7 +66,7 @@ class UserProfileView(APIView):
         return Response(user_data, status=200)
     
 class CreateAndSearchUserView(generics.ListCreateAPIView):
-    serializer_class = UserListSerializer
+    serializer_class = serializers.UserListSerializer
     def get_queryset(self):
         username = self.request.query_params.get('username', None)
         if username is not None:
@@ -75,12 +75,28 @@ class CreateAndSearchUserView(generics.ListCreateAPIView):
     
     def get_serializer_class(self):
         if self.request.method == 'GET':
-            return UserListSerializer
+            return serializers.UserListSerializer
         elif self.request.method == 'POST':
-            return UserCreateSerializer
+            return serializers.UserCreateSerializer
+        
+class QuickUserViewList(generics.ListAPIView):
+    serializer_class = serializers.QuickUserViewSerializer
+    def get_queryset(self):
+        teacher = self.request.query_params.get('T', None)
+        student = self.request.query_params.get('S', None)
+        username = self.request.query_params.get('username', None)
+        if teacher is not None:
+            if username is not None:
+               return User.objects.filter(username__icontains=username, is_student_or_teacher=False)
+            return User.objects.filter(is_student_or_teacher=False)
+        elif student is not None:
+            if username is not None:
+               return User.objects.filter(username__icontains=username, is_student_or_teacher=True)
+            return User.objects.filter(is_student_or_teacher=True)
+        return User.objects.all()
 
 class UpdateAndDeleteUserView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
-    serializer_class = UserUpdateSerializer
+    serializer_class = serializers.UserUpdateSerializer
     lookup_field = 'pk'
 

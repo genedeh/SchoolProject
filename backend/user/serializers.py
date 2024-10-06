@@ -12,6 +12,11 @@ class ViewSubjectNameSerializer(serializers.ModelSerializer):
         model = Subject
         fields = ['id','name']
 
+class QuickUserViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id','username', 'profile_picture', 'gender', 'is_student_or_teacher','classrooms', 'classes']
+
 class UserLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

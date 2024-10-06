@@ -72,7 +72,6 @@ class ClassRoomListView(generics.ListCreateAPIView):
 
 class SubjectsListView(generics.ListCreateAPIView):
    serializer_class = serializers.SubjectsListSerializer
-   pagination_class = None
    
    def get_queryset(self):
         name = self.request.query_params.get('name', None)
