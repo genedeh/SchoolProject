@@ -1,42 +1,19 @@
-import { UsersListContext } from "../../../../../contexts/UsersList.contexts";
 import { SubjectsContext } from "../../../../../contexts/Subjects.contexts";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext} from "react";
 import axios from "axios";
-import { Modal, Button, Alert, Form,  Dropdown } from 'react-bootstrap'
+import { Modal, Button, Alert, Form } from 'react-bootstrap'
 import { TeacherSelectPopUp, StudentSelectPopUp } from "../UserSelectPopupComponent";
 
 export const CreateSubjectModal = ({ show, handleClose }) => {
-    const { usersList } = useContext(UsersListContext);
     const { setSubjects, subjects } = useContext(SubjectsContext);
     const [name, setName] = useState('');
     const [listShow, setListShow] = useState(false);
     const [listShow2, setListShow2] = useState(false);
-    const [teachers, setTeachers] = useState([]);
-    const [students, setStudents] = useState([]);
     const [selectedTeacher, setSelectedTeacher] = useState(null);
     const [selectedStudents, setSelectedStudents] = useState([]);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(null);
 
-    useEffect(() => {
-        const newSetOfTeachers =
-            usersList.filter((user) => {
-                if (!user.is_student_or_teacher && !user.is_superuser) {
-                    return user
-                }
-            });
-        const newSetOfStudents =
-            usersList.filter((user) => {
-                if (user.is_student_or_teacher) {
-                    return user
-                }
-            });
-
-        if (show) {
-            setTeachers(newSetOfTeachers);
-            setStudents(newSetOfStudents);
-        }
-    }, [show]);
 
     const handleNameChange = (e) => {
         setName(e.target.value);
