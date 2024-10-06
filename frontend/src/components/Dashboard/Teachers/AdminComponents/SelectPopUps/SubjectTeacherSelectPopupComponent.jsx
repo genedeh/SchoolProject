@@ -52,7 +52,7 @@ export const TeacherSelectPopUp = ({ show, handleClose, selectedTeacher, setSele
                 <ListGroup className="mb-3 ">
                     {users.map((teacher) => (
                         <ListGroup.Item key={teacher.id} className={`d-flex justify-content-between align-items-center container 
-                            ${selectedOption === teacher.id ? 'border-info' : ''}`}
+                            ${selectedTeacher ? ( selectedTeacher.id == teacher.id ? 'border-info' : '' ):("") }`}
                             onClick={() => {
                                 setSelectedOption(teacher.id);
                                 setSelectedTeacher(teacher);

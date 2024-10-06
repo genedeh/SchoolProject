@@ -29,7 +29,7 @@ export const Subjects = () => {
                 const subjectClone = { ...subject }
                 const newStudents = []
                 subjectClone.students_offering.map((stundent) => {
-                    newStudents.push(stundent.id)
+                    newStudents.push(stundent)
                 })
                 subjectClone['students_offering'] = newStudents
                 setSelectedSubjectForUpdate(subjectClone)

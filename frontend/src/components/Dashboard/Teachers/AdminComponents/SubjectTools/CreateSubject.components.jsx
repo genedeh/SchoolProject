@@ -2,8 +2,8 @@ import { SubjectsContext } from "../../../../../contexts/Subjects.contexts";
 import { useState, useContext} from "react";
 import axios from "axios";
 import { Modal, Button, Alert, Form } from 'react-bootstrap'
-import { TeacherSelectPopUp } from "../SubjectTeacherSelectPopupComponent";
-import { StudentsSelectPopUp } from "../SubjectStudentsSelectPopupComponent";
+import { TeacherSelectPopUp } from "../SelectPopUps/SubjectTeacherSelectPopupComponent";
+import { StudentsSelectPopUp } from "../SelectPopUps/SubjectStudentsSelectPopupComponent";
 
 export const CreateSubjectModal = ({ show, handleClose }) => {
     const { setSubjects, subjects } = useContext(SubjectsContext);
@@ -145,9 +145,6 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Cancel
-                    </Button>
                     <Button variant="primary" onClick={handleSubmit}>
                         Add Subject
                     </Button>
