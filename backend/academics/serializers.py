@@ -84,7 +84,10 @@ class ResultUpdateSerializer(serializers.ModelSerializer):
         fields = ['uploaded']
 
 
-
+# class GetTeachingSubjectSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Subject
+#         fields = ['id', 'name']
 
 class SubjectsListSerializer(serializers.ModelSerializer):
     assigned_teacher = ViewUserSerializer()

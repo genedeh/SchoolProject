@@ -73,7 +73,7 @@ export const Subjects = () => {
                                         <hr /><h5>Students</h5><hr />
                                         <ListGroup>
                                             {students_offering.length !== 0 ? (students_offering.map(({ id, username, gender, profile_picture }) => (
-                                                <ListGroup.Item key={id}>
+                                                <ListGroup.Item key={id} className="container">
                                                     <div className="d-flex align-items-center">
                                                         <div className="me-3">
                                                             <img

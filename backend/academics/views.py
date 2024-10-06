@@ -1,4 +1,5 @@
 from rest_framework import generics, status
+from rest_framework.views import APIView
 from collections import defaultdict
 from rest_framework.response import Response
 from . import serializers
@@ -70,6 +71,8 @@ class ClassRoomListView(generics.ListCreateAPIView):
    def perform_create(self, serializer):
         serializer.save()
 
+
+  
 class SubjectsListView(generics.ListCreateAPIView):
    serializer_class = serializers.SubjectsListSerializer
    
@@ -201,6 +204,26 @@ class ResultRetrieveView(generics.RetrieveUpdateDestroyAPIView):
             return Response({"detail": "Result deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
         except Exception as e:
             return Response({"detail": "Failed to delete result."}, status=status.HTTP_400_BAD_REQUEST)
-        
 
-    
+
+
+
+class GetSubjectsById(APIView):
+    def post(self, request, *args, **kwargs):
+        # Get the list of subject IDs from the request data
+        subject_ids = request.data.get('subject_ids', [])
+        
+        # Ensure the list is provided and not empty
+        if not subject_ids:
+            return Response({"error": "subject_ids is required and cannot be empty."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Find subjects matching the provided IDs
+        subjects = Subject.objects.filter(id__in=subject_ids)
+        
+        # If no subjects were found, return an appropriate message
+        if not subjects.exists():
+            return Response({"message": "No subjects found for the provided IDs."}, status=status.HTTP_404_NOT_FOUND)
+        
+        # Serialize the subjects and return them in the response
+        serializer = serializers.SubjectsListSerializer(subjects, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
