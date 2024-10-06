@@ -30,7 +30,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id','username','password', 'email', 'first_name', 'last_name', 'profile_picture', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes',  'subjects']
+        fields = ['id','username','password', 'email', 'first_name', 'last_name', 'profile_picture', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes',  'subjects', 'subject']
 
     def validate_username(self, value):
         # Check if the username already exists
@@ -57,7 +57,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username','password', 'email', 'first_name', 'last_name', 'profile_picture', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes',  'subjects']
+        fields = ['username','password', 'email', 'first_name', 'last_name', 'profile_picture', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes',  'subjects', 'subject']
 
     def update(self, instance, validated_data):
         instance.email = validated_data.get('email', instance.email)
@@ -87,6 +87,7 @@ class UserListSerializer(serializers.ModelSerializer):
     classrooms = ViewClassRoomNameSerializer()
     classes = ViewClassRoomNameSerializer(many=True)
     subjects = ViewSubjectNameSerializer(many=True)
+    subject = ViewSubjectNameSerializer(many=True)
     class Meta:
         model = User
-        fields = ['id','username', 'email', 'first_name', 'last_name', 'profile_picture', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes',  'subjects', 'classrooms']
+        fields = ['id','username', 'email', 'first_name', 'last_name', 'profile_picture', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes',  'subjects', 'classrooms', 'subject']

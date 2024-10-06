@@ -65,7 +65,7 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                 <Modal.Body>
                     {error && <Alert variant="danger">{error}</Alert>}
                     {success && <Alert variant="success">{success}</Alert>}
-                    <Form onSubmit={handleUpdate}>
+                    <Form >
                         <Form.Group controlId="formName">
                             <Form.Label>Subject Name</Form.Label>
                             <Form.Control
@@ -116,7 +116,7 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary" type="submit">
+                    <Button variant="primary" onClick={handleUpdate}>
                         Update Subject
                     </Button>
                 </Modal.Footer>

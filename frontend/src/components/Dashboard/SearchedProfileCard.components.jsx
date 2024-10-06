@@ -5,7 +5,7 @@ import { useState, useEffect, useContext } from 'react';
 import { UserContext } from '../../contexts/User.contexts';
 
 const ProfileModal = ({ user, show, handleClose }) => {
-    const { username, is_student_or_teacher, gender, profile_picture, classes, classrooms, birth_date, subjects, phone_number, email, address, id } = user;
+    const { username, is_student_or_teacher, gender, profile_picture, classes, classrooms, birth_date, subjects, subject, phone_number, email, address, id } = user;
     const current_date = new Date();
     let className = "None"
     let classroomName = "None"
@@ -80,7 +80,13 @@ const ProfileModal = ({ user, show, handleClose }) => {
                                 <Badge pill bg="primary" key={id} className="me-2 mb-2" >
                                     {name.replace(`'`, '').replace(`'`, '')}
                                 </Badge>
-                            ))) : ("")}
+                            ))) : (
+                            subject.map(({ name, id }) => (
+                                <Badge pill bg="primary" key={id} className="me-2 mb-2" >
+                                    {name.replace(`'`, '').replace(`'`, '')}
+                                </Badge>
+                            ))
+                        )}
                     </Card.Body>
                 </Card>
                 <hr />
