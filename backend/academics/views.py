@@ -76,7 +76,7 @@ class SubjectsListView(generics.ListCreateAPIView):
    def get_queryset(self):
         name = self.request.query_params.get('name', None)
         if name is not None:
-            return Subject.objects.filter(name=name)
+            return Subject.objects.filter(name__icontains=name)
         return Subject.objects.all()
    
    def get_serializer_class(self):

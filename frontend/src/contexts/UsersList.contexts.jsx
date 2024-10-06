@@ -7,7 +7,7 @@ export const UsersListProvider = ({ children }) => {
     const [usersList, setUsersList] = useState([]);
     const [refresh, setRefresh] = useState(false)
     const [currentPage, setCurrentPage] = useState(1); // Current page
-    const [term, setTerm] = useState(""); // Current page
+    const [term, setTerm] = useState(""); 
     const [nextPage, setNextPage] = useState(null);   // URL of next page
     const [prevPage, setPrevPage] = useState(null);   // URL of previous page
     const [totalUsers, setTotalUsers] = useState(0);  // Total number of users

@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { UserContext } from "../../../../contexts/User.contexts";
 import { SubjectsContext } from "../../../../contexts/Subjects.contexts";
 import { Navigate } from "react-router-dom";
-import { Accordion, Card, Button, ListGroup, Spinner, Image } from 'react-bootstrap';
+import { Accordion, Card, Button, ListGroup, Spinner, Form, InputGroup } from 'react-bootstrap';
 import { Trash, Pencil, PlusCircleFill, GenderFemale, GenderMale } from 'react-bootstrap-icons';
 import { DeleteSubjectModal } from "./SubjectTools/DeleteSubject.components";
 import { CreateSubjectModal } from "./SubjectTools/CreateSubject.components";
@@ -10,9 +10,10 @@ import { UpdateSubjectModal } from "./SubjectTools/UpdateSubject.components";
 
 export const Subjects = () => {
     const { currentUser } = useContext(UserContext);
-    const { subjects, goToPrevPage, goToNextPage, currentPage, nextPage, totalSubjects, prevPage } = useContext(SubjectsContext);
+    const { subjects, goToPrevPage, goToNextPage, currentPage, nextPage, totalSubjects, prevPage, setTerm } = useContext(SubjectsContext);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [selectedSubjectId, setSelectedSubjectId] = useState(null);
     const [selectedSubjectForUpdate, setSelectedSubjectForUpdate] = useState(null);
@@ -43,11 +44,18 @@ export const Subjects = () => {
         if (subjects.length !== 0) {
             return (
                 <>
+
                     <div className="d-grid gap-2 m-2">
                         <Button variant="outline-primary" size="lg" onClick={() => setShowCreateModal(true)} >
                             New subject <PlusCircleFill />
                         </Button>
                     </div>
+                    <InputGroup>
+                        <Form.Control className="m-4" size="sm" placeholder='Enter Subject Name...' value={searchTerm} onChange={(e) => {
+                            setSearchTerm(e.target.value)
+                            setTerm(e.target.value)
+                        }} />
+                    </InputGroup>
                     <Accordion flush={true} className="m-3">
                         {subjects.map(({ assigned_teacher, id, name, students_offering }) => (
                             <Card key={id} className="mb-2">
@@ -66,25 +74,25 @@ export const Subjects = () => {
                                         <ListGroup>
                                             {students_offering.length !== 0 ? (students_offering.map(({ id, username, gender, profile_picture }) => (
                                                 <ListGroup.Item key={id}>
-                                                    {profile_picture ? (<Image
-                                                        src={profile_picture.includes('http://') ? (profile_picture) : (`http://127.0.0.1:8000/media/${profile_picture}`)}
-                                                        roundedCircle
-                                                        style={{ width: '40px', height: '40px', objectFit: 'cover' }}
-                                                        className="me-3" />)
-                                                        : (<Image
-                                                            src="http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg"
-                                                            roundedCircle
-                                                            style={{ width: '40px', height: '40px', objectFit: 'cover' }}
-                                                            className="me-3" />)
-                                                    }
-                                                    {username.replace('_', ' ')}
-                                                    {gender === 'male' ?
-                                                        (<Button className="m-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
-                                                            <GenderMale />
-                                                        </Button>) :
-                                                        (<Button className="m-2" size="sm" style={{ 'backgroundColor': 'pink', 'borderColor': 'white' }}>
-                                                            <GenderFemale />
-                                                        </Button>)}
+                                                    <div className="d-flex align-items-center">
+                                                        <div className="me-3">
+                                                            <img
+                                                                src={profile_picture == null ? ("https://via.placeholder.com/40") : (profile_picture)}
+                                                                className="rounded-circle"
+                                                                style={{ width: '40px', height: '40px' }}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <div>{username}</div>
+                                                        </div>
+                                                        {gender === 'male' ?
+                                                            (<Button className="m-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
+                                                                <GenderMale />
+                                                            </Button>) :
+                                                            (<Button className="m-2" size="sm" style={{ 'backgroundColor': 'pink', 'borderColor': 'white' }}>
+                                                                <GenderFemale />
+                                                            </Button>)}
+                                                    </div>
                                                 </ListGroup.Item>
                                             ))) : ('NO Student Available')}
                                         </ListGroup>
@@ -115,9 +123,17 @@ export const Subjects = () => {
                 </>
             );
         } else {
-            return (<Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-            </Spinner>)
+            return (
+                <>
+                    <InputGroup>
+                        <Form.Control className="m-4" size="sm" placeholder='Enter Subject Name...' value={searchTerm} onChange={(e) => {
+                            setSearchTerm(e.target.value)
+                            setTerm(e.target.value)
+                        }} />
+                    </InputGroup>
+                    <h1>NO SUBJECTS WHERE FOUND</h1>
+                </>
+            )
         }
     } return (
         <Navigate to='/dashboard/home' />
