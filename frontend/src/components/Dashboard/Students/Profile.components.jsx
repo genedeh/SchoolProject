@@ -43,23 +43,20 @@ const StudentProfile = () => {
     const { currentUser } = useContext(UserContext);
     const { usersList } = useContext(UsersListContext);
     const [offeringSubjects, setOfferingSubjects] = useState([]);
-    const { id, first_name, last_name, username, address, phone_number, email, profile_picture, birth_date, gender, user_class } = currentUser;
-
+    const { first_name, last_name, username, address, phone_number, email, profile_picture, birth_date, gender, user_class, offering_subjects } = currentUser;
+    const fetchSubjects = async () => {
+        await axios.post("api/get-subjects/", { "subject_ids": offering_subjects })
+            .then((response) => {
+                setOfferingSubjects(response.data)
+            })
+            .catch(error => {
+                console.error("Failed to fetch subjects.");
+            });
+    }
     useEffect(() => {
-        const fetchOfferingSubjects = async () => {
-            if (currentUser) {
-                try {
-                    const respone = await axios.post("http://127.0.0.1:8000/api/offering-subjects/", { "students_offering": id })
-                    setOfferingSubjects(respone.data.Subjects.replace('[', '').replace(']', '').split(','))
-                } catch (err) {
-                    console.log("Error: ", err)
-                }
-            } else {
-                console.log('No User Found')
-            }
-        };
-        fetchOfferingSubjects();
-    }, [])
+        fetchSubjects()
+    }, [currentUser])
+
     if (currentUser.is_student_or_teacher && currentUser) {
         return (
             <>
@@ -69,21 +66,13 @@ const StudentProfile = () => {
                             <Card className="m-2">
                                 <Card.Header className="bg-gradient">
                                     <div className="d-flex align-items-center">
-                                        {profile_picture ? (<Image
-                                            src={profile_picture.includes('http://') ? (profile_picture) : (`http://127.0.0.1:8000/media/${profile_picture}`)}
-                                            roundedCircle
-                                            width="100"
-                                            height="100"
-                                            className="me-3 "
-                                            style={{ 'objectFit': 'cover' }}
-                                        />) : (<Image
-                                            src="http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg"
-                                            roundedCircle
-                                            width="100"
-                                            height="100"
-                                            className="me-3 "
-                                            style={{ 'objectFit': 'cover' }}
-                                        />)}
+                                        <div className="me-3">
+                                            <Image
+                                                src={profile_picture ? (`http://127.0.0.1:8000/media/${profile_picture}`) : ("http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg")}
+                                                roundedCircle
+                                                style={{ width: '100px', height: '100px', 'objectFit': 'cover' }}
+                                            />
+                                        </div>
                                         <div>
                                             <Card.Title className="mb-0 fw-bold">{first_name} {last_name}</Card.Title>
                                             <br />
@@ -115,9 +104,9 @@ const StudentProfile = () => {
                             <Card className="mb-4">
                                 <Card.Body>
                                     <Card.Title>Offering Subjects</Card.Title>
-                                    {offeringSubjects.map(subject => (
-                                        <Badge pill bg="primary" className="me-2 mb-2" key={subject.replace(`'`, '').replace(`'`, '')} >
-                                            {subject.replace(`'`, '').replace(`'`, '')}
+                                    {offeringSubjects.map(({ id, name }) => (
+                                        <Badge pill bg="primary" className="me-2 mb-2" key={id} >
+                                            {name.replace(`'`, '').replace(`'`, '')}
                                         </Badge>
                                     ))}
                                 </Card.Body>

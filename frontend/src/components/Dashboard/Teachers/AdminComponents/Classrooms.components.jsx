@@ -72,7 +72,7 @@ export const Classrooms = () => {
                                         <hr /><h5>Students</h5><hr />
                                         <ListGroup>
                                             {students.length !== 0 ? (students.map(({ id, username, gender, profile_picture }) => (
-                                                <ListGroup.Item key={id}>
+                                                <ListGroup.Item key={id} className="container">
                                                     <div className="d-flex align-items-center">
                                                         <div className="me-3">
                                                             <img

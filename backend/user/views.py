@@ -46,9 +46,10 @@ class UserProfileView(APIView):
             'email': user.email,
             'gender': user.gender,
             'is_student_or_teacher': user.is_student_or_teacher,
-            'user_class': None,
+            'user_class': "",
             'is_admin':user.is_superuser,
-            'teaching_subjects': None
+            'teaching_subjects': [],
+            'offering_subjects': []
         }
 
         if user_data['is_student_or_teacher']:
@@ -56,6 +57,8 @@ class UserProfileView(APIView):
             if dummy_value:
               class_id = dummy_value[0]
               user_data.update({'user_class': ClassRoom.objects.get(id=int(class_id)).name})
+            user_data.update({'offering_subjects':list(user.subjects.all().values_list('id', flat=True)) })
+
         else:
             try:
               user_data.update({'user_class': user.classrooms.name})
