@@ -10,7 +10,7 @@ import { UpdateSubjectModal } from "./SubjectTools/UpdateSubject.components";
 
 export const Subjects = () => {
     const { currentUser } = useContext(UserContext);
-    const { subjects } = useContext(SubjectsContext);
+    const { subjects, goToPrevPage, goToNextPage, currentPage, nextPage, totalSubjects, prevPage } = useContext(SubjectsContext);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -80,7 +80,7 @@ export const Subjects = () => {
                                                     {username.replace('_', ' ')}
                                                     {gender === 'male' ?
                                                         (<Button className="m-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
-                                                            <GenderMale/>
+                                                            <GenderMale />
                                                         </Button>) :
                                                         (<Button className="m-2" size="sm" style={{ 'backgroundColor': 'pink', 'borderColor': 'white' }}>
                                                             <GenderFemale />
@@ -94,6 +94,17 @@ export const Subjects = () => {
                             </Card>
                         ))}
                     </Accordion>
+                    <div className="d-flex justify-content-between align-items-center my-4">
+                        <Button onClick={goToPrevPage} disabled={!prevPage}>
+                            Previous
+                        </Button>
+                        <span>Page {currentPage}</span>
+                        <Button onClick={goToNextPage} disabled={!nextPage}>
+                            Next
+                        </Button>
+                    </div>
+
+                    <p>Total Subjects: {totalSubjects}</p>
                     <DeleteSubjectModal
                         show={showDeleteModal}
                         handleClose={() => setShowDeleteModal(false)}

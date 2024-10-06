@@ -8,22 +8,52 @@ export const SubjectsContext = createContext({
 
 export const SubjectsProvider = ({ children }) => {
     const [subjects, setSubjects] = useState([]);
-    const value = { subjects, setSubjects };
-
-    useEffect(() => {
-        const fetchSubjects = async () => {
-            const token = localStorage.getItem('token')
-            if (token) {
-                try {
-                    const response = await axios.get('api/subjects/')
-
-                    setSubjects(response.data)
-                } catch (err) {
-                    console.log('There was an error fetching the items!', err)
-                }
-            }
+    const [currentPage, setCurrentPage] = useState(1); // Current page
+    const [nextPage, setNextPage] = useState(null);   // URL of next page
+    const [prevPage, setPrevPage] = useState(null);   // URL of previous page
+    const [totalSubjects, setTotalSubjects] = useState(0);  // Total number of users
+    const [loading, setLoading] = useState(false);    // Loading state
+    // Functions to handle pagination
+    const goToNextPage = () => {
+        if (nextPage) {
+            setCurrentPage(currentPage + 1);
         }
-        fetchSubjects();
-    }, [])
+    };
+
+    const goToPrevPage = () => {
+        if (prevPage) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+    const value = {
+        subjects,
+        setSubjects, currentPage, setCurrentPage,
+        totalSubjects,
+        nextPage,
+        prevPage,
+        loading,
+        goToNextPage,
+        goToPrevPage
+    };
+    const fetchSubjects = async (page = 1) => {
+        const token = localStorage.getItem('token')
+        if (token) {
+            setLoading(true);
+            try {
+                const response = await axios.get(`api/subjects/?page=${page}`)
+                const data = await response.data;
+                setSubjects(data.results);
+                setNextPage(data.next);
+                setPrevPage(data.previous);
+                setTotalSubjects(data.count);
+            } catch (err) {
+                console.log('There was an error fetching the items!', err)
+            }
+            setLoading(false);
+        }
+    }
+    useEffect(() => {
+        fetchSubjects(currentPage);
+    }, [currentPage])
     return <SubjectsContext.Provider value={value}>{children}</SubjectsContext.Provider>
 }

@@ -3,11 +3,14 @@ import { SubjectsContext } from "../../../../../contexts/Subjects.contexts";
 import { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { Modal, Button, Alert, Form, DropdownButton, Dropdown } from 'react-bootstrap'
+import { TeacherSelectPopUp, StudentSelectPopUp } from "../UserSelectPopupComponent";
 
 export const CreateSubjectModal = ({ show, handleClose }) => {
     const { usersList } = useContext(UsersListContext);
     const { setSubjects, subjects } = useContext(SubjectsContext);
     const [name, setName] = useState('');
+    const [listShow, setListShow] = useState(false);
+    const [listShow2, setListShow2] = useState(false);
     const [teachers, setTeachers] = useState([]);
     const [students, setStudents] = useState([]);
     const [selectedTeacher, setSelectedTeacher] = useState(null);
@@ -104,90 +107,89 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
     };
 
     return (
-        <Modal show={show} onHide={createSubjectCloseHandler}>
-            <Modal.Header closeButton>
-                <Modal.Title>Create Subject</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                {error && <Alert variant="danger">{error}</Alert>}
-                {success && <Alert variant="success">{success}</Alert>}
-                <Form>
-                    <Form.Group controlId="subjectName">
-                        <Form.Label>Name</Form.Label>
-                        <Form.Control
-                            type="text"
-                            value={name}
-                            onChange={handleNameChange}
-                            placeholder="Enter subject name"
-                        />
-                    </Form.Group>
-                    <br />
-                    <Form.Group controlId="subjectTeacher">
-                        <Form.Label>Assign Teacher</Form.Label>
-                        <DropdownButton
-                            title={selectedTeacher ? selectedTeacher.username.replace('_', ' ') : 'Select a teacher'}
-                        >
-                            {teachers.map(teacher => (
-                                <Dropdown.Item
-                                    key={teacher.id}
-                                    eventKey={teacher}
-                                    onClick={() => {
-                                        setSelectedTeacher(teacher);
-                                    }}
-                                >
-                                    {teacher.username.replace('_', ' ')}
-                                </Dropdown.Item>
-                            ))}
-                        </DropdownButton>
-                    </Form.Group>
-                    <br />
-                    <Form.Group controlId="subjectStudents">
-                        <Form.Label>Students Offering</Form.Label>
-                        <DropdownButton
-                            title="Select students"
-                            className="mb-1"
-                        >
-                            {students.map(student => (
-                                <Dropdown.Item
-                                    key={student.id}
-                                    eventKey={student}
-                                    onClick={() => {
-                                        if (!selectedStudents.includes(student)) {
-                                            setSelectedStudents(selectedStudents => [...selectedStudents, student]);
-                                        }
-                                    }}
-                                >
-                                    {student.username.replace('_', ' ')}
-                                </Dropdown.Item>
-                            ))}
-                        </DropdownButton>
-                        <div>
-                            {selectedStudents.map(student => (
-                                <span key={student.id} className="m-2">
-                                    {student.username.replace('_', ' ')}
-                                    <Button size="sm" className="m-1" variant="outline-danger"
+        <>
+            <Modal show={show} onHide={createSubjectCloseHandler}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Create Subject</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {error && <Alert variant="danger">{error}</Alert>}
+                    {success && <Alert variant="success">{success}</Alert>}
+                    <Form>
+                        <Form.Group controlId="subjectName">
+                            <Form.Label>Name</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={name}
+                                onChange={handleNameChange}
+                                placeholder="Enter subject name"
+                            />
+                        </Form.Group>
+                        <br />
+                        <Form.Group controlId="subjectTeacher">
+                            <Form.Label>Assign Teacher</Form.Label>
+                            <br />
+                            <Button
+                                variant="outline-primary"
+                                onClick={() => {
+                                    setListShow(true)
+                                }}
+                            >{selectedTeacher ? selectedTeacher.username.replace('_', ' ') : 'Select a teacher'}</Button>
+                        </Form.Group>
+                        <br />
+                        <Form.Group controlId="subjectStudents">
+                            <Form.Label>Students Offering</Form.Label>
+                            <DropdownButton
+                                title="Select students"
+                                className="mb-1"
+                                onClick={() => {
+                                    setListShow2(true)
+                                }}
+                            >
+                                {students.map(student => (
+                                    <Dropdown.Item
+                                        key={student.id}
+                                        eventKey={student}
                                         onClick={() => {
-                                            setSelectedStudents(selectedStudents.filter(s => {
-                                                if (s !== student) {
-                                                    return student;
-                                                }
-                                            }));
-                                        }}>&times;</Button><br />
-                                </span>
-                            ))}
-                        </div>
-                    </Form.Group>
-                    <br />
-                </Form>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
-                    Cancel
-                </Button>
-                <Button variant="primary" onClick={handleSubmit}>
-                    Add Subject
-                </Button>
-            </Modal.Footer>
-        </Modal>
+                                            if (!selectedStudents.includes(student)) {
+                                                setSelectedStudents(selectedStudents => [...selectedStudents, student]);
+                                            }
+                                        }}
+                                    >
+                                        {student.username.replace('_', ' ')}
+                                    </Dropdown.Item>
+                                ))}
+                            </DropdownButton>
+                            <div>
+                                {selectedStudents.map(student => (
+                                    <span key={student.id} className="m-2">
+                                        {student.username.replace('_', ' ')}
+                                        <Button size="sm" className="m-1" variant="outline-danger"
+                                            onClick={() => {
+                                                setSelectedStudents(selectedStudents.filter(s => {
+                                                    if (s !== student) {
+                                                        return student;
+                                                    }
+                                                }));
+                                            }}>&times;</Button><br />
+                                    </span>
+                                ))}
+                            </div>
+                        </Form.Group>
+                        <br />
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Cancel
+                    </Button>
+                    <Button variant="primary" onClick={handleSubmit}>
+                        Add Subject
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <TeacherSelectPopUp show={listShow} handleClose={() => setListShow(false)} selectedTeacher={selectedTeacher} setSelectedTeacher={setSelectedTeacher} />
+            <StudentSelectPopUp show={listShow2} handleClose={() => setListShow2(false)} selectedStudents={selectedStudents} setSelectedStudents={setSelectedStudents} />
+        </>
     );
 };
