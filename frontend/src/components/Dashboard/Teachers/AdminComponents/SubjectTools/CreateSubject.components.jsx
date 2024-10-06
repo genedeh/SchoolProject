@@ -2,7 +2,7 @@ import { UsersListContext } from "../../../../../contexts/UsersList.contexts";
 import { SubjectsContext } from "../../../../../contexts/Subjects.contexts";
 import { useState, useContext, useEffect } from "react";
 import axios from "axios";
-import { Modal, Button, Alert, Form, DropdownButton, Dropdown } from 'react-bootstrap'
+import { Modal, Button, Alert, Form,  Dropdown } from 'react-bootstrap'
 import { TeacherSelectPopUp, StudentSelectPopUp } from "../UserSelectPopupComponent";
 
 export const CreateSubjectModal = ({ show, handleClose }) => {
@@ -139,27 +139,14 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
                         <br />
                         <Form.Group controlId="subjectStudents">
                             <Form.Label>Students Offering</Form.Label>
-                            <DropdownButton
-                                title="Select students"
+                            <br />
+                            <Button
+                                variant="outline-primary"
                                 className="mb-1"
                                 onClick={() => {
                                     setListShow2(true)
                                 }}
-                            >
-                                {students.map(student => (
-                                    <Dropdown.Item
-                                        key={student.id}
-                                        eventKey={student}
-                                        onClick={() => {
-                                            if (!selectedStudents.includes(student)) {
-                                                setSelectedStudents(selectedStudents => [...selectedStudents, student]);
-                                            }
-                                        }}
-                                    >
-                                        {student.username.replace('_', ' ')}
-                                    </Dropdown.Item>
-                                ))}
-                            </DropdownButton>
+                            >Select Students</Button>
                             <div>
                                 {selectedStudents.map(student => (
                                     <span key={student.id} className="m-2">
