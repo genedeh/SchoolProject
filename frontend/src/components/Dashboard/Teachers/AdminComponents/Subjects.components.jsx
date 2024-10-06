@@ -44,7 +44,6 @@ export const Subjects = () => {
         if (subjects.length !== 0) {
             return (
                 <>
-
                     <div className="d-grid gap-2 m-2">
                         <Button variant="outline-primary" size="lg" onClick={() => setShowCreateModal(true)} >
                             New subject <PlusCircleFill />

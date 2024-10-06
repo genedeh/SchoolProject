@@ -44,12 +44,11 @@ class ClassRoomRetrieveView(generics.RetrieveUpdateDestroyAPIView):
           
 class ClassRoomListView(generics.ListCreateAPIView):
    serializer_class = serializers.ClassRoomListSerializer
-   pagination_class = None
    
    def get_queryset(self):
         name = self.request.query_params.get('name', None)
         if name is not None:
-            return ClassRoom.objects.filter(name=name)
+            return ClassRoom.objects.filter(name__icontains=name)
         return ClassRoom.objects.all()
    
    def get_serializer_class(self):

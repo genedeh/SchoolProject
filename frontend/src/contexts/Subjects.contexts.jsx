@@ -1,10 +1,7 @@
 import { createContext, useEffect, useState} from "react";
 import axios from "axios";
 
-export const SubjectsContext = createContext({
-    subjects: [],
-    setSubjects: () => [],
-});
+export const SubjectsContext = createContext();
 
 export const SubjectsProvider = ({ children }) => {
     const [subjects, setSubjects] = useState([]);

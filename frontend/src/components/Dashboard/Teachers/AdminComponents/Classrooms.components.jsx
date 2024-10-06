@@ -2,7 +2,7 @@ import { UserContext } from "../../../../contexts/User.contexts";
 import { ClassroomsContext } from "../../../../contexts/Classrooms.contexts";
 import { useContext, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { Button, Accordion, Card, ListGroup, Spinner, Image } from "react-bootstrap";
+import { Button, Accordion, Card, ListGroup, Spinner, Image, InputGroup, Form } from "react-bootstrap";
 import { GenderFemale, GenderMale, Trash, Pencil, PlusCircleFill } from "react-bootstrap-icons";
 import { DeleteClassroomModal } from "./ClassroomTools/DeleteClassroom.components";
 import { CreateClassroomModal } from "./ClassroomTools/CreateClassroom.components";
@@ -10,9 +10,10 @@ import { UpdateClassroomModal } from "./ClassroomTools/UpdateClassroom.component
 
 export const Classrooms = () => {
     const { currentUser } = useContext(UserContext);
-    const { classrooms } = useContext(ClassroomsContext);
+    const { classrooms, goToPrevPage, goToNextPage, currentPage, nextPage, totalClassrooms, prevPage, setTerm } = useContext(ClassroomsContext);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
     const [showUpdateModal, setShowUpdateModal] = useState(false);
     const [selectedClassroomId, setSelectedClassroomId] = useState(null);
     const [selectedClassroomForUpdate, setSelectedClassroomForUpdate] = useState(null);
@@ -48,6 +49,12 @@ export const Classrooms = () => {
                             New classroom <PlusCircleFill />
                         </Button>
                     </div>
+                    <InputGroup>
+                        <Form.Control className="m-4" size="sm" placeholder='Enter Classroom Name...' value={searchTerm} onChange={(e) => {
+                            setSearchTerm(e.target.value)
+                            setTerm(e.target.value)
+                        }} />
+                    </InputGroup>
                     <Accordion flush={true} className="m-3">
                         {classrooms.map(({ assigned_teacher, id, name, students }) => (
                             <Card key={id} className="mb-2">
@@ -66,25 +73,25 @@ export const Classrooms = () => {
                                         <ListGroup>
                                             {students.length !== 0 ? (students.map(({ id, username, gender, profile_picture }) => (
                                                 <ListGroup.Item key={id}>
-                                                    {profile_picture ? (<Image
-                                                        src={profile_picture.includes('http://') ? (profile_picture) : (`http://127.0.0.1:8000/media/${profile_picture}`)}
-                                                        roundedCircle
-                                                        style={{ width: '40px', height: '40px', objectFit: 'cover' }}
-                                                        className="me-3" />)
-                                                        : (<Image
-                                                            src="http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg"
-                                                            roundedCircle
-                                                            style={{ width: '40px', height: '40px', objectFit: 'cover' }}
-                                                            className="me-3" />)
-                                                    }
-                                                    {username.replace('_', ' ')}
-                                                    {gender === 'male' ?
-                                                        (<Button className="m-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
-                                                            <GenderMale />
-                                                        </Button>) :
-                                                        (<Button className="m-2" size="sm" style={{ 'backgroundColor': 'pink', 'borderColor': 'white' }}>
-                                                            <GenderFemale />
-                                                        </Button>)}
+                                                    <div className="d-flex align-items-center">
+                                                        <div className="me-3">
+                                                            <img
+                                                                src={profile_picture == null ? ("https://via.placeholder.com/40") : (profile_picture)}
+                                                                className="rounded-circle"
+                                                                style={{ width: '40px', height: '40px' }}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <div>{username}</div>
+                                                        </div>
+                                                        {gender === 'male' ?
+                                                            (<Button className="m-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
+                                                                <GenderMale />
+                                                            </Button>) :
+                                                            (<Button className="m-2" size="sm" style={{ 'backgroundColor': 'pink', 'borderColor': 'white' }}>
+                                                                <GenderFemale />
+                                                            </Button>)}
+                                                    </div>
                                                 </ListGroup.Item>
                                             ))) : ('NO Student Available')}
                                         </ListGroup>
@@ -94,6 +101,17 @@ export const Classrooms = () => {
                             </Card>
                         ))}
                     </Accordion>
+                    <div className="d-flex justify-content-between align-items-center my-4">
+                        <Button onClick={goToPrevPage} disabled={!prevPage}>
+                            Previous
+                        </Button>
+                        <span>Page {currentPage}</span>
+                        <Button onClick={goToNextPage} disabled={!nextPage}>
+                            Next
+                        </Button>
+                    </div>
+
+                    <p>Total Classrooms: {totalClassrooms}</p>
                     <DeleteClassroomModal
                         show={showDeleteModal}
                         handleClose={() => setShowDeleteModal(false)}
@@ -105,9 +123,16 @@ export const Classrooms = () => {
             );
         } else {
             return (
-                <Spinner animation="border" role="status">
-                    <span className="visually-hidden">Loading...</span>
-                </Spinner>)
+                <>
+                    <InputGroup>
+                        <Form.Control className="m-4" size="sm" placeholder='Enter Classroom Name...' value={searchTerm} onChange={(e) => {
+                            setSearchTerm(e.target.value)
+                            setTerm(e.target.value)
+                        }} />
+                    </InputGroup>
+                    <h1>NO CLASSROOMS WHERE FOUND</h1>
+                </>
+            )
         }
     } return (
         <Navigate to='/dashboard/home' />
