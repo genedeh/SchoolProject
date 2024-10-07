@@ -28,8 +28,8 @@ export const Classrooms = () => {
             if (classroom.id === classId) {
                 const classroomClone = { ...classroom }
                 const newStudents = []
-                classroomClone.students.map((stundent) => {
-                    newStudents.push(stundent.id)
+                classroomClone.students.map((student) => {
+                    newStudents.push(student)
                 })
                 classroomClone['students'] = newStudents
                 setSelectedClassroomForUpdate(classroomClone)
