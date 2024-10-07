@@ -1,7 +1,8 @@
 import { useState, useContext, useEffect } from "react";
-import { Button, ListGroup, Badge , Alert} from "react-bootstrap";
+import { Button, Row, Col, Card, Badge, Alert } from "react-bootstrap";
 import { SubjectsContext } from "../../../../../contexts/Subjects.contexts";
 import { ClassroomsContext } from "../../../../../contexts/Classrooms.contexts";
+import axios from "axios";
 
 const getRandomColor = () => {
     const colors = ['#f28b82', '#fbbc04', '#34a853', '#4285f4', '#a142f4', '#f54842'];
@@ -9,7 +10,7 @@ const getRandomColor = () => {
 };
 
 export const SubjectSelectStep = ({ formData, updateFormData, nextStep, prevStep }) => {
-    const { subjects } = useContext(SubjectsContext);
+    const { subjects, goToPrevPage, goToNextPage, currentPage, nextPage, prevPage, setTerm } = useContext(SubjectsContext);
     const { classrooms } = useContext(ClassroomsContext);
     const [error, setError] = useState(null);
     const [classSubjects, setClassSubjects] = useState(formData.subjects || []);
@@ -35,57 +36,52 @@ export const SubjectSelectStep = ({ formData, updateFormData, nextStep, prevStep
         }
     }
 
-
+    const fetchClassSubject = async () => {
+        await axios.get(`/api/classrooms/${formData.classes[0]}`)
+            .then(async response => {
+                const classroomName = response.data["name"]
+                setTerm(classroomName)
+            })
+    }
     useEffect(() => {
-        const currentClassroom = classrooms.filter(({ id }) => id === formData.classes[0])
-        const currentClassroomName = currentClassroom[0].name.split('_')[0]
-        const AvailableSubjects = subjects.filter((subject) => subject.name.toLowerCase().includes(currentClassroomName.toLowerCase()))
-        setAvailableSubjects(AvailableSubjects);
-    }, [])
+        fetchClassSubject();
+    }, [currentPage])
     return (
         <>
             <div className="p-4 bg-light rounded shadow-sm">
                 <h3 className="mb-4">Subjects List</h3>
                 {error && <Alert variant="danger" dismissible>{error}</Alert>}
-                <ListGroup variant="flush">
-                    {availableSubjects.map((subject) => (
-                        <>
-                            <ListGroup.Item
-                                key={subject.id}
-                                onClick={() => toggleSelectSubject(subject.id)}
-                                style={{
-                                    cursor: 'pointer',
-                                    borderBlockColor: classSubjects.includes(subject.id) ? getRandomColor() : 'transparent',
-                                    borderRadius: '10px',
-                                    borderWidth: '5px',
-                                }}
-                                className="d-flex justify-content-between align-items-center p-3 mb-2 shadow-sm"
+                <Row className="g-3">
+                    {subjects.map(({ id, students_offering, assigned_teacher, name }) => (
+                        <Col key={id} md={12}>
+                            <Card
+                                key={id}
+                                onClick={() => toggleSelectSubject(id)}
+                                className={`p-3 
+                            ${classSubjects.includes(id) ? 'border-primary' : ''}`}
                             >
-                                <div>
-                                    <h5 className="mb-1">{subject.name.replace('_', ' ')}</h5>
-                                    <p className="mb-0">
-                                        Teacher: <Badge bg="secondary">{subject.assigned_teacher.username.replace('_', ' ')}</Badge>
-                                    </p>
-                                    <p className="mb-0">
-                                        Students: <Badge bg="info">{subject.students_offering.length}</Badge>
-                                    </p>
-                                </div>
-
-                            </ListGroup.Item>
-                            <div>
-                                <Button
-                                    variant="outline-dark"
-                                    onClick={() => toggleSelectSubject(subject.id)}
-                                    className="mx-2"
-                                    style={{ display: classSubjects.includes(subject.id) ? 'block' : 'none' }}
-                                >
-                                    Unselect
-                                </Button>
-                            </div>
-                        </>
+                                <Card.Body>
+                                    <Card.Title>{name}</Card.Title>
+                                    <Card.Text>
+                                        Assigned Teacher : {assigned_teacher ? (assigned_teacher.username.replace('_', ' ')) : ("NO ASSIGNE TEACHER")}
+                                    </Card.Text>
+                                    <Card.Text>
+                                        No Of Students : <Badge bg="primary">{students_offering.length}</Badge>
+                                    </Card.Text>
+                                </Card.Body>
+                            </Card>
+                        </Col>
                     ))}
-                </ListGroup>
-
+                    <div className="d-flex justify-content-between align-items-center my-4">
+                        <Button onClick={goToPrevPage} disabled={!prevPage}>
+                            Previous
+                        </Button>
+                        <span>Page {currentPage}</span>
+                        <Button onClick={goToNextPage} disabled={!nextPage}>
+                            Next
+                        </Button>
+                    </div>
+                </Row>
                 {/* Unselect All Button */}
                 {classSubjects.length > 0 && (
                     <Button variant="danger" className="mt-3" onClick={unselectAll}>
@@ -98,7 +94,7 @@ export const SubjectSelectStep = ({ formData, updateFormData, nextStep, prevStep
                     Back
                 </Button>
                 <Button variant="primary" onClick={handleSubmit}>
-                    Next
+                    Confirm
                 </Button>
             </div>
         </>
