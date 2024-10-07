@@ -34,7 +34,7 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
 
     const handleUpdate = async (e) => {
         e.preventDefault();
-        if (name.length < 8) {
+        if (name.length < 8 && name.length !== 0) {
             try {
                 const data = {
                     name,

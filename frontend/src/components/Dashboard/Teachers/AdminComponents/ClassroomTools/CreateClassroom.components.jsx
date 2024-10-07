@@ -37,7 +37,7 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
 
     const handleSubmit = () => {
         // Check if the classroom name already exists
-        if (name.length < 8) {
+        if (name.length < 8 && name.length !== 0) {
             axios.get(`api/classrooms/?name=${name}`)
                 .then(response => {
                     if (response.data.length > 0) {

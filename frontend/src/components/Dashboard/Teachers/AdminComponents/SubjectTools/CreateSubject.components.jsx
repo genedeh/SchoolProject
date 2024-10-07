@@ -32,7 +32,7 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
 
     const handleSubmit = () => {
         // Check if the subject name already exists
-        if (name.length < 100) {
+        if (name.length < 100 && name.length !== 0) {
             axios.get(`api/subjects/?name=${name}`)
                 .then(response => {
                     if (response.data.length > 0) {

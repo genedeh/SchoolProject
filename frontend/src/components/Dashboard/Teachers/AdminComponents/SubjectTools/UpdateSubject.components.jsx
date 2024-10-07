@@ -31,7 +31,7 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
 
     const handleUpdate = async (e) => {
         e.preventDefault();
-        if (name.length < 100) {
+        if (name.length < 100 && name.length !== 0) {
             try {
                 const data = {
                     name,
