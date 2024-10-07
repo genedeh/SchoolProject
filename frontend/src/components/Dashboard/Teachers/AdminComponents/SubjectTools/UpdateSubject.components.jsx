@@ -31,28 +31,32 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
 
     const handleUpdate = async (e) => {
         e.preventDefault();
-        try {
-            const data = {
-                name,
-                assigned_teacher: assignedTeacher.id,
-                students_offering: students.map((student) => {
-                    return student.id
-                }),
+        if (name.length < 100) {
+            try {
+                const data = {
+                    name,
+                    assigned_teacher: assignedTeacher.id,
+                    students_offering: students.map((student) => {
+                        return student.id
+                    }),
+                }
+                await axios.put(`api/subjects/${subject.id}/`, data)
+                    .then((response) => {
+                        setSubjects((prevSubjects) =>
+                            prevSubjects.map((subject) =>
+                                subject.id === response.data['id'] ? response.data : subject
+                            )
+                        );
+                    });
+                setSuccess('Subject updated successfully.');
+                handleClose();
+                setSuccess(null)
+                setError(null)
+            } catch (error) {
+                setError('Failed to update subject.');
             }
-            await axios.put(`api/subjects/${subject.id}/`, data)
-                .then((response) => {
-                    setSubjects((prevSubjects) =>
-                        prevSubjects.map((subject) =>
-                            subject.id === response.data['id'] ? response.data : subject
-                        )
-                    );
-                });
-            setSuccess('Subject updated successfully.');
-            handleClose();
-            setSuccess(null)
-            setError(null)
-        } catch (error) {
-            setError('Failed to update subject.');
+        } else {
+            setError("Subject Name Exceded Max Length")
         }
     };
 

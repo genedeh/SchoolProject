@@ -32,56 +32,60 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
 
     const handleSubmit = () => {
         // Check if the subject name already exists
-        axios.get(`api/subjects/?name=${name}`)
-            .then(response => {
-                if (response.data.length > 0) {
-                    setError('Subject name already exists.');
-                } else {
-                    // Proceed to create the subject
-                    const data = {
-                        name,
-                        assigned_teacher:
-                            selectedTeacher.id
-                        ,
-                        students_offering: selectedStudents.map(student => {
-                            return (
-                                student.id
-                            )
-                        })
-                    }
-                    const data_refined = {
-                        id: null,
-                        name,
-                        assigned_teacher: {
-                            "id": selectedTeacher.id,
-                            "username": selectedTeacher.username,
-                            "gender": selectedTeacher.gender
+        if (name.length < 100) {
+            axios.get(`api/subjects/?name=${name}`)
+                .then(response => {
+                    if (response.data.length > 0) {
+                        setError('Subject name already exists.');
+                    } else {
+                        // Proceed to create the subject
+                        const data = {
+                            name,
+                            assigned_teacher:
+                                selectedTeacher.id
+                            ,
+                            students_offering: selectedStudents.map(student => {
+                                return (
+                                    student.id
+                                )
+                            })
                         }
-                        ,
-                        students_offering: selectedStudents.map(student => {
-                            return (
-                                {
-                                    "id": student.id,
-                                    "username": student.username,
-                                    "gender": student.gender
-                                }
-                            )
-                        })
+                        const data_refined = {
+                            id: null,
+                            name,
+                            assigned_teacher: {
+                                "id": selectedTeacher.id,
+                                "username": selectedTeacher.username,
+                                "gender": selectedTeacher.gender
+                            }
+                            ,
+                            students_offering: selectedStudents.map(student => {
+                                return (
+                                    {
+                                        "id": student.id,
+                                        "username": student.username,
+                                        "gender": student.gender
+                                    }
+                                )
+                            })
+                        }
+                        axios.post('api/subjects/', data)
+                            .then((response) => {
+                                data_refined["id"] = response.data.id
+                                setSubjects([...subjects, data_refined]);
+                                createSubjectCloseHandler();
+                            })
+                            .catch(error => {
+                                setError("Failed to create subject.");
+                            });
                     }
-                    axios.post('api/subjects/', data)
-                        .then((response) => {
-                            data_refined["id"] = response.data.id
-                            setSubjects([...subjects, data_refined]);
-                            createSubjectCloseHandler();
-                        })
-                        .catch(error => {
-                            setError("Failed to create subject.");
-                        });
-                }
-            })
-            .catch(error => {
-                setError(`Select a teacher to be assigned to ${name}.`);
-            });
+                })
+                .catch(error => {
+                    setError(`Select a teacher to be assigned to ${name}.`);
+                });
+        } else {
+            setError("Subject Name Exceded Max Length")
+        }
     };
 
     return (
