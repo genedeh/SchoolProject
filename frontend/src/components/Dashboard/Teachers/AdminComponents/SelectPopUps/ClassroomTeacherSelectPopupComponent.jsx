@@ -2,7 +2,7 @@ import { Modal, Button, ListGroup, Pagination, Form } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
 import axios from "axios";
 
-export const TeacherSelectPopUp = ({ show, handleClose, selectedTeacher, setSelectedTeacher }) => {
+export const ClassRoomTeacherSelectPopUp = ({ show, handleClose, selectedTeacher, setSelectedTeacher }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 2;
     const [totalUsers, setTotalUsers] = useState(0);
@@ -13,7 +13,7 @@ export const TeacherSelectPopUp = ({ show, handleClose, selectedTeacher, setSele
     const fetchTeachers = async (page = 1) => {
         const token = localStorage.getItem("token")
         if (token) {
-            await axios.get(`/api/quick_users_view/?T=&page=${page}&username=${searchTerm}`)
+            await axios.get(`/api/quick_users_view/?N=&T=&page=${page}&username=${searchTerm}`)
                 .then(respone => {
                     const data = respone.data;
                     setTotalUsers(data.count)

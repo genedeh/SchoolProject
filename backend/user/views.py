@@ -87,15 +87,26 @@ class QuickUserViewList(generics.ListAPIView):
     def get_queryset(self):
         teacher = self.request.query_params.get('T', None)
         student = self.request.query_params.get('S', None)
+        no_classroom = self.request.query_params.get('N', None)
         username = self.request.query_params.get('username', None)
         if teacher is not None:
-            if username is not None:
-               return User.objects.filter(username__icontains=username, is_student_or_teacher=False)
-            return User.objects.filter(is_student_or_teacher=False)
+            if no_classroom is not None:
+                if username is not None:
+                  return User.objects.filter(username__icontains=username, is_student_or_teacher=False, classrooms=None)
+                return User.objects.filter(is_student_or_teacher=False, classrooms=None)
+            else:
+                if username is not None:
+                  return User.objects.filter(username__icontains=username, is_student_or_teacher=False)
+                return User.objects.filter(is_student_or_teacher=False)
         elif student is not None:
-            if username is not None:
-               return User.objects.filter(username__icontains=username, is_student_or_teacher=True)
-            return User.objects.filter(is_student_or_teacher=True)
+            if no_classroom is not None:
+                if username is not None:
+                  return User.objects.filter(username__icontains=username, is_student_or_teacher=True, classes=None)
+                return User.objects.filter(is_student_or_teacher=True, classes=None)
+            else:
+                if username is not None:
+                  return User.objects.filter(username__icontains=username, is_student_or_teacher=True)
+                return User.objects.filter(is_student_or_teacher=True)
         return User.objects.all()
 
 class UpdateAndDeleteUserView(generics.RetrieveUpdateDestroyAPIView):
