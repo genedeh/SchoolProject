@@ -27,7 +27,7 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
         if (firstName !== '' && lastName !== '') {
             axios.get(`api/users/?username=${firstName}_${lastName}`)
                 .then(response => {
-                    if (response.data.length > 0 && response.data[0]['is_student_or_teacher'] === formData['is_student_or_teacher']) {
+                    if (response.data.results.length > 0 && response.data.results[0]['is_student_or_teacher'] === formData['is_student_or_teacher']) {
                         setError((prevData) => ({
                             ...prevData,
                             ['username']: 'Username already exists.',
