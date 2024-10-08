@@ -63,7 +63,7 @@ const Navigation = () => {
                             <Container fluid>
                                 {usersList.length !== 0 ?
                                     (
-                                        <Row className='m-3'>
+                                        <Row className='m-2'>
                                             {usersList.map((user) => (
                                                 <SearchedProfileCard key={user.id} user={user} />
                                             ))}

@@ -49,7 +49,7 @@ export const SubjectSelectStep = ({ formData, updateFormData, nextStep, prevStep
     return (
         <>
             <div className="p-4 bg-light rounded shadow-sm">
-                <h3 className="mb-4">Subjects List</h3>
+                <h3 className="mb-4 text-center">Subjects List</h3>
                 {error && <Alert variant="danger" dismissible>{error}</Alert>}
                 <Row className="g-3">
                     {subjects.map(({ id, students_offering, assigned_teacher, name }) => (
@@ -61,7 +61,7 @@ export const SubjectSelectStep = ({ formData, updateFormData, nextStep, prevStep
                             ${classSubjects.includes(id) ? 'border-primary' : ''}`}
                             >
                                 <Card.Body>
-                                    <Card.Title>{name}</Card.Title>
+                                    <Card.Title className="text-center">{name}</Card.Title>
                                     <Card.Text>
                                         Assigned Teacher : {assigned_teacher ? (assigned_teacher.username.replace('_', ' ')) : ("NO ASSIGNE TEACHER")}
                                     </Card.Text>

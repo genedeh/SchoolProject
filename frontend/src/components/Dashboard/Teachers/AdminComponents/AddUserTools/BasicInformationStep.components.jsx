@@ -65,7 +65,7 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
     }
     return (
         <Container fluid={true}>
-            <hr /><h1 className="login-title">Fill In Needed Information</h1><hr />
+            <hr /><h1 className="login-title text-center">Fill In Needed Information</h1><hr />
             <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="formFirstname">
                     <Form.Control type="text" required placeholder="Enter firstname" value={firstName} onChange={(e) => setFirstname(e.target.value)} isInvalid={!!error.username} />

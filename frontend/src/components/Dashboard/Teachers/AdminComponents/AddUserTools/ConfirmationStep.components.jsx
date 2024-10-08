@@ -93,7 +93,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                                 />
                             </Col>
                             <Col md={8}>
-                                <h4>{username.replace("_", " ")}  <hr />
+                                <h4 className='mt-2 text-center'>{username.replace("_", " ")}  <hr />
                                     {userType === "Student" ? (<Badge bg="primary">Student</Badge>)
                                         : (userType === "Admin" ? (<Badge bg="success">Admin</Badge>)
                                             : (<Badge bg="dark">Teacher</Badge>))}</h4>
@@ -136,7 +136,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                                 {formData.subjects.map((subjectId) => {
                                     const newSubject = subjects.filter(({ id }) => id === subjectId);
                                     return (
-                                        <tr>
+                                        <tr key={newSubject[0].id}>
                                             <td>{newSubject[0].name.replace('_', ' ')}</td>
                                             <td>{newSubject[0].assigned_teacher ? (newSubject[0].assigned_teacher.username.replace('_', ' ')) : ("NO ASSIGNED TEACHER")}</td>
                                             <td>{newSubject[0].students_offering.length}</td>

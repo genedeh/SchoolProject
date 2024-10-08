@@ -27,7 +27,7 @@ export const SelectUserTypeStep = ({ updateFormData, nextStep, selectedOption, s
 
     return (
         <Container fluid={true} >
-            <hr /><h1>Choose User Type</h1><hr />
+            <hr /><h1 className='text-center'>Choose User Type</h1><hr />
             <Row className="g-3">
                 {options.map((option) => (
                     <Col key={option.id} md={12}>

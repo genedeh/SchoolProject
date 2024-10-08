@@ -23,7 +23,7 @@ export const ClassSelectStep = ({ formData, updateFormData, nextStep, prevStep }
 
     return (
         <div className="p-4 bg-light rounded shadow-sm">
-            <h3 className="mb-4">Classroom List {`(${classrooms.filter(classroom => classroom.id == selectedClassRoom)[0] ?
+            <h3 className="mb-4 text-center">Classroom List {`(${classrooms.filter(classroom => classroom.id == selectedClassRoom)[0] ?
                 (classrooms.filter(classroom => classroom.id == selectedClassRoom)[0].name)
                 :
                 ("")})`}
@@ -45,7 +45,7 @@ export const ClassSelectStep = ({ formData, updateFormData, nextStep, prevStep }
                             ${selectedClassRoom === classroom.id ? 'border-primary' : ''}`}
                         >
                             <Card.Body>
-                                <Card.Title>{classroom.name}</Card.Title>
+                                <Card.Title className="text-center">{classroom.name}</Card.Title>
                                 <Card.Text>
                                     Assigned Teacher : {classroom.assigned_teacher ? (classroom.assigned_teacher.username.replace('_', ' ')) : ("NO ASSIGNE TEACHER")}
                                 </Card.Text>

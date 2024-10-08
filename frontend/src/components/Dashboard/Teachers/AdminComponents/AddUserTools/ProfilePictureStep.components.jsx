@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Image, Modal, Button, Form } from 'react-bootstrap';
 import { Trash, Pencil } from "react-bootstrap-icons";
 
 export const ProfilePictureStep = ({ formData, updateFormData, nextStep, prevStep }) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
-    const [displayProfilePicture, setDisplayProfilePicture] = useState(formData.profile_picture)
+    const [displayProfilePicture, setDisplayProfilePicture] = useState(null);
 
     // Handle file change event for updating the profile picture
     const handleFileChange = (event) => {
@@ -25,6 +25,17 @@ export const ProfilePictureStep = ({ formData, updateFormData, nextStep, prevSte
         // const formData = new FormData();
         // console.log(formData)
     };
+
+    useEffect(() => {
+        if (formData.profile_picture) {
+            setSelectedFile(formData.profile_picture)
+            const reader = new FileReader();
+            reader.onload = () => {
+                setDisplayProfilePicture(reader.result);
+            };
+            reader.readAsDataURL(formData.profile_picture);
+        }
+    },[])
 
     // Handle delete picture
     const handleDeletePicture = () => {
@@ -49,11 +60,11 @@ export const ProfilePictureStep = ({ formData, updateFormData, nextStep, prevSte
             </div>
 
             <div >
-                <Button variant="primary" className="me-2" onClick={() => document.getElementById('fileInput').click()}>
+                <Button variant="outline-primary" className="me-2" onClick={() => document.getElementById('fileInput').click()}>
                     Change Profile Picture <Pencil />
                 </Button>
-
-                <Button variant="danger" onClick={() => setShowDeleteModal(true)}>
+                <hr />
+                <Button variant="outline-danger" className="me-2" onClick={() => setShowDeleteModal(true)}>
                     Remove Profile Picture <Trash />
                 </Button>
 

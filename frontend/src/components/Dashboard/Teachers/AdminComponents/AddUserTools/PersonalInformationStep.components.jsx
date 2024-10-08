@@ -38,7 +38,7 @@ export const PersonalInfromationStep = ({ formData, updateFormData, nextStep, pr
 
     return (
         <Form onSubmit={handleSubmit} className="p-4 rounded shadow-sm bg-light">
-            <h3 className="mb-4">User Details Form</h3>
+            <h3 className="mb-4 text-center">User Details Form</h3>
 
             {/* Birth Date Field */}
             <Form.Group controlId="birthDate" className="mb-3">
