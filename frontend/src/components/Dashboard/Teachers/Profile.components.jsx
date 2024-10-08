@@ -19,7 +19,9 @@ const TeacherProfile = () => {
             });
     }
     useEffect(() => {
-        fetchSubjects()
+        if (teachingSubjects.length !== 0) {
+            fetchSubjects()
+        }
     }, [currentUser])
 
     if (!currentUser.is_student_or_teacher && currentUser) {
