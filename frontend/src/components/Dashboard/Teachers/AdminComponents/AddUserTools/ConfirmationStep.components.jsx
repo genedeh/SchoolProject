@@ -1,23 +1,20 @@
 import { Card, ListGroup, Button, Table, Row, Col, Badge } from 'react-bootstrap';
-import { ClassroomsContext } from '../../../../../contexts/Classrooms.contexts';
-import { SubjectsContext } from '../../../../../contexts/Subjects.contexts';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) => {
     const { username, first_name, last_name, password, email, address, birth_date,
-        is_student_or_teacher, is_superuser, phone_number, profile_picture, classes, gender
+        is_student_or_teacher, is_superuser, phone_number, profile_picture, classes, gender, subjects
     } = formData;
     const current_date = new Date();
-    const { subjects } = useContext(SubjectsContext);
-    const { classrooms } = useContext(ClassroomsContext);
-    const [currentClassroom, setCurrentClassroom] = useState('');
+    const [currentClassroom, setCurrentClassroom] = useState(null);
+    const [offeringSubjects, setOfferingSubjects] = useState([]);
     const [displayProfilePicture, setDisplayProfilePicture] = useState(null)
     const [userType, setUserType] = useState('');
 
     const handleSubmit = async () => {
         console.log(formData)
-        axios.post('api/users/', formData, 
+        axios.post('api/users/', formData,
             {
                 headers: {
                     'Content-Type': 'multipart/form-data', // Ensure correct content-type
@@ -51,6 +48,25 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
             })
     }
 
+    const fetchClassSubjects = async (subjects) => {
+        if (subjects.length !== 0) {
+            await axios.post('/api/get-subjects/', { "subject_ids": subjects })
+                .then(response => {
+                    const data = response.data
+                    setOfferingSubjects(data)
+                })
+        }
+    }
+    const fetchClassroom = async (classId) => {
+        await axios.get(`/api/classrooms/${classId}/`)
+            .then(response => {
+                if (response.data["detail"]) {
+                    setCurrentClassroom(null)
+                } else {
+                    setCurrentClassroom(response.data)
+                }
+            })
+    }
     useEffect(() => {
         if (is_student_or_teacher) {
             setUserType('Student');
@@ -61,8 +77,8 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                 setUserType('Teacher');
             }
         }
-
-        setCurrentClassroom(classrooms.filter(({ id }) => id === classes[0]))
+        fetchClassSubjects(subjects)
+        fetchClassroom(classes[0])
 
         if (profile_picture) {
             const reader = new FileReader();
@@ -97,7 +113,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                                     {userType === "Student" ? (<Badge bg="primary">Student</Badge>)
                                         : (userType === "Admin" ? (<Badge bg="success">Admin</Badge>)
                                             : (<Badge bg="dark">Teacher</Badge>))}</h4>
-                                <p className="text-muted">{currentClassroom.length !== 0 ? (currentClassroom[0].name) : ('No Class Selected')}</p>
+                                <p className="text-muted">{currentClassroom ? (currentClassroom.name) : ('No Class Selected')}</p>
                             </Col>
                         </Row>
                     </Card.Body>
@@ -133,17 +149,13 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                                 </tr>
                             </thead>
                             <tbody>
-                                {formData.subjects.map((subjectId) => {
-                                    const newSubject = subjects.filter(({ id }) => id === subjectId);
-                                    return (
-                                        <tr key={newSubject[0].id}>
-                                            <td>{newSubject[0].name.replace('_', ' ')}</td>
-                                            <td>{newSubject[0].assigned_teacher ? (newSubject[0].assigned_teacher.username.replace('_', ' ')) : ("NO ASSIGNED TEACHER")}</td>
-                                            <td>{newSubject[0].students_offering.length}</td>
-                                        </tr>
-                                    );
-                                })}
-
+                                {offeringSubjects.map(({ id, name, assigned_teacher, students_offering }) => (
+                                    <tr key={id}>
+                                        <td>{name.replace('_', ' ')}</td>
+                                        <td>{assigned_teacher ? (assigned_teacher.username.replace('_', ' ')) : ("NO ASSIGNED TEACHER")}</td>
+                                        <td>{students_offering.length}</td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </Table>
                     </Card.Body>

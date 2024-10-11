@@ -1,20 +1,13 @@
 import { useState, useContext, useEffect } from "react";
 import { Button, Row, Col, Card, Badge, Alert } from "react-bootstrap";
 import { SubjectsContext } from "../../../../../contexts/Subjects.contexts";
-import { ClassroomsContext } from "../../../../../contexts/Classrooms.contexts";
 import axios from "axios";
 
-const getRandomColor = () => {
-    const colors = ['#f28b82', '#fbbc04', '#34a853', '#4285f4', '#a142f4', '#f54842'];
-    return colors[Math.floor(Math.random() * colors.length)];
-};
 
 export const SubjectSelectStep = ({ formData, updateFormData, nextStep, prevStep }) => {
     const { subjects, goToPrevPage, goToNextPage, currentPage, nextPage, prevPage, setTerm } = useContext(SubjectsContext);
-    const { classrooms } = useContext(ClassroomsContext);
     const [error, setError] = useState(null);
     const [classSubjects, setClassSubjects] = useState(formData.subjects || []);
-    const [availableSubjects, setAvailableSubjects] = useState([]);
 
     const toggleSelectSubject = (id) => {
         setClassSubjects((prevSelected) =>
