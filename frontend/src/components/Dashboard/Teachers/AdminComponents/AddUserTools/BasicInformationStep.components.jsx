@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Form, Button, Container } from "react-bootstrap";
-import './BasicInformation.styles.css';
+import './AddUser.styles.css';
 import axios from "axios";
 export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormData }) => {
     const [firstName, setFirstname] = useState(formData.first_name);
@@ -66,10 +66,10 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
     }
     return (
         <Container fluid={true}>
-            <div className="header">
-                <h1 className="title">Fill In Needed Information</h1>
-            </div>
-            <Form onSubmit={handleSubmit} className="box">
+            <Form onSubmit={handleSubmit} className="box mt-4">
+                <div className="header">
+                    <h1 className="title">Fill In Needed Information</h1>
+                </div>
                 <Form.Group controlId="formFirstname">
                     <Form.Control type="text" required placeholder="Enter firstname" value={firstName} onChange={(e) => setFirstname(e.target.value)} isInvalid={!!error.username} />
                     <Form.Control.Feedback type="invalid">{error.username}</Form.Control.Feedback>
