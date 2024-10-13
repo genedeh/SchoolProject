@@ -120,7 +120,7 @@ export const AddUser = () => {
                     />
                 );
             default:
-                return <div className="text-center"><hr /><h1>Unknown step</h1><hr /></div>;
+                return <div className="text-center"><hr /><h1>Work In Progress</h1><hr /></div>;
         }
     } return (
         <Navigate to="/dashboard/home" />
