@@ -19,7 +19,7 @@ const TeacherProfile = () => {
             });
     }
     useEffect(() => {
-        if (teachingSubjects.length !== 0) {
+        if (teaching_subjects.length !== 0) {
             fetchSubjects()
         }
     }, [currentUser])

@@ -54,7 +54,7 @@ const StudentProfile = () => {
             });
     }
     useEffect(() => {
-        if (offeringSubjects.length !== 0) {
+        if (offering_subjects.length !== 0) {
             fetchSubjects()
         }
     }, [currentUser])
