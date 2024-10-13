@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react"
-import { Form, Button, Container, Alert } from "react-bootstrap"
+import { useEffect, useState } from "react";
+import { Form, Button, Container } from "react-bootstrap";
+import './BasicInformation.styles.css';
 import axios from "axios";
 export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormData }) => {
     const [firstName, setFirstname] = useState(formData.first_name);
@@ -65,8 +66,10 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
     }
     return (
         <Container fluid={true}>
-            <hr /><h1 className="login-title text-center">Fill In Needed Information</h1><hr />
-            <Form onSubmit={handleSubmit}>
+            <div className="header">
+                <h1 className="title">Fill In Needed Information</h1>
+            </div>
+            <Form onSubmit={handleSubmit} className="box">
                 <Form.Group controlId="formFirstname">
                     <Form.Control type="text" required placeholder="Enter firstname" value={firstName} onChange={(e) => setFirstname(e.target.value)} isInvalid={!!error.username} />
                     <Form.Control.Feedback type="invalid">{error.username}</Form.Control.Feedback>
@@ -82,7 +85,7 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
                     <Form.Control.Feedback type="invalid">{error.email}</Form.Control.Feedback>
                 </Form.Group>
                 <br />
-                <div className="d-flex justify-content-between mt-4">
+                <div className="d-flex justify-content-between footer">
                     <Button variant="secondary" onClick={prevStep}>
                         Back
                     </Button>
