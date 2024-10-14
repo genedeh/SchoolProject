@@ -1,6 +1,7 @@
-import { Card, ListGroup, Button, Table, Row, Col, Badge } from 'react-bootstrap';
+import { Card, ListGroup, Button, Table, Row, Col, Badge, Alert } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import './AddUser.styles.css'
 
 export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) => {
     const { username, first_name, last_name, password, email, address, birth_date,
@@ -9,6 +10,10 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
     const current_date = new Date();
     const [currentClassroom, setCurrentClassroom] = useState(null);
     const [offeringSubjects, setOfferingSubjects] = useState([]);
+    const [alert, setAlert] = useState({
+        "success": null,
+        "fail": null,
+    })
     const [displayProfilePicture, setDisplayProfilePicture] = useState(null)
     const [userType, setUserType] = useState('');
 
@@ -16,7 +21,6 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
         axios.post('api/users/', formData)
             .then(response => {
                 if (response.data['username'] === username) {
-                    setStep(1);
                     setFormData({
                         "username": "",
                         "password": "",
@@ -33,11 +37,11 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                         "classes": [],
                         "subjects": []
                     })
-                    alert("New User Was Succesfully Added")
+                    setAlert({ "success": `User ${response.data["username"]} was added succesfully`, "fail": null })
+                    setStep(1);
                 }
             }).catch(e => {
-                console.log(e)
-                alert("Failed To Add New User");
+                setAlert({ "fail": `Failed To Add User ${formData["username"]}`, "success": null })
             })
     }
 
@@ -88,9 +92,11 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
 
     return (
         <>
-            <div className="container mt-4">
+            
+            <div className="mt-4">
                 {/* User Header */}
-                <Card className="mb-4">
+
+                <Card className="mb-4 box">
                     <Card.Body>
                         <Row>
                             <Col md={2} className="text-center">
@@ -116,7 +122,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                 </Card>
 
                 {/* User Details */}
-                <Card className="mb-4">
+                <Card className="mb-4 box">
                     <Card.Body>
                         <ListGroup variant="flush">
                             <ListGroup.Item><strong>FirstName:</strong> {first_name}</ListGroup.Item>
@@ -133,7 +139,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                 </Card>
 
                 {/* Organizations */}
-                <Card className="mb-4">
+                <Card className="mb-4 box">
                     <Card.Header>Offering Subjects</Card.Header>
                     <Card.Body>
                         <Table striped bordered hover>
@@ -158,6 +164,8 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                 </Card>
 
             </div>
+            {alert.fail && <Alert variant="danger" className='m-4'>{alert.fail}</Alert>}
+            {alert.success && <Alert variant="success" className='m-4'>{alert.success}</Alert>}
             <div className="d-flex justify-content-between mt-4">
                 <Button variant="secondary" onClick={prevStep}>
                     Back
