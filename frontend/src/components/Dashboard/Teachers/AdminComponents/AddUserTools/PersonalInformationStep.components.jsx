@@ -32,8 +32,10 @@ export const PersonalInfromationStep = ({ formData, updateFormData, nextStep, pr
         e.preventDefault();
         if (errors.phoneNumber) {
             alert('Please correct the errors before submitting the form.');
+        } else {
+            nextStep();
         }
-        nextStep();
+        
     };
 
     return (
@@ -121,9 +123,6 @@ export const PersonalInfromationStep = ({ formData, updateFormData, nextStep, pr
                 <Button
                     type="submit"
                     variant="primary"
-                    disabled={
-                        !formData.birth_date || !formData.address || !!errors.phoneNumber
-                    }
                 >
                     Next
                 </Button>

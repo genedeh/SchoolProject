@@ -12,7 +12,7 @@ import { ConfirmationStep } from "./AddUserTools/ConfirmationStep.components";
 
 export const AddUser = () => {
     const { currentUser } = useContext(UserContext);
-    const [step, setStep] = useState(0);
+    const [step, setStep] = useState(1);
     const [selectedOption, setSelectedOption] = useState(1);
     const [formData, setFormData] = useState({
         "username": "",
@@ -120,7 +120,7 @@ export const AddUser = () => {
                     />
                 );
             default:
-                return <div className="text-center"><hr /><h1>Work In Progress</h1><hr /></div>;
+                return <div className="text-center"><hr /><h1>Unknown Step</h1><hr /></div>;
         }
     } return (
         <Navigate to="/dashboard/home" />

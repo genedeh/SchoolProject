@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Image, Modal, Button, Form } from 'react-bootstrap';
+import { Image, Modal, Button, Form , ButtonGroup} from 'react-bootstrap';
 import { Trash, Pencil } from "react-bootstrap-icons";
 
 export const ProfilePictureStep = ({ formData, updateFormData, nextStep, prevStep }) => {
@@ -20,10 +20,6 @@ export const ProfilePictureStep = ({ formData, updateFormData, nextStep, prevSte
             reader.readAsDataURL(file);
         }
         if (!selectedFile) return;
-
-        // Create a FormData object to hold the file
-        // const formData = new FormData();
-        // console.log(formData)
     };
 
     useEffect(() => {
@@ -59,14 +55,14 @@ export const ProfilePictureStep = ({ formData, updateFormData, nextStep, prevSte
                 />
             </div>
 
-            <div >
+            <ButtonGroup size="lg">
                 <Button variant="outline-primary" className="me-2" onClick={() => document.getElementById('fileInput').click()}>
                     Change Profile Picture <Pencil />
                 </Button>
-                <hr />
                 <Button variant="outline-danger" className="me-2" onClick={() => setShowDeleteModal(true)}>
                     Remove Profile Picture <Trash />
                 </Button>
+                
 
                 <input
                     type="file"
@@ -75,7 +71,7 @@ export const ProfilePictureStep = ({ formData, updateFormData, nextStep, prevSte
                     onChange={handleFileChange}
                     style={{ display: 'none' }}
                 />
-            </div>
+            </ButtonGroup>
 
             {/* Delete confirmation modal */}
             <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
