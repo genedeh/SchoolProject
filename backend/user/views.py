@@ -82,6 +82,13 @@ class CreateAndSearchUserView(generics.ListCreateAPIView):
         elif self.request.method == 'POST':
             return serializers.UserCreateSerializer
         
+    def post(self, request, *args, **kwargs):
+        serializer = serializers.UserCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
+        
 class QuickUserViewList(generics.ListAPIView):
     serializer_class = serializers.QuickUserViewSerializer
     def get_queryset(self):

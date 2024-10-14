@@ -13,14 +13,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
     const [userType, setUserType] = useState('');
 
     const handleSubmit = async () => {
-        console.log(formData)
-        axios.post('api/users/', formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data', // Ensure correct content-type
-                },
-            }
-        )
+        axios.post('api/users/', formData)
             .then(response => {
                 if (response.data['username'] === username) {
                     setStep(1);
@@ -70,6 +63,8 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
     useEffect(() => {
         if (is_student_or_teacher) {
             setUserType('Student');
+            fetchClassSubjects(subjects)
+            fetchClassroom(classes[0])
         } else {
             if (is_superuser) {
                 setUserType('Admin');
@@ -77,8 +72,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                 setUserType('Teacher');
             }
         }
-        fetchClassSubjects(subjects)
-        fetchClassroom(classes[0])
+
 
         if (profile_picture) {
             const reader = new FileReader();
@@ -112,7 +106,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                                 <h4 className='mt-2 text-center'>{username.replace("_", " ")}  <hr />
                                     {userType === "Student" ? (<Badge bg="primary">Student</Badge>)
                                         : (userType === "Admin" ? (<Badge bg="success">Admin</Badge>)
-                                            : (<Badge bg="dark">Teacher</Badge>))}</h4>
+                                            : (<Badge bg="danger">Teacher</Badge>))}</h4>
                                 <p className="text-muted">{currentClassroom ? (currentClassroom.name) : ('No Class Selected')}</p>
                             </Col>
                         </Row>
