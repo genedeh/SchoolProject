@@ -63,8 +63,10 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
     useEffect(() => {
         if (is_student_or_teacher) {
             setUserType('Student');
-            fetchClassSubjects(subjects)
-            fetchClassroom(classes[0])
+            if (subjects.length !== 0 && classes.length !== 0) {
+                fetchClassSubjects(subjects)
+                fetchClassroom(classes[0])
+            }
         } else {
             if (is_superuser) {
                 setUserType('Admin');
