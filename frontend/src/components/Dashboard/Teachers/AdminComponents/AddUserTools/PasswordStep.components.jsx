@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { InputGroup, Form, Button , Alert} from "react-bootstrap";
-
+import { InputGroup, Form, Button } from "react-bootstrap";
+import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
+import './AddUser.styles.css'
 export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) => {
     const [showPassword, setShowPassword] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState(formData.password);
@@ -11,7 +12,7 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
     const handleChange = (e) => {
         const { name, value } = e.target;
         updateFormData(name, value)
-        
+
     };
 
     // Handle form submission
@@ -26,7 +27,10 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
     };
 
     return (
-        <Form onSubmit={handleSubmit} className="p-3">
+        <Form onSubmit={handleSubmit} className="mt-4 box">
+            <div className="header">
+                <h1 className="title">Fill In Password</h1>
+            </div>
             <Form.Group className="m-4">
                 <InputGroup>
                     <Form.Control
@@ -39,10 +43,10 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
                         required
                     />
                     <Button
-                        variant="outline-secondary"
+                        variant="outline-dark"
                         onClick={() => setShowPassword(!showPassword)}
                     >
-                        {showPassword ? 'Hide' : 'Show'}
+                        {showPassword ? <EyeSlashFill /> : <EyeFill />}
                     </Button>
                     <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
                 </InputGroup>
@@ -56,14 +60,14 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
                         name="confirmPassword"
                         value={confirmPassword}
                         isInvalid={!!error}
-                        onChange={(e)=> setConfirmPassword(e.target.value)}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                         required
                     />
                     <Button
-                        variant="outline-secondary"
+                        variant="outline-dark"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     >
-                        {showConfirmPassword ? 'Hide' : 'Show'}
+                        {showConfirmPassword ? <EyeSlashFill /> : <EyeFill />}
                     </Button>
                     <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
                 </InputGroup>
@@ -73,7 +77,7 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
                 <Button variant="secondary" onClick={prevStep}>
                     Back
                 </Button>
-                <Button variant="primary"  type="submit">
+                <Button variant="primary" type="submit">
                     Next
                 </Button>
             </div>
