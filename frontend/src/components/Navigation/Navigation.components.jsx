@@ -27,7 +27,7 @@ const Navigation = () => {
 
     const SearchHandler = (e) => {
         setSearchTerm(e.target.value);
-        setTerm(e.target.value);
+        setTerm(e.target.value.replace(/ /g, ""));
         setCurrentPage(1);
     }
     if (error === "No token found") {
