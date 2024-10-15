@@ -1,12 +1,12 @@
 import { useContext, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { UserContext } from "../../contexts/User.contexts";
-import { Container, Row, Col, Alert, Button, Image, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Alert, Button, Spinner } from 'react-bootstrap';
 import TopLevel from "./TopLevel.components";
 import { StudentSidebar, TeacherSidebar } from "./Side_Navigation_Bar/SideBar.components";
 import { UsersListContext } from "../../contexts/UsersList.contexts";
 import SearchedProfileCard from "../Dashboard/SearchedProfileCard.components";
-import { SignDeadEnd } from 'react-bootstrap-icons';
+import ErrorAlert from "../Alerts/ErrorAlert.components";
 import { ErrorModal } from "../ErrorHandling/ErrorModal.components";
 
 
@@ -81,20 +81,12 @@ const Navigation = () => {
                                         </Row>
                                     )
                                     :
-                                    (<Row className='m-3'>
-                                        <Col md={6}>
-                                            <Image
-                                                src="https://via.placeholder.com/400x300.png?text=404+Not+Found"
-                                                alt="404 Not Found"
-                                                fluid
-                                                className="mb-4"
-                                            />
-                                            <h2>Oops! No Results Found</h2>
-                                            <p className="text-muted">
-                                                We couldn't find any results matching your search.
-                                            </p>
-                                        </Col>
-                                    </Row>)}
+                                    (
+                                        <ErrorAlert
+                                            message={`We couldn't find any results matching user " ${searchTerm} ".`}
+                                            heading={"Oops! No Results Found"}
+                                        />
+                                    )}
                             </Container>
                         </Col>
                     </Row>
