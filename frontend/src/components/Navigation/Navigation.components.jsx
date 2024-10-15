@@ -33,13 +33,13 @@ const Navigation = () => {
     if (error === "No token found") {
         return (
             <ErrorModal errorMessage={['MISSING PERMISSION', 'PLEASE ENDEVOUR TO LOG IN BEFORE U CAN HAVE ACCESS TO THIS PAGE ']} show={show} handleClose={handleClose} >
-                <Alert.Link href='/' className='m-2'>GO TO LOGIN PAGE</Alert.Link>
+                <Alert.Link href='/' className='m-3'>GO TO LOGIN PAGE</Alert.Link>
             </ErrorModal>
         );
     } else if (error) {
         return (
             <ErrorModal errorMessage={['Failed Request', error]} show={show} handleClose={handleClose} >
-                <Alert.Link href='/' className='m-2'>GO TO LOGIN PAGE</Alert.Link>
+                <Alert.Link href='/' className='m-3'>GO TO LOGIN PAGE</Alert.Link>
             </ErrorModal>
         );
     }
