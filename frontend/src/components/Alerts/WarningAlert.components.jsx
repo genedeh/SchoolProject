@@ -2,7 +2,7 @@ import { Alert } from 'react-bootstrap';
 import { ExclamationTriangleFill } from 'react-bootstrap-icons';
 import './Alert.styles.css';
 
-const WarningAlert = ({ message, heading, children }) => (
+export const WarningAlert = ({ message, heading, children }) => (
     <Alert variant="warning" className="alert-container">
         <ExclamationTriangleFill className="alert-icon" />
         <div>
@@ -13,4 +13,3 @@ const WarningAlert = ({ message, heading, children }) => (
     </Alert>
 );
 
-export default WarningAlert;

@@ -2,7 +2,7 @@ import { Alert } from 'react-bootstrap';
 import { CheckCircleFill } from 'react-bootstrap-icons';
 import './Alert.styles.css';
 
-const SuccessAlert = ({ message, heading, children }) => (
+export const SuccessAlert = ({ message, heading, children }) => (
     <Alert variant="success" className="alert-container">
         <CheckCircleFill className="alert-icon" />
         <div>
@@ -12,5 +12,3 @@ const SuccessAlert = ({ message, heading, children }) => (
         </div>
     </Alert>
 );
-
-export default SuccessAlert;

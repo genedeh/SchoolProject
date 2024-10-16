@@ -6,8 +6,8 @@ import TopLevel from "./TopLevel.components";
 import { StudentSidebar, TeacherSidebar } from "./Side_Navigation_Bar/SideBar.components";
 import { UsersListContext } from "../../contexts/UsersList.contexts";
 import SearchedProfileCard from "../Dashboard/SearchedProfileCard.components";
-import ErrorAlert from "../Alerts/ErrorAlert.components";
-import WarningAlert from "../Alerts/WarningAlert.components";
+import { ErrorAlert } from "../Alerts/ErrorAlert.components";
+import { WarningAlert } from "../Alerts/WarningAlert.components";
 
 
 const Navigation = () => {
@@ -22,8 +22,6 @@ const Navigation = () => {
         goToNextPage,
         goToPrevPage, setCurrentPage, setTerm
     } = useContext(UsersListContext);
-    const [show, setShow] = useState(true);
-    const handleClose = () => setShow(false);
 
     const SearchHandler = (e) => {
         setSearchTerm(e.target.value);

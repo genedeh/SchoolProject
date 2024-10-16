@@ -1,7 +1,7 @@
 import { Alert } from 'react-bootstrap';
 import { ExclamationCircleFill } from 'react-bootstrap-icons';
 import './Alert.styles.css';
-const ErrorAlert = ({ message, heading, children }) => (
+export const ErrorAlert = ({ message, heading, children }) => (
     <Alert variant="danger" className="alert-container">
         <ExclamationCircleFill className="alert-icon" />
         <div>
@@ -12,4 +12,3 @@ const ErrorAlert = ({ message, heading, children }) => (
     </Alert>
 );
 
-export default ErrorAlert;
