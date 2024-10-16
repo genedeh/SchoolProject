@@ -7,7 +7,7 @@ import { StudentSidebar, TeacherSidebar } from "./Side_Navigation_Bar/SideBar.co
 import { UsersListContext } from "../../contexts/UsersList.contexts";
 import SearchedProfileCard from "../Dashboard/SearchedProfileCard.components";
 import ErrorAlert from "../Alerts/ErrorAlert.components";
-import { ErrorModal } from "../ErrorHandling/ErrorModal.components";
+import WarningAlert from "../Alerts/WarningAlert.components";
 
 
 const Navigation = () => {
@@ -32,15 +32,15 @@ const Navigation = () => {
     }
     if (error === "No token found") {
         return (
-            <ErrorModal errorMessage={['MISSING PERMISSION', 'PLEASE ENDEVOUR TO LOG IN BEFORE U CAN HAVE ACCESS TO THIS PAGE ']} show={show} handleClose={handleClose} >
-                <Alert.Link href='/' className='m-3'>GO TO LOGIN PAGE</Alert.Link>
-            </ErrorModal>
+            <WarningAlert heading="Missing Permission" message="Endevour to login before you can access this page." >
+                <Alert.Link href='/' className='me-3'>GO TO LOGIN PAGE</Alert.Link>
+            </WarningAlert>
         );
     } else if (error) {
         return (
-            <ErrorModal errorMessage={['Failed Request', error]} show={show} handleClose={handleClose} >
-                <Alert.Link href='/' className='m-3'>GO TO LOGIN PAGE</Alert.Link>
-            </ErrorModal>
+            <ErrorAlert heading="Failed Request" message="Failed to fetch user data." >
+                <Alert.Link href='/' className='me-3'>GO TO LOGIN PAGE</Alert.Link>
+            </ErrorAlert>
         );
     }
     if (!currentUser) {
