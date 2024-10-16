@@ -114,26 +114,6 @@ const StudentProfile = () => {
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col md={4}>
-                            <Card className="m-2">
-                                <Card.Body >
-                                    <Card.Title>Class Mates</Card.Title>
-                                    <ListGroup variant="flush">
-                                        {usersList.map(potentialClassMate => {
-                                            if (potentialClassMate.username !== username) {
-                                                if (potentialClassMate.user_class === user_class) {
-                                                    if (potentialClassMate.is_student_or_teacher) {
-                                                        return (
-                                                            <ClassMateCard classMate={potentialClassMate} key={potentialClassMate.id} />
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        })}
-                                    </ListGroup>
-                                </Card.Body>
-                            </Card>
-                        </Col>
                     </Row>
                 </Container >
             </>
