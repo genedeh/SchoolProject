@@ -78,7 +78,7 @@ export const AssignedClassrooms = () => {
                 </div>
             )
         } else {
-            return (< h1 > NO CLASSROOM WHERE FOUND</h1 >)
+            return (< h1 className="text-center"> No assigned classrooms where found</h1 >)
         }
     } return (
         <Navigate to='/dashboard/home' />
