@@ -63,7 +63,7 @@ export const AssignedSubjects = () => {
                                                             </Button>)}
                                                     </div>
                                                 </ListGroup.Item>
-                                            ))) : ('NO Student Available')}
+                                            ))) : ('NO Students Available')}
                                         </ListGroup>
                                     </Accordion.Body>
                                 </Accordion.Item>
@@ -74,7 +74,7 @@ export const AssignedSubjects = () => {
                 </div>
             )
         } else {
-            return (< h1 > NO SUBJECTS WHERE FOUND</h1 >)
+            return (< h1 className="text-center"> No assigned subjects where found</h1 >)
         }
 
     } return (
