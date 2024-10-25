@@ -13,7 +13,7 @@ export const ClassRoomTeacherSelectPopUp = ({ show, handleClose, selectedTeacher
     const fetchTeachers = async (page = 1) => {
         const token = localStorage.getItem("token")
         if (token) {
-            await axios.get(`/api/quick_users_view/?N=&T=&page=${page}&username=${searchTerm}`)
+            await axios.get(`/api/quick_users_view/?N=&T=&page=${page}&username=${searchTerm.replace(/ /g, "")}`)
                 .then(respone => {
                     const data = respone.data;
                     setTotalUsers(data.count)
@@ -51,7 +51,7 @@ export const ClassRoomTeacherSelectPopUp = ({ show, handleClose, selectedTeacher
                 <ListGroup className="mb-3 ">
                     {users.map((teacher) => (
                         <ListGroup.Item key={teacher.id} className={`d-flex justify-content-between align-items-center container 
-                            ${selectedTeacher ? ( selectedTeacher.id == teacher.id ? 'border-info' : '' ):("") }`}
+                            ${selectedTeacher ? (selectedTeacher.id == teacher.id ? 'border-info' : '') : ("")}`}
                             onClick={() => {
                                 setSelectedTeacher(teacher);
                             }}>
