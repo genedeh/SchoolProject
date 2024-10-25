@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
+from rest_framework.parsers import MultiPartParser, FormParser
 from academics.models import ClassRoom
 from . import serializers
 from rest_framework.views import APIView
@@ -69,6 +70,7 @@ class UserProfileView(APIView):
         return Response(user_data, status=200)
     
 class CreateAndSearchUserView(generics.ListCreateAPIView):
+    parser_classes = [MultiPartParser, FormParser]
     serializer_class = serializers.UserListSerializer
     def get_queryset(self):
         username = self.request.query_params.get('username', None)

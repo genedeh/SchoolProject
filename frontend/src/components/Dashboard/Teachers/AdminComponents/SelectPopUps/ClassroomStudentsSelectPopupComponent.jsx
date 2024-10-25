@@ -14,7 +14,7 @@ export const ClassroomStudentsSelectPopUp = ({ show, handleClose, selectedStuden
     const fetchStudents = async (page = 1) => {
         const token = localStorage.getItem("token")
         if (token) {
-            await axios.get(`/api/quick_users_view/?N=&S=&page=${page}&username=${searchTerm}`)
+            await axios.get(`/api/quick_users_view/?N=&S=&page=${page}&username=${searchTerm.replace(/ /g, "")}`)
                 .then(respone => {
                     const data = respone.data;
                     setTotalUsers(data.count)

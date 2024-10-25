@@ -1,5 +1,7 @@
 import { Card, ListGroup, Button, Table, Row, Col, Badge, Alert } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
+import { ErrorAlert } from '../../../../Alerts/ErrorAlert.components';
+import { SuccessAlert } from '../../../../Alerts/SuccessAlert.components';
 import axios from 'axios';
 import './AddUser.styles.css'
 
@@ -18,27 +20,25 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
     const [userType, setUserType] = useState('');
 
     const handleSubmit = async () => {
-        axios.post('api/users/', formData)
+        console.log(formData)
+        axios.post('api/users/', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        })
             .then(response => {
                 if (response.data['username'] === username) {
-                    setFormData({
-                        "username": "",
-                        "password": "",
-                        "email": "",
-                        "first_name": "",
-                        "last_name": "",
-                        "profile_picture": null,
-                        "is_student_or_teacher": true,
-                        "birth_date": null,
-                        "address": "",
-                        "is_superuser": false,
-                        "phone_number": "",
-                        "gender": "male",
-                        "classes": [],
-                        "subjects": []
-                    })
-                    setAlert({ "success": `User ${response.data["username"]} was added succesfully`, "fail": null })
-                    setStep(1);
+                    console.log({ "classes": formData.classes, "subjects": formData.subjects })
+                    axios.patch(`api/users/${response.data["id"]}/`, { "classes": formData.classes, "subjects": formData.subjects })
+                        .then(response => {
+                            setAlert({ "success": `User ${response.data["username"]} was added succesfully`, "fail": null })
+
+                        }).catch(e => {
+                            axios.delete(`api/users/${response.data["id"]}/`).catch(e => {
+                                setAlert({ "fail": `Failed To Add User ${formData["username"]}`, "success": null })
+                            })
+                            setAlert({ "fail": `Failed To Add User ${formData["username"]}`, "success": null })
+                        })
                 }
             }).catch(e => {
                 setAlert({ "fail": `Failed To Add User ${formData["username"]}`, "success": null })
@@ -92,7 +92,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
 
     return (
         <>
-            
+
             <div className="mt-4">
                 {/* User Header */}
 
@@ -115,7 +115,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                                     {userType === "Student" ? (<Badge bg="primary">Student</Badge>)
                                         : (userType === "Admin" ? (<Badge bg="success">Admin</Badge>)
                                             : (<Badge bg="danger">Teacher</Badge>))}</h4>
-                                <p className="text-muted">{currentClassroom ? (currentClassroom.name) : ('No Class Selected')}</p>
+                                {is_student_or_teacher && <p className="text-muted text-center">{currentClassroom ? (currentClassroom.name) : ('No Class Selected')}</p>}
                             </Col>
                         </Row>
                     </Card.Body>
@@ -139,33 +139,58 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                 </Card>
 
                 {/* Organizations */}
-                <Card className="mb-4 box">
-                    <Card.Header>Offering Subjects</Card.Header>
-                    <Card.Body>
-                        <Table striped bordered hover>
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Assigned Teacher</th>
-                                    <th>No Of Students</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {offeringSubjects.map(({ id, name, assigned_teacher, students_offering }) => (
-                                    <tr key={id}>
-                                        <td>{name.replace('_', ' ')}</td>
-                                        <td>{assigned_teacher ? (assigned_teacher.username.replace('_', ' ')) : ("NO ASSIGNED TEACHER")}</td>
-                                        <td>{students_offering.length}</td>
+                {is_student_or_teacher &&
+                    <Card className="mb-4 box">
+                        <Card.Header>Offering Subjects</Card.Header>
+                        <Card.Body>
+                            <Table striped bordered hover>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Assigned Teacher</th>
+                                        <th>No Of Students</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    </Card.Body>
-                </Card>
+                                </thead>
+                                <tbody>
+                                    {offeringSubjects.map(({ id, name, assigned_teacher, students_offering }) => (
+                                        <tr key={id}>
+                                            <td>{name.replace('_', ' ')}</td>
+                                            <td>{assigned_teacher ? (assigned_teacher.username.replace('_', ' ')) : ("NO ASSIGNED TEACHER")}</td>
+                                            <td>{students_offering.length}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        </Card.Body>
+                    </Card>}
 
             </div>
-            {alert.fail && <Alert variant="danger" className='m-4'>{alert.fail}</Alert>}
-            {alert.success && <Alert variant="success" className='m-4'>{alert.success}</Alert>}
+            {alert.fail &&
+                <ErrorAlert heading="User creation failed" message={alert.fail} >
+                    <Alert.Link onClick={() => setStep(1)}>Go Back</Alert.Link>
+                </ErrorAlert>}
+            {alert.success &&
+                <SuccessAlert heading="User creation was succesful" message={alert.success}>
+                    <Alert.Link onClick={() => {
+                        setFormData({
+                            "username": "",
+                            "password": "",
+                            "email": "",
+                            "first_name": "",
+                            "last_name": "",
+                            "profile_picture": null,
+                            "is_student_or_teacher": true,
+                            "birth_date": "",
+                            "address": "",
+                            "is_superuser": false,
+                            "phone_number": "",
+                            "gender": "male",
+                            "classes": [],
+                            "subjects": []
+                        })
+                        setStep(1)
+                    }}>Go Back</Alert.Link>
+                </SuccessAlert>}
             <div className="d-flex justify-content-between mt-4">
                 <Button variant="secondary" onClick={prevStep}>
                     Back

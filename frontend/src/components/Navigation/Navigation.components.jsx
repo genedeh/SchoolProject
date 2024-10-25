@@ -1,13 +1,13 @@
 import { useContext, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { UserContext } from "../../contexts/User.contexts";
-import { Container, Row, Col, Alert, Button, Image, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Alert, Button, Spinner } from 'react-bootstrap';
 import TopLevel from "./TopLevel.components";
 import { StudentSidebar, TeacherSidebar } from "./Side_Navigation_Bar/SideBar.components";
 import { UsersListContext } from "../../contexts/UsersList.contexts";
 import SearchedProfileCard from "../Dashboard/SearchedProfileCard.components";
-import { SignDeadEnd } from 'react-bootstrap-icons';
-import { ErrorModal } from "../ErrorHandling/ErrorModal.components";
+import { ErrorAlert } from "../Alerts/ErrorAlert.components";
+import { WarningAlert } from "../Alerts/WarningAlert.components";
 
 
 const Navigation = () => {
@@ -22,25 +22,23 @@ const Navigation = () => {
         goToNextPage,
         goToPrevPage, setCurrentPage, setTerm
     } = useContext(UsersListContext);
-    const [show, setShow] = useState(true);
-    const handleClose = () => setShow(false);
 
     const SearchHandler = (e) => {
         setSearchTerm(e.target.value);
-        setTerm(e.target.value);
+        setTerm(e.target.value.replace(/ /g, ""));
         setCurrentPage(1);
     }
     if (error === "No token found") {
         return (
-            <ErrorModal errorMessage={['MISSING PERMISSION', 'PLEASE ENDEVOUR TO LOG IN BEFORE U CAN HAVE ACCESS TO THIS PAGE ']} show={show} handleClose={handleClose} >
-                <Alert.Link href='/' className='m-2'>GO TO LOGIN PAGE</Alert.Link>
-            </ErrorModal>
+            <WarningAlert heading="Missing Permission" message="Endevour to login before you can access this page." >
+                <Alert.Link href='/' className='me-3'>GO TO LOGIN PAGE</Alert.Link>
+            </WarningAlert>
         );
     } else if (error) {
         return (
-            <ErrorModal errorMessage={['Failed Request', error]} show={show} handleClose={handleClose} >
-                <Alert.Link href='/' className='m-2'>GO TO LOGIN PAGE</Alert.Link>
-            </ErrorModal>
+            <ErrorAlert heading="Failed Request" message="Failed to fetch user data." >
+                <Alert.Link href='/' className='me-3'>GO TO LOGIN PAGE</Alert.Link>
+            </ErrorAlert>
         );
     }
     if (!currentUser) {
@@ -81,20 +79,12 @@ const Navigation = () => {
                                         </Row>
                                     )
                                     :
-                                    (<Row className='m-3'>
-                                        <Col md={6}>
-                                            <Image
-                                                src="https://via.placeholder.com/400x300.png?text=404+Not+Found"
-                                                alt="404 Not Found"
-                                                fluid
-                                                className="mb-4"
-                                            />
-                                            <h2>Oops! No Results Found</h2>
-                                            <p className="text-muted">
-                                                We couldn't find any results matching your search.
-                                            </p>
-                                        </Col>
-                                    </Row>)}
+                                    (
+                                        <ErrorAlert
+                                            message={`We couldn't find any results matching user " ${searchTerm} ".`}
+                                            heading={"Oops! No Results Found"}
+                                        />
+                                    )}
                             </Container>
                         </Col>
                     </Row>
