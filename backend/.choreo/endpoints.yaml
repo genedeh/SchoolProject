@@ -1,8 +1,20 @@
-version: 0.1
-
-endpoints:
-name:"REST API"
-port: 8000
-type: REST
-networkVisibility: Public
-context: /
+# endpoints.yaml
+apiVersion: 0.1
+kind: Endpoint
+metadata:
+  name: my-service-endpoint
+spec:
+  protocol: HTTP
+  target:
+    host: example-service.com
+    port: 8000
+  security:
+    type: JWT # Options: NONE, BASIC_AUTH, JWT, etc.
+  loadBalancer:
+    strategy: ROUND_ROBIN # Options: ROUND_ROBIN, LEAST_CONN, etc.
+  retries:
+    attempts: 3
+    backoff:
+      policy: EXPONENTIAL
+      interval: 2s
+  timeout: 30s
