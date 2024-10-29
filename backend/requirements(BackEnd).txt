@@ -1,7 +1,0 @@
-Django
-djangorestframework
-environs
-mysqlclient
-Pillow
-django-cors-headers
-django-rest-swagger
