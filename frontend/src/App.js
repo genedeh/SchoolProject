@@ -15,6 +15,7 @@ import { AssignedSubjects } from './components/Dashboard/Teachers/BasicComponent
 import { Classrooms } from './components/Dashboard/Teachers/AdminComponents/Classrooms.components';
 import { AssignedClassrooms } from './components/Dashboard/Teachers/BasicComponents/AssignedClassroom.components';
 axios.defaults.baseURL = 'https://school-project-8fkh.vercel.app/';
+// axios.defaults.baseURL = 'http://127.0.0.1:8000/';
 
 function App() {
   return (
