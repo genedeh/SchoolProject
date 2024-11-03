@@ -181,7 +181,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'frontend/build/static')]
 STATIC_ROOT = 'staticfiles/'
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 if ENVIRONMENT == "development":
     MEDIA_ROOT = 'media/'
 else:
