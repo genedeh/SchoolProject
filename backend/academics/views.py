@@ -166,11 +166,11 @@ class ResultsListView(generics.ListCreateAPIView):
    
    def create(self, request, *args, **kwargs):
         try:
-          current_student_id = request.data['assigned_student']
-          result_name = f'{User.objects.get(id=current_student_id).username}_{request.data['year_span']}_{request.data['term']}_Result'
-          results_names = list(Result.objects.filter(assigned_student=current_student_id).values_list('name', flat=True))
-          if result_name in results_names:
-            return Response({"detail": f"Student cannot have the two equal terms in one year."}, status=status.HTTP_400_BAD_REQUEST)
+        #   current_student_id = request.data['assigned_student']
+        #   result_name = f'{User.objects.get(id=current_student_id).username}_{request.data['year_span']}_{request.data['term']}_Result'
+        #   results_names = list(Result.objects.filter(assigned_student=current_student_id).values_list('name', flat=True))
+        #   if result_name in results_names:
+        #     return Response({"detail": f"Student cannot have the two equal terms in one year."}, status=status.HTTP_400_BAD_REQUEST)
           serializer = self.get_serializer(data=request.data)
           serializer.is_valid(raise_exception=True)
           serializer.save()
