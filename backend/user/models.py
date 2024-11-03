@@ -13,7 +13,7 @@ class User(AbstractUser, models.Model):
     first_name = models.CharField(max_length=20, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
     username = models.CharField(max_length=100, unique=True, blank=True)
-    profile_picture = models.ImageField(upload_to='profile_images/',null=True, blank=True)
+    profile_picture = models.ImageField(upload_to='media/',null=True, blank=True)
     is_student_or_teacher = models.BooleanField(default=False)
     birth_date = models.DateField(null=True)
     address = models.CharField(max_length=150, blank=True)

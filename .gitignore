@@ -1,0 +1,5 @@
+env/
+media/
+migrations/
+__pycache__/
+.env
