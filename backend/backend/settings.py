@@ -11,27 +11,39 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from environ import Env
+import dj_database_url
 import os
 from datetime import timedelta
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
-from dotenv import load_dotenv
+
+env = Env()
+Env.read_env()
+
+ENVIRONMENT = env('ENVIRONMENT', default="production")
+ENVIRONMENT = 'production'
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ydy1&y^gtvw&=0^w6c)c+@b_(h3_uqb0_qee@61ccr9o6$xmfu'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if ENVIRONMENT == 'development':
+    DEBUG = True
+else:
+    DEBUG = False
 
-ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1', '.now.sh', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost',
+                 'schoolproject-6io4.onrender.com']
 
+CSRF_TRUSTED_ORIGINS = ['https://schoolproject-6io4.onrender.com']
+INTERNAL_IPS = (
+    '127.0.0.1',
+    'localhost:8000'
+)
 
 # Application definition
 
@@ -42,6 +54,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary',
+    'cloudinary_storage',
     'rest_framework',
     'user',
     'academics',
@@ -49,8 +63,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_swagger',
     'drf_yasg',
-    'cloudinary',
-    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -62,8 +74,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
-CORS_ORIGIN_ALLOW_ALL = True   
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'backend.urls'
 
@@ -95,8 +108,10 @@ REST_FRAMEWORK = {
 
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),  # Increase the validity to 6 hours
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),  # Refresh token validity (optional)
+    # Increase the validity to 6 hours
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),
+    # Refresh token validity (optional)
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
 
@@ -122,16 +137,10 @@ SIMPLE_JWT = {
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {  
-    'default': {  
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("POSTGRES_DATABASE"),
-        'USER': os.getenv("POSTGRES_USER"),
-        'PASSWORD': os.getenv("POSTGRES_PASSWORD"),
-        'HOST': os.getenv("POSTGRES_HOST"),
-        'PORT': os.getenv("POSTGRES_PORT"),
-    }  
-}  
+
+DATABASES = {
+    'default': dj_database_url.parse(env('DATABASE_URL'))
+}
 
 
 # Password validation
@@ -168,22 +177,21 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'  
-cloudinary.config( 
-    cloud_name= 'dpbfmlvpt',
-    api_key = '764877144671827',
-    api_secert = os.getenv("SECRET_MEDIA_API_KEY"),
-)
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'frontend/build/static')]
+STATIC_ROOT = 'staticfiles/'
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+if ENVIRONMENT == "development":
+    MEDIA_ROOT = 'media/'
+else:
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    CLOUDINARY_STORAGE = {
+        'CLOUDINARY_URL': env('CLOUDINARY_URL')
+    }
 
-# MEDIA_URL = '/media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AUTH_USER_MODEL = 'user.User'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'frontend/build/static')]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 

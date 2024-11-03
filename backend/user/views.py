@@ -43,7 +43,7 @@ class UserProfileView(APIView):
             'username':user.username,
             'phone_number':user.phone_number,
             'birth_date':user.birth_date,
-            'profile_picture': f'{user.profile_picture}',
+            'profile_picture': None,
             'email': user.email,
             'gender': user.gender,
             'is_student_or_teacher': user.is_student_or_teacher,
@@ -66,7 +66,8 @@ class UserProfileView(APIView):
             except Exception as e:
                 user_data.update({'user_class': None})
             user_data.update({'teaching_subjects':list(user.subject.all().values_list('id', flat=True)) })
-            
+        if user.profile_picture:
+            user_data.update({"profile_picture": user.profile_picture.url})
         return Response(user_data, status=200)
     
 class CreateAndSearchUserView(generics.ListCreateAPIView):
