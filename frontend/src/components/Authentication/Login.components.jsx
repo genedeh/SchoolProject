@@ -5,7 +5,7 @@ import { Container, Form, Row, Col, Button, Spinner } from 'react-bootstrap'
 import '../Authentication/Login.styles.css'
 import { ErrorAlert } from '../Alerts/ErrorAlert.components';
 import { WarningAlert } from '../Alerts/WarningAlert.components';
-
+import logo512 from '../../assets/logo512.png'
 
 const LoginForm = () => {
     const [username, setUsername] = useState('');
@@ -49,7 +49,7 @@ const LoginForm = () => {
                             : (
                                 <div>
                                     <div className="login-header">
-                                        <img src="" alt="logo" className="img-fluid" />
+                                        <img src={logo512} alt="logo" className="img-fluid" width={50} height={50} />
                                         <h1 className="login-title">Login</h1>
                                     </div >
                                     <Form onSubmit={handleLogin}>
