@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { UserContext } from "../../contexts/User.contexts";
-import { Container, Row, Col, Alert, Button, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 import TopLevel from "./TopLevel.components";
 import { StudentSidebar, TeacherSidebar } from "./Side_Navigation_Bar/SideBar.components";
 import { UsersListContext } from "../../contexts/UsersList.contexts";
@@ -13,7 +13,6 @@ import { LoadingOverlay } from "../Loading/LoadingOverlay.components";
 const Navigation = () => {
     const { currentUser, error } = useContext(UserContext);
     const [searchTerm, setSearchTerm] = useState('');
-    // const { loading, setLoading } = useState(false);
     const {
         usersList,
         currentPage,
@@ -32,14 +31,16 @@ const Navigation = () => {
     if (error === "No token found") {
         return (
             <WarningAlert heading="Missing Permission" message="Endevour to login before you can access this page." >
-                <Alert.Link href='/' className='me-3'>GO TO LOGIN PAGE</Alert.Link>
+                <a href='/' className='me-3'>GO TO LOGIN PAGE</a>
             </WarningAlert>
         );
     } else if (error) {
         return (
-            <ErrorAlert heading="Failed Request" message="Failed to fetch user data." >
-                <Alert.Link href='/' className='me-3'>GO TO LOGIN PAGE</Alert.Link>
-            </ErrorAlert>
+            <>
+                <ErrorAlert heading="Failed Request" message="Failed to fetch user data." >
+                    <a href='/' className='me-3'>GO TO LOGIN PAGE</a>
+                </ErrorAlert>
+            </>
         );
     }
     if (!currentUser) {
