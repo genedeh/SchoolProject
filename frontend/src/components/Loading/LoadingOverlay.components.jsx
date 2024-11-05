@@ -1,7 +1,8 @@
 import { Modal } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
 import './LoadingOverlay.styles.css';
 
-const LoadingOverlay = ({ loading, message = "Please wait...", timeout = 10000 }) => {
+export const LoadingOverlay = ({ loading, message = "Please wait...", timeout = 10000 }) => {
     const [longLoading, setLongLoading] = useState(false);
 
     useEffect(() => {
@@ -36,4 +37,3 @@ const LoadingOverlay = ({ loading, message = "Please wait...", timeout = 10000 }
     );
 };
 
-export default LoadingOverlay;

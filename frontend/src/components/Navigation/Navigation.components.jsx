@@ -8,11 +8,12 @@ import { UsersListContext } from "../../contexts/UsersList.contexts";
 import SearchedProfileCard from "../Dashboard/SearchedProfileCard.components";
 import { ErrorAlert } from "../Alerts/ErrorAlert.components";
 import { WarningAlert } from "../Alerts/WarningAlert.components";
-
+import { LoadingOverlay } from "../Loading/LoadingOverlay.components";
 
 const Navigation = () => {
     const { currentUser, error } = useContext(UserContext);
     const [searchTerm, setSearchTerm] = useState('');
+    // const { loading, setLoading } = useState(false);
     const {
         usersList,
         currentPage,
@@ -43,9 +44,7 @@ const Navigation = () => {
     }
     if (!currentUser) {
         return (
-            <Spinner animation="border" role="status">
-                <span className="visually-hidden">Loading...</span>
-            </Spinner>
+            <LoadingOverlay loading={true} message="Fetching Necessary Information..." />
         );
     }
     if (searchTerm.length !== 0) {
