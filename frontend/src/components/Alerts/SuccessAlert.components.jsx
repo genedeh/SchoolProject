@@ -22,16 +22,16 @@ export const SuccessAlert = ({ message, heading, children }) => {
                     <div className="alert-icon-success">
                         <CheckCircleFill />
                     </div>
-                    <div className="alert-text-success">
+                    <div className="alert-text-success alert-text">
                         <h5>{heading}</h5>
                         <p>{message}</p>
-                        {children}
+                        <p>{children}</p>
                     </div>
                 </div>
-                <Button variant="outline-success" onClick={onClose} className="close-btn me-5">
-                    Close
-                </Button>
             </Modal.Body>
+            <Button variant="outline-success" onClick={onClose} className="close-btn">
+                Close
+            </Button>
         </Modal>
     )
 };

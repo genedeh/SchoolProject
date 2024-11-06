@@ -1,17 +1,19 @@
 /* Modal styling */
 .custom-alert-modal .modal-content {
-  background: rgba(0, 0, 0, 0.95);
+  background-color: #292727;
+  color: white;
   border-radius: 12px;
   padding: 20px;
-  animation: fadeIn 0.3s ease-out;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
   border: none;
+  animation: fadeIn 0.3s ease-out;
 }
 
 .custom-alert-modal .modal-backdrop {
-  backdrop-filter: blur(6px); /* Apply blur effect */
-  background-color: rgba(0, 0, 0, 0.4); /* Dim background */
+  backdrop-filter: blur(6px);
+  background-color: rgba(0, 0, 0, 0.5);
 }
+
 
 .custom-alert-body {
   display:flexbox;
@@ -29,59 +31,63 @@
 
 .alert-icon-danger {
   font-size: 40px;
-  color: #ff0400;
-  justify-self:left;
+  color: #ff4c4c;
   animation: bounce 1s infinite alternate;
 }
 
 .alert-text-danger h5 {
   font-weight: bold;
-  color: rgb(255, 0, 0);
-  text-transform: uppercase;
-
+  color: #ff4c4c;
+  margin-bottom: 5px;
 }
 
-.alert-text-danger p {
-  color: rgb(255, 0, 0);
+.alert-text p {
+  color: #f1f1f1;
   margin: 0;
+}
+
+.alert-text a {
+  color: #0dcaf0;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.alert-text a:hover {
+  text-decoration: underline;
 }
 
 .alert-icon-warning {
   font-size: 40px;
-  color: #fff200;
-  justify-self:left;
+  color: #ffed4c;
   animation: bounce 1s infinite alternate;
 }
 
 .alert-text-warning h5 {
   font-weight: bold;
-  color: #fff200;
-  text-transform: uppercase;
-
-}
-
-.alert-text-warning p {
-  color:#fff200;
-  margin: 0;
+  color: #ffed4c;
+  margin-bottom: 5px;
 }
 
 .alert-icon-success {
   font-size: 40px;
-  color: rgb(57, 198, 57);
-  justify-self:left;
+  color: #67ff4c;
   animation: bounce 1s infinite alternate;
 }
 
 .alert-text-success h5 {
   font-weight: bold;
-  color: rgb(57, 198, 57);
-  text-transform: uppercase;
-
+  color: #67ff4c;
+  margin-bottom: 5px;
 }
 
-.alert-text-success p {
-  color: rgb(57, 198, 57);
-  margin: 0;
+/* Close button styling */
+.close-btn {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #ff4c4c;
+  border-color: #ff4c4c;
+  padding: 8px 20px;
+  border-radius: 8px;
 }
 
 /* Animation */

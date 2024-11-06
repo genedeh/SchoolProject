@@ -22,16 +22,16 @@ export const WarningAlert = ({ message, heading, children }) => {
                     <div className="alert-icon-warning">
                         <ExclamationTriangleFill />
                     </div>
-                    <div className="alert-text-warning">
+                    <div className="alert-text-warning alert-text">
                         <h5>{heading}</h5>
                         <p>{message}</p>
-                        {children}
+                        <p>{children}</p>
                     </div>
                 </div>
-                <Button variant="outline-warning" onClick={onClose} className="close-btn me-5">
-                    Close
-                </Button>
             </Modal.Body>
+            <Button variant="outline-warning" onClick={onClose} className="close-btn">
+                Close
+            </Button>
         </Modal>
     )
 };
