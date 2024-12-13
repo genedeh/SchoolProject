@@ -1,47 +1,102 @@
-.alert-container {
-  margin: 20px;
-  padding: 15px;
+/* Modal styling */
+.custom-alert-modal .modal-content {
+  background-color: #292727;
+  color: white;
   border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+  border: none;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.custom-alert-modal .modal-backdrop {
+  backdrop-filter: blur(6px);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+
+.custom-alert-body {
+  display:flexbox;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.alert-content {
   display: flex;
   align-items: center;
-  background-color: #fff;
+  gap: 15px;
+  padding-bottom: 20px;
 }
 
-.alert-icon {
-  font-size: 36px;
-  margin-right: 15px;
-  flex-shrink: 0;
+.alert-icon-danger {
+  font-size: 40px;
+  color: #ff4c4c;
+  animation: bounce 1s infinite alternate;
 }
 
-.alert-heading {
-  font-weight: 600;
-  font-size: 18px;
-  margin-bottom: 6px;
+.alert-text-danger h5 {
+  font-weight: bold;
+  color: #ff4c4c;
+  margin-bottom: 5px;
 }
 
-.alert-text {
-  font-size: 14px;
-  color: #6c757d;
+.alert-text p {
+  color: #f1f1f1;
+  margin: 0;
 }
 
-/* Error Alert Styling */
-.alert-danger {
-  background: linear-gradient(145deg, #ffe6e6, #ffcccc);
-  border: none;
-  color: #dc3545;
+.alert-text a {
+  color: #0dcaf0;
+  font-weight: bold;
+  text-decoration: none;
 }
 
-/* Warning Alert Styling */
-.alert-warning {
-  background: linear-gradient(145deg, #fff5e6, #ffe8cc);
-  border: none;
-  color: #ffc107;
+.alert-text a:hover {
+  text-decoration: underline;
 }
 
-/* Success Alert Styling */
-.alert-success {
-  background: linear-gradient(145deg, #e6ffea, #ccffe3);
-  border: none;
-  color: #28a745;
+.alert-icon-warning {
+  font-size: 40px;
+  color: #ffed4c;
+  animation: bounce 1s infinite alternate;
+}
+
+.alert-text-warning h5 {
+  font-weight: bold;
+  color: #ffed4c;
+  margin-bottom: 5px;
+}
+
+.alert-icon-success {
+  font-size: 40px;
+  color: #67ff4c;
+  animation: bounce 1s infinite alternate;
+}
+
+.alert-text-success h5 {
+  font-weight: bold;
+  color: #67ff4c;
+  margin-bottom: 5px;
+}
+
+/* Close button styling */
+.close-btn {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #ff4c4c;
+  border-color: #ff4c4c;
+  padding: 8px 20px;
+  border-radius: 8px;
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-5px); }
 }

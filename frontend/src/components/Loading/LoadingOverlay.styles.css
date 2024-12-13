@@ -1,0 +1,72 @@
+.loading-modal .modal-content {
+  background: transparent;
+  border: none;
+}
+
+.loading-content {
+  text-align: center;
+  color: #ffffff;
+}
+
+.hexagon-animation {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  animation: hex-animation 1.5s ease-in-out infinite;
+}
+
+.hexagon {
+  width: 50px;
+  height: 50px;
+  background-color: rgb(171, 252, 252);
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: rgb(0, 0, 0);
+  opacity: 0.8;
+  transition: transform 0.3s;
+}
+
+.hex1 { animation: hex-bounce 1s 0.1s infinite; }
+.hex2 { animation: hex-bounce 1s 0.2s infinite; }
+.hex3 { animation: hex-bounce 1s 0.3s infinite; }
+.hex4 { animation: hex-bounce 1s 0.4s infinite; }
+.hex5 { animation: hex-bounce 1s 0.5s infinite; }
+.hex6 { animation: hex-bounce 1s 0.6s infinite; }
+
+@keyframes hex-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+h5 {
+  margin-top: 20px;
+  font-weight: bold;
+  color: #f8f8f8;
+}
+
+.progress-bar {
+  width: 80%;
+  height: 5px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  margin: 15px auto;
+  overflow: hidden;
+}
+
+.progress-bar-inner {
+  width: 100%;
+  height: 100%;
+  background-color: rgb(101, 255, 255);
+  animation: loading-bar 8s linear infinite;
+}
+
+@keyframes loading-bar {
+  0% { width: 0; }
+  50% { width: 100%; }
+  100% { width: 0; }
+}

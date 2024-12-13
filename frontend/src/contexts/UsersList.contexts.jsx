@@ -7,7 +7,7 @@ export const UsersListProvider = ({ children }) => {
     const [usersList, setUsersList] = useState([]);
     const [refresh, setRefresh] = useState(false)
     const [currentPage, setCurrentPage] = useState(1); // Current page
-    const [term, setTerm] = useState(""); 
+    const [term, setTerm] = useState("");
     const [nextPage, setNextPage] = useState(null);   // URL of next page
     const [prevPage, setPrevPage] = useState(null);   // URL of previous page
     const [totalUsers, setTotalUsers] = useState(0);  // Total number of users
@@ -26,19 +26,20 @@ export const UsersListProvider = ({ children }) => {
         }
     };
     const value = {
-        usersList, setUsersList, refresh, setRefresh, currentPage,setCurrentPage,
+        usersList, setUsersList, refresh, setRefresh, currentPage, setCurrentPage,
         totalUsers,
         nextPage,
         prevPage,
         loading,
         goToNextPage,
-        goToPrevPage,setTerm
+        goToPrevPage, setTerm
     };
 
     const fetchUserProfilesList = async (page = 1) => {
         const token = localStorage.getItem('token');
         if (token) {
             setLoading(true);
+            console.log(term)
             try {
                 const response = await axios.get(`/api/users/?page=${page}&username=${term}`)
                 const data = await response.data;

@@ -12,7 +12,7 @@ export const UserContext = createContext({
 export const UserProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [error, setError] = useState(null);
-    const value = { currentUser,setCurrentUser, error };
+    const value = { currentUser, setCurrentUser, error };
     let navigate = useNavigate();
     const token = localStorage.getItem('token');
 

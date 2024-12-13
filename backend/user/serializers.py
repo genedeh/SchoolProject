@@ -15,7 +15,7 @@ class ViewSubjectNameSerializer(serializers.ModelSerializer):
 class QuickUserViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','username', 'profile_picture', 'gender', 'is_student_or_teacher','classrooms', 'classes']
+        fields = ['id','username', 'profile_picture_url', 'gender', 'is_student_or_teacher','classrooms', 'classes']
 
 class UserLoginSerializer(serializers.ModelSerializer):
     class Meta:
@@ -90,4 +90,4 @@ class UserListSerializer(serializers.ModelSerializer):
     subject = ViewSubjectNameSerializer(many=True)
     class Meta:
         model = User
-        fields = ['id','username', 'email', 'first_name', 'last_name', 'profile_picture', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes',  'subjects', 'classrooms', 'subject']
+        fields = ['id','username', 'email', 'first_name', 'last_name', 'profile_picture_url', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes',  'subjects', 'classrooms', 'subject']
