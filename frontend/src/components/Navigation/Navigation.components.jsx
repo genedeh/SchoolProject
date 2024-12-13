@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { UserContext } from "../../contexts/User.contexts";
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Container, Row, Col, Button, Spinner } from 'react-bootstrap';
 import TopLevel from "./TopLevel.components";
 import { StudentSidebar, TeacherSidebar } from "./Side_Navigation_Bar/SideBar.components";
 import { UsersListContext } from "../../contexts/UsersList.contexts";
@@ -10,31 +10,38 @@ import { ErrorAlert } from "../Alerts/ErrorAlert.components";
 import { WarningAlert } from "../Alerts/WarningAlert.components";
 import { LoadingOverlay } from "../Loading/LoadingOverlay.components";
 
-const MainContent = ({ searchTerm, usersList, totalUsers, currentPage, prevPage, nextPage, goToPrevPage, goToNextPage }) => {
+const MainContent = ({ searchTerm, usersList, totalUsers, currentPage, prevPage, nextPage, goToPrevPage, goToNextPage, loading }) => {
     if (searchTerm.length === 0) {
         return <Outlet />;
     }
 
     return (
         <Container fluid>
-            {usersList.length !== 0 ? (
-                <Row className='m-2'>
-                    {usersList.map((user) => (
-                        <SearchedProfileCard key={user.id} user={user} />
-                    ))}
-                    <div className="d-flex justify-content-between align-items-center my-4">
-                        <Button onClick={goToPrevPage} disabled={!prevPage}>Previous</Button>
-                        <span>Page {currentPage}</span>
-                        <Button onClick={goToNextPage} disabled={!nextPage}>Next</Button>
-                    </div>
-                    <p>Total Users: {totalUsers}</p>
-                </Row>
-            ) : (
-                <ErrorAlert
-                    message={`We couldn't find any results matching user "${searchTerm}".`}
-                    heading="Oops! No Results Found"
-                />
-            )}
+            <Row className='m-2'>
+                {loading ? (
+                    <div className="d-flexalign-items-center my-4">
+                        <Spinner className="m-4" />
+                    </div>)
+                    : (
+                        usersList.length !== 0 ? ((
+                            usersList.map((user) => (
+                                <SearchedProfileCard key={user.id} user={user} />
+                            ))
+                        )) : (
+                            <ErrorAlert
+                                message={`We couldn't find any results matching user "${searchTerm}".`}
+                                heading="Oops! No Results Found"
+                            />
+                        )
+
+                    )}
+                <div className="d-flex justify-content-between align-items-center my-4">
+                    <Button onClick={goToPrevPage} disabled={!prevPage}>Previous</Button>
+                    <span>Page {currentPage}</span>
+                    <Button onClick={goToNextPage} disabled={!nextPage}>Next</Button>
+                </div>
+                <p>Total Users: {totalUsers}</p>
+            </Row>
         </Container>
     );
 };
@@ -45,7 +52,7 @@ const Sidebar = ({ currentUser }) => (
     </Col>
 );
 
-const ContentWrapper = ({ currentUser, searchTerm, usersList, totalUsers, currentPage, prevPage, nextPage, goToPrevPage, goToNextPage, SearchHandler }) => (
+const ContentWrapper = ({ currentUser, searchTerm, usersList, totalUsers, currentPage, prevPage, nextPage, goToPrevPage, goToNextPage, loading, SearchHandler }) => (
     <Container fluid>
         <Row>
             <Sidebar currentUser={currentUser} />
@@ -60,6 +67,7 @@ const ContentWrapper = ({ currentUser, searchTerm, usersList, totalUsers, curren
                     nextPage={nextPage}
                     goToPrevPage={goToPrevPage}
                     goToNextPage={goToNextPage}
+                    loading={loading}
                 />
             </Col>
         </Row>
@@ -85,7 +93,6 @@ const ErrorDisplay = ({ error }) => {
 const Navigation = () => {
     const { currentUser, error } = useContext(UserContext);
     const [searchTerm, setSearchTerm] = useState('');
-    const token = localStorage.getItem('token')
     const {
         usersList,
         currentPage,
@@ -93,7 +100,7 @@ const Navigation = () => {
         nextPage,
         prevPage,
         goToNextPage,
-        goToPrevPage, setCurrentPage, setTerm
+        goToPrevPage, setCurrentPage, setTerm, loading
     } = useContext(UsersListContext);
 
     const SearchHandler = (e) => {
@@ -117,6 +124,7 @@ const Navigation = () => {
             nextPage={nextPage}
             goToPrevPage={goToPrevPage}
             goToNextPage={goToNextPage}
+            loading={loading}
             SearchHandler={SearchHandler}
         />
     );

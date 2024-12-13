@@ -39,6 +39,7 @@ export const UsersListProvider = ({ children }) => {
         const token = localStorage.getItem('token');
         if (token) {
             setLoading(true);
+            console.log(term)
             try {
                 const response = await axios.get(`/api/users/?page=${page}&username=${term}`)
                 const data = await response.data;
