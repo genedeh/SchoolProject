@@ -11,7 +11,6 @@ export const ErrorAlert = ({ message, heading, children }) => {
         <Modal
             show={show}
             onHide={onClose}
-            dissmisable 
             centered
             backdrop="static"
             keyboard={false}

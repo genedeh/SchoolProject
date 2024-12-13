@@ -39,17 +39,35 @@ const LoginForm = () => {
                 setError("401")
             }
             setLoading(false)
+            setTimeout(() => {
+                setError(null)
+            }, 5000)
         }
     };
+    // if (error == "401") {
+    //     return (
+    //         <ErrorAlert heading={"Authentication Problem 401"} message={"Access denied. You do not have permission to view this page. Please contact support if you believe this is a mistake."} />
+    //     )
+    // }
     return (
         <>
             <Container fluid="true" className="login-container" >
                 <Row className="justify-content-center align-items-center min-vh-100">
-                    <br />
-                    {error == "401" ? (<ErrorAlert heading={"Authentication Problem 401"} message={"Access denied. You do not have permission to view this page. Please contact support if you believe this is a mistake."} />) : ("")}
-                    {error == "Network" ? (<WarningAlert heading={"Network Error"} message={"We are unable to connect to the server. Please check your internet connection and try again."} >
-                        <a href="/">Try Again!</a>
-                    </WarningAlert>) : ("")}
+                    {error == "Network" ? (
+                        <WarningAlert
+                            heading={"Network Error"}
+                            message={"We are unable to connect to the server. Please check your internet connection and try again."}
+                        >
+                            <a href="/">Try Again!</a>
+                        </WarningAlert>) : ("")
+                    }
+                    {error == "401" ? (
+                        <ErrorAlert
+                            heading={"Authentication Problem 401"}
+                            message={"Access denied. You do not have permission to view this page. Please contact support if you believe this is a mistake."} >
+                            <a href="/">Try Again!</a>
+                        </ErrorAlert>) : ("")
+                    }
                     <Col md={4} className="login-box text-center">
                         <LoadingOverlay loading={loading} message='Authenticating user...' />
                         <div>

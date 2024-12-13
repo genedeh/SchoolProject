@@ -29,7 +29,7 @@ const ProfileModal = ({ user, show, handleClose }) => {
                     <BsArrowLeft />
                 </Button>
                 {profile_picture ? (<Image
-                    src={profile_picture.includes('http://') ? (profile_picture) : (`http://127.0.0.1:8000/media/${profile_picture}`)}
+                    src={profile_picture}
                     roundedCircle
                     style={{ width: '100px', height: '100px', objectFit: 'cover' }}
                     className="mb-3" />)
