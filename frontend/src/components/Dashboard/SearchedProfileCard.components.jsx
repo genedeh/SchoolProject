@@ -5,7 +5,7 @@ import { useState, useEffect, useContext } from 'react';
 import { UserContext } from '../../contexts/User.contexts';
 
 const ProfileModal = ({ user, show, handleClose }) => {
-    const { username, is_student_or_teacher, gender, profile_picture, classes, classrooms, birth_date, subjects, subject, phone_number, email, address, id } = user;
+    const { username, is_student_or_teacher, gender, profile_picture_url, classes, classrooms, birth_date, subjects, subject, phone_number, email, address, id } = user;
     const current_date = new Date();
     let className = "None"
     let classroomName = "None"
@@ -28,17 +28,11 @@ const ProfileModal = ({ user, show, handleClose }) => {
                 <Button variant="link" className="position-absolute top-0 start-0 mt-2 ms-2" onClick={handleClose}>
                     <BsArrowLeft />
                 </Button>
-                {profile_picture ? (<Image
-                    src={profile_picture}
+                <Image
+                    src={profile_picture_url}
                     roundedCircle
                     style={{ width: '100px', height: '100px', objectFit: 'cover' }}
-                    className="mb-3" />)
-                    : (<Image
-                        src="http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg"
-                        roundedCircle
-                        style={{ width: '100px', height: '100px', objectFit: 'cover' }}
-                        className="mb-3" />)
-                }
+                    className="mb-3" />
                 <h4>{username.replace('_', ' ')} <span className="badge">
                     {gender === 'male' ?
                         (<Button className="m-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
@@ -98,7 +92,7 @@ const ProfileModal = ({ user, show, handleClose }) => {
 
 
 const SearchedProfileCard = ({ user }) => {
-    const { username, is_student_or_teacher, gender, profile_picture, classes, classrooms } = user;
+    const { username, is_student_or_teacher, gender, profile_picture_url, classes, classrooms } = user;
     const [show, setShow] = useState(false);
     const { currentUser } = useContext(UserContext);
     let className = "None"
@@ -120,17 +114,11 @@ const SearchedProfileCard = ({ user }) => {
                 <Card className="h-100 container" >
                     <Card.Body className="d-flex flex-column align-items-start" >
                         <div className="d-flex align-items-center mb-3">
-                            {profile_picture ? (<Image
-                                src={profile_picture.includes('http://') ? (profile_picture) : (`http://127.0.0.1:8000/media/${profile_picture}`)}
+                            <Image
+                                src={profile_picture_url}
                                 roundedCircle
                                 style={{ width: '60px', height: '60px', objectFit: 'cover' }}
-                                className="me-3" />)
-                                : (<Image
-                                    src="http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg"
-                                    roundedCircle
-                                    style={{ width: '60px', height: '60px', objectFit: 'cover' }}
-                                    className="me-3" />)
-                            }
+                                className="me-3" />
                             <div>
                                 <Card.Title className="mb-0">{username.replace('_', ' ')}</Card.Title>
                                 <Card.Subtitle className="text-muted">{is_student_or_teacher ? ("Student") : ("Teacher")}</Card.Subtitle>

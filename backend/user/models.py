@@ -21,6 +21,11 @@ class User(AbstractUser, models.Model):
     phone_number = models.CharField(max_length=11, blank=True)
     gender = models.CharField(max_length=20, choices=GENDER_CHOICES, default='male')
 
+    def profile_picture_url(self):
+        if self.profile_picture:
+            return self.profile_picture.url
+        return None
+     
     def __str__(self) -> str:
         return self.username
     
