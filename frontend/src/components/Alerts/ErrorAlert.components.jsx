@@ -2,18 +2,19 @@ import { Modal, Button } from 'react-bootstrap';
 import { ExclamationCircleFill } from 'react-bootstrap-icons';
 import './Alert.styles.css';
 import { useState } from 'react';
-export const ErrorAlert = ({ message, heading, children }) => {
+export const ErrorAlert = ({ message, heading, removable=false, children }) => {
     const [show, setShow] = useState(true)
 
     return (
         <Modal
             show={show}
+            onHide={()=>setShow(false)}
             centered
             backdrop="static"
             keyboard={false}
             className="custom-alert-modal"
         >
-            <Modal.Header className='alert-text-danger alert-text'>
+            <Modal.Header className='alert-text-danger alert-text' closeButton={removable}>
                 <h5 >{heading}</h5>
             </Modal.Header>
             <Modal.Body className="custom-alert-body">

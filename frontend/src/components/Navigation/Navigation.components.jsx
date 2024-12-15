@@ -18,26 +18,28 @@ const MainContent = ({ searchTerm, usersList, totalUsers, currentPage, prevPage,
     return (
         <Container fluid>
             <Row className='m-2'>
-                {loading ? (<LoadingOverlay loading={loading}/>)
+                {loading ? (<LoadingOverlay loading={loading} />)
                     : (
-                        usersList.length !== 0 ? ((
-                            usersList.map((user) => (
-                                <SearchedProfileCard key={user.id} user={user} />
-                            ))
-                        )) : (
-                            <ErrorAlert
-                                message={`We couldn't find any results matching user "${searchTerm}".`}
-                                heading="Oops! No Results Found"
-                            />
-                        )
+                        usersList.length !== 0 ?
+                            (<>
+                                {usersList.map((user) => (<SearchedProfileCard key={user.id} user={user} />))}
+                                <div className="d-flex justify-content-between align-items-center my-4">
+                                    <Button onClick={goToPrevPage} disabled={!prevPage}>Previous</Button>
+                                    <span>Page {currentPage}</span>
+                                    <Button onClick={goToNextPage} disabled={!nextPage}>Next</Button>
+                                </div>
+                                <p>Total Users: {totalUsers}</p>
+                            </>)
+                            : (
+                                <ErrorAlert
+                                    message={`We couldn't find any results matching user "${searchTerm}".`}
+                                    heading="Oops! No Results Found"
+                                    removable={true}
+                                />
+                            )
 
                     )}
-                <div className="d-flex justify-content-between align-items-center my-4">
-                    <Button onClick={goToPrevPage} disabled={!prevPage}>Previous</Button>
-                    <span>Page {currentPage}</span>
-                    <Button onClick={goToNextPage} disabled={!nextPage}>Next</Button>
-                </div>
-                <p>Total Users: {totalUsers}</p>
+
             </Row>
         </Container>
     );
@@ -100,9 +102,9 @@ const Navigation = () => {
         goToPrevPage, setCurrentPage, setTerm, loading
     } = useContext(UsersListContext);
 
-    const SearchHandler = (e) => {
-        setSearchTerm(e.target.value);
-        setTerm(e.target.value.replace(/ /g, ""));
+    const SearchHandler = (v) => {
+        setSearchTerm(v);
+        setTerm(v);
         setCurrentPage(1);
     }
 
