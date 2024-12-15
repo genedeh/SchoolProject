@@ -44,11 +44,6 @@ const LoginForm = () => {
             }, 5000)
         }
     };
-    // if (error == "401") {
-    //     return (
-    //         <ErrorAlert heading={"Authentication Problem 401"} message={"Access denied. You do not have permission to view this page. Please contact support if you believe this is a mistake."} />
-    //     )
-    // }
     return (
         <>
             <Container fluid="true" className="login-container" >

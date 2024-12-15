@@ -18,10 +18,7 @@ const MainContent = ({ searchTerm, usersList, totalUsers, currentPage, prevPage,
     return (
         <Container fluid>
             <Row className='m-2'>
-                {loading ? (
-                    <div className="d-flexalign-items-center my-4">
-                        <Spinner className="m-4" />
-                    </div>)
+                {loading ? (<LoadingOverlay loading={loading}/>)
                     : (
                         usersList.length !== 0 ? ((
                             usersList.map((user) => (

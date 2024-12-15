@@ -4,6 +4,7 @@ import { ErrorAlert } from '../../../../Alerts/ErrorAlert.components';
 import { SuccessAlert } from '../../../../Alerts/SuccessAlert.components';
 import axios from 'axios';
 import './AddUser.styles.css'
+import { LoadingOverlay } from '../../../../Loading/LoadingOverlay.components';
 
 export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) => {
     const { username, first_name, last_name, password, email, address, birth_date,
@@ -12,6 +13,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
     const current_date = new Date();
     const [currentClassroom, setCurrentClassroom] = useState(null);
     const [offeringSubjects, setOfferingSubjects] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [alert, setAlert] = useState({
         "success": null,
         "fail": null,
@@ -20,7 +22,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
     const [userType, setUserType] = useState('');
 
     const handleSubmit = async () => {
-        console.log(formData)
+        setLoading(true)
         axios.post('api/users/', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
@@ -28,21 +30,27 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
         })
             .then(response => {
                 if (response.data['username'] === username) {
-                    console.log({ "classes": formData.classes, "subjects": formData.subjects })
                     axios.patch(`api/users/${response.data["id"]}/`, { "classes": formData.classes, "subjects": formData.subjects })
                         .then(response => {
+                            setLoading(false)
                             setAlert({ "success": `User ${response.data["username"]} was added succesfully`, "fail": null })
 
                         }).catch(e => {
+                            setLoading(false)
                             axios.delete(`api/users/${response.data["id"]}/`).catch(e => {
                                 setAlert({ "fail": `Failed To Add User ${formData["username"]}`, "success": null })
                             })
                             setAlert({ "fail": `Failed To Add User ${formData["username"]}`, "success": null })
                         })
+                    setLoading(false)
                 }
             }).catch(e => {
+                setLoading(false)
                 setAlert({ "fail": `Failed To Add User ${formData["username"]}`, "success": null })
             })
+        setTimeout(() => {
+            setAlert({ "fail": null, "success": null })
+        }, 5000)
     }
 
     const fetchClassSubjects = async (subjects) => {
@@ -165,6 +173,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                     </Card>}
 
             </div>
+            {loading && <LoadingOverlay loading={loading} message='User creation in progress...' />}
             {alert.fail &&
                 <ErrorAlert heading="User creation failed" message={alert.fail} >
                     <Alert.Link onClick={() => setStep(1)}>Go Back</Alert.Link>
