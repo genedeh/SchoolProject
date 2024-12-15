@@ -37,7 +37,7 @@ else:
     DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost',
-                 'schoolproject-6io4.onrender.com']
+                 'schoolproject-6io4.onrender.com','.vercel.app']
 
 CSRF_TRUSTED_ORIGINS = ['https://schoolproject-6io4.onrender.com']
 INTERNAL_IPS = (
