@@ -7,10 +7,11 @@ import { GenderFemale, GenderMale, Trash, Pencil, PlusCircleFill } from "react-b
 import { DeleteClassroomModal } from "./ClassroomTools/DeleteClassroom.components";
 import { CreateClassroomModal } from "./ClassroomTools/CreateClassroom.components";
 import { UpdateClassroomModal } from "./ClassroomTools/UpdateClassroom.components";
+import { LoadingOverlay } from "../../../Loading/LoadingOverlay.components";
 
 export const Classrooms = () => {
     const { currentUser } = useContext(UserContext);
-    const { classrooms, goToPrevPage, goToNextPage, currentPage, nextPage, totalClassrooms, prevPage, setTerm } = useContext(ClassroomsContext);
+    const { classrooms, goToPrevPage, goToNextPage, currentPage, nextPage, totalClassrooms, prevPage, setTerm, loading } = useContext(ClassroomsContext);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
@@ -39,22 +40,27 @@ export const Classrooms = () => {
         setShowUpdateModal(true)
     }
 
+    if (loading) {
+        return (
+            <LoadingOverlay loading={loading} message="Fetching Classrooms..." />
+        );
+    }
 
     if (!currentUser.is_student_or_teacher && currentUser && currentUser.is_admin) {
         if (classrooms.length !== 0) {
             return (
                 <>
-                    <div className="d-grid gap-2 m-2">
-                        <Button variant="outline-primary" size="lg" onClick={() => setShowCreateModal(true)} >
-                            New classroom <PlusCircleFill />
-                        </Button>
-                    </div>
                     <InputGroup>
                         <Form.Control className="m-4" size="sm" placeholder='Enter Classroom Name...' value={searchTerm} onChange={(e) => {
                             setSearchTerm(e.target.value)
                             setTerm(e.target.value)
                         }} />
                     </InputGroup>
+                    <div className="d-grid gap-2 m-2">
+                        <Button variant="outline-primary" size="lg" onClick={() => setShowCreateModal(true)} >
+                            New classroom <PlusCircleFill />
+                        </Button>
+                    </div>
                     <Accordion flush={true} className="m-3">
                         {classrooms.map(({ assigned_teacher, id, name, students }) => (
                             <Card key={id} className="mb-2">
@@ -124,6 +130,11 @@ export const Classrooms = () => {
         } else {
             return (
                 <>
+                    <div className="d-grid gap-2 m-2">
+                        <Button variant="outline-primary" size="lg" onClick={() => setShowCreateModal(true)} >
+                            New classroom <PlusCircleFill />
+                        </Button>
+                    </div>
                     <InputGroup>
                         <Form.Control className="m-4" size="sm" placeholder='Enter Classroom Name...' value={searchTerm} onChange={(e) => {
                             setSearchTerm(e.target.value)
@@ -131,6 +142,13 @@ export const Classrooms = () => {
                         }} />
                     </InputGroup>
                     <h1>NO CLASSROOMS WHERE FOUND</h1>
+                    <DeleteClassroomModal
+                        show={showDeleteModal}
+                        handleClose={() => setShowDeleteModal(false)}
+                        classroomId={selectedClassroomId}
+                    />
+                    <CreateClassroomModal show={showCreateModal} handleClose={() => setShowCreateModal(false)} />
+                    <UpdateClassroomModal show={showUpdateModal} handleClose={() => setShowUpdateModal(false)} classroom={selectedClassroomForUpdate} />
                 </>
             )
         }

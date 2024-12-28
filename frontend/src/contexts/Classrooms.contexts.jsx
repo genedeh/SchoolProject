@@ -24,15 +24,7 @@ export const ClassroomsProvider = ({ children }) => {
             setCurrentPage(currentPage - 1);
         }
     };
-    const value = {
-        classrooms, setClassrooms, currentPage, setCurrentPage,
-        totalClassrooms,
-        nextPage,
-        prevPage,
-        loading,
-        goToNextPage,
-        goToPrevPage, setTerm
-    };
+
     const fetchClassrooms = async (page = 1) => {
         const token = localStorage.getItem('token')
         if (token) {
@@ -50,7 +42,15 @@ export const ClassroomsProvider = ({ children }) => {
             setLoading(false);
         }
     }
-
+    const value = {
+        classrooms, setClassrooms, currentPage, setCurrentPage,
+        totalClassrooms,
+        nextPage,
+        prevPage,
+        loading,
+        goToNextPage,
+        goToPrevPage, setTerm, fetchClassrooms
+    };
     useEffect(() => {
         fetchClassrooms(currentPage);
     }, [currentPage, term])

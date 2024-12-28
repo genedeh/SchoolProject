@@ -1,5 +1,8 @@
-import { Modal, Button, ListGroup, Pagination, Form } from 'react-bootstrap';
+import { Modal, Button, ListGroup, Pagination, Form, InputGroup } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
+import { LoadingOverlay } from '../../../../Loading/LoadingOverlay.components'
+import { Search } from 'react-bootstrap-icons';
+import { ErrorAlert } from '../../../../Alerts/ErrorAlert.components';
 import axios from "axios";
 
 export const ClassRoomTeacherSelectPopUp = ({ show, handleClose, selectedTeacher, setSelectedTeacher }) => {
@@ -7,8 +10,9 @@ export const ClassRoomTeacherSelectPopUp = ({ show, handleClose, selectedTeacher
     const usersPerPage = 2;
     const [totalUsers, setTotalUsers] = useState(0);
     const [searchTerm, setSearchTerm] = useState("");
+    const [tempSearchTerm, setTempSearchTerm] = useState("");
     const [users, setUsers] = useState([]);
-
+    const [loading, setLoading] = useState(false);
 
     const fetchTeachers = async (page = 1) => {
         const token = localStorage.getItem("token")
@@ -23,8 +27,14 @@ export const ClassRoomTeacherSelectPopUp = ({ show, handleClose, selectedTeacher
                         }
                     })
                     setUsers(newData);
+                    setLoading(false)
+                    console.log("Loading DOne")
+                }).catch(e => {
+                    if (e.response.data["detail"] == "Invalid page.") {
+                        setCurrentPage(1)
+                        fetchTeachers();
+                    }
                 })
-
         }
     }
 
@@ -32,6 +42,7 @@ export const ClassRoomTeacherSelectPopUp = ({ show, handleClose, selectedTeacher
     // Pagination logic
     useEffect(() => {
         if (show) {
+            setLoading(true)
             fetchTeachers(currentPage);
         }
     }, [currentPage, searchTerm, show]);
@@ -44,32 +55,46 @@ export const ClassRoomTeacherSelectPopUp = ({ show, handleClose, selectedTeacher
                 <Modal.Title>Teachers</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form.Control className="me-auto mb-3" placeholder='Search...' value={searchTerm} onChange={(e) => {
-                    setSearchTerm(e.target.value)
-                }} />
+                <InputGroup>
+                    <Form.Select className="me-2">
+                        <option value="">{!selectedTeacher ? ("Select a Teacher"):(selectedTeacher.username)}</option>
+                    </Form.Select>
+                    <Form.Control className="me-auto " placeholder='Search...' value={tempSearchTerm} onChange={(e) => {
+                        setTempSearchTerm(e.target.value)
+                    }} />
+                    <Button variant='outline-primary' onClick={() => setSearchTerm(tempSearchTerm)}>
+                        <Search className='me-2' />
+                    </Button>
+                </InputGroup>
 
                 <ListGroup className="mb-3 ">
-                    {users.map((teacher) => (
-                        <ListGroup.Item key={teacher.id} className={`d-flex justify-content-between align-items-center container 
+                    {loading ? (
+                        <LoadingOverlay loading={loading} message='Fetching Teachers...' />
+                    ) : (users.length !== 0 ?
+                        (users.map((teacher) => (
+                            <ListGroup.Item key={teacher.id} className={`d-flex justify-content-between align-items-center container 
                             ${selectedTeacher ? (selectedTeacher.id == teacher.id ? 'border-info' : '') : ("")}`}
-                            onClick={() => {
-                                setSelectedTeacher(teacher);
-                            }}>
-                            <div className="d-flex align-items-center">
-                                <div className="me-3">
-                                    <img
-                                        src={teacher.profile_picture == null ? ("https://via.placeholder.com/40") : (teacher.profile_picture)}
-                                        className="rounded-circle"
-                                        style={{ width: '40px', height: '40px' }}
-                                    />
+                                onClick={() => {
+                                    setSelectedTeacher(teacher);
+                                }}>
+                                <div className="d-flex align-items-center">
+                                    <div className="me-3">
+                                        <img
+                                            src={teacher.profile_picture == null ? ("https://via.placeholder.com/40") : (teacher.profile_picture)}
+                                            className="rounded-circle"
+                                            style={{ width: '40px', height: '40px' }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <div>{teacher.username}</div>
+                                        <div className="text-muted">{teacher.gender}</div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <div>{teacher.username}</div>
-                                    <div className="text-muted">{teacher.gender}</div>
-                                </div>
-                            </div>
-                        </ListGroup.Item>
-                    ))}
+                            </ListGroup.Item>
+                        ))) : (<ErrorAlert heading={"404 Not Found"} message={`${searchTerm} is not a valid teacher...`} removable={true} />)
+
+                    )}
+
                 </ListGroup>
 
                 {/* Pagination */}

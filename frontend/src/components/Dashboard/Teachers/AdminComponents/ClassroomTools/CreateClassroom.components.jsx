@@ -1,46 +1,57 @@
-import { UsersListContext } from "../../../../../contexts/UsersList.contexts";
 import { ClassroomsContext } from "../../../../../contexts/Classrooms.contexts";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { Modal, Button, Alert, Form } from 'react-bootstrap'
 import { ClassRoomTeacherSelectPopUp } from "../SelectPopUps/ClassroomTeacherSelectPopupComponent";
 import { ClassroomStudentsSelectPopUp } from "../SelectPopUps/ClassroomStudentsSelectPopupComponent";
+import { LoadingOverlay } from "../../../../Loading/LoadingOverlay.components";
+import { ErrorAlert } from "../../../../Alerts/ErrorAlert.components";
 
 
 export const CreateClassroomModal = ({ show, handleClose }) => {
-    const { refresh, setRefresh } = useContext(UsersListContext);
-    const { setClassrooms, classrooms } = useContext(ClassroomsContext);
+    const { fetchClassrooms } = useContext(ClassroomsContext);
     const [name, setName] = useState('');
     const [listShow, setListShow] = useState(false);
     const [listShow2, setListShow2] = useState(false);
     const [selectedTeacher, setSelectedTeacher] = useState(null);
     const [selectedStudents, setSelectedStudents] = useState([]);
     const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(null);
 
 
+    useEffect(() => { 
+        if (error) {
+            setLoading(false);
+            setTimeout(() => { 
+                setError(null);
+            }, 2000);
+        }
+    }, [error]);
 
     const handleNameChange = (e) => {
         setName(e.target.value);
     };
 
     const createClassroomCloseHandler = () => {
-        setRefresh(!refresh)
         setSuccess('Subject created successfully.');
         setName('');
         setSelectedTeacher(null);
         setSelectedStudents([]);
         setError(null);
         setSuccess(null);
+        setLoading(false);
         handleClose();
     };
 
     const handleSubmit = () => {
         // Check if the classroom name already exists
+        setLoading(true);
         if (name.length < 8 && name.length !== 0) {
             axios.get(`api/classrooms/?name=${name}`)
                 .then(response => {
-                    if (response.data.length > 0) {
+                    console.log(response);
+                    if (response.data.results.length > 0) {
                         setError('Classroom name already exists.');
                     } else {
                         // Proceed to create the classroom
@@ -55,29 +66,9 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
                                 )
                             })
                         }
-                        const data_refined = {
-                            id: null,
-                            name,
-                            assigned_teacher: {
-                                "id": selectedTeacher.id,
-                                "username": selectedTeacher.username,
-                                "gender": selectedTeacher.gender
-                            }
-                            ,
-                            students: selectedStudents.map(student => {
-                                return (
-                                    {
-                                        "id": student.id,
-                                        "username": student.username,
-                                        "gender": student.gender
-                                    }
-                                )
-                            })
-                        }
                         axios.post('api/classrooms/', data)
-                            .then((response) => {
-                                data_refined["id"] = response.data.id
-                                setClassrooms([...classrooms, data_refined]);
+                            .then(() => {
+                                fetchClassrooms(1);
                                 createClassroomCloseHandler();
                             })
                             .catch(error => {
@@ -86,22 +77,26 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
                     }
                 })
                 .catch(error => {
-                    setError(`Select a teacher to be assigned to ${name}.`);
+                    if (!selectedTeacher) {
+                        setError('Select a teacher to be assigned to the classroom.');
+                    } else {
+                        setError('Failed to create classroom.');
+                    }
                 });
         } else {
-            setError("Class name is beyond max length")
+            setError("Class name is beyond max length");
         }
-
     };
 
     return (
         <>
-            <Modal show={show} onHide={createClassroomCloseHandler}>
+            <LoadingOverlay loading={loading} message="Creating Your Classroom..." />
+            <Modal show={show} fullscreen scrollable onHide={createClassroomCloseHandler}>
                 <Modal.Header closeButton>
                     <Modal.Title>Create Classroom</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {error && <Alert variant="danger">{error}</Alert>}
+                    {error && <ErrorAlert heading={'Classroom creation error.'}  message={error} />}
                     {success && <Alert variant="success">{success}</Alert>}
                     <Form>
                         <Form.Group controlId="subjectName">
@@ -154,7 +149,10 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={handleSubmit}>
+                    <Button variant="primary" onClick={() => {
+                        setLoading(true)
+                        handleSubmit()
+                    }}>
                         Add Classroom
                     </Button>
                 </Modal.Footer>

@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { UserContext } from "../../contexts/User.contexts";
-import { Container, Row, Col, Button, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 import TopLevel from "./TopLevel.components";
 import { StudentSidebar, TeacherSidebar } from "./Side_Navigation_Bar/SideBar.components";
 import { UsersListContext } from "../../contexts/UsersList.contexts";
@@ -83,7 +83,7 @@ const ErrorDisplay = ({ error }) => {
     }
 
     return (
-        <ErrorAlert heading="User Data Fetch Error" message="We encountered an issue while retrieving your user information. Please try again shortly.">
+        <ErrorAlert heading="User Data Fetch Error" message="We encountered an issue while retrieving your user information. Please try again shortly." removable={true}>
             <a href='/' className='me-3'>GO TO LOGIN PAGE</a>
         </ErrorAlert>
     );
