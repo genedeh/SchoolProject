@@ -1,59 +1,44 @@
 import { Modal, Button, ListGroup, Pagination, Form, InputGroup } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
+import { useQuery } from 'react-query';
 import { Search } from 'react-bootstrap-icons';
+import axios from "axios";
 import { LoadingOverlay } from '../../../../Loading/LoadingOverlay.components'
 import { ErrorAlert } from '../../../../Alerts/ErrorAlert.components';
-import axios from "axios";
+import { ErrorMessageHandling } from '../../../../../utils/ErrorHandler.utils'
+import { UserCardItemComponent } from './UserCardItem.components';
+
+const fetchData = async (page, query) => {
+    const response = await axios.get(`/api/quick_users_view/?S=&page=${page}&username=${query.replace(/ /g, "")}`);
+    return response.data;
+};
 
 export const ClassroomStudentsSelectPopUp = ({ show, handleClose, selectedStudents, setSelectedStudents }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 2;
-    const [totalUsers, setTotalUsers] = useState(0);
     const [selectedOptions, setSelectedOptions] = useState([]);
     const [tempSearchTerm, setTempSearchTerm] = useState("");
     const [searchTerm, setSearchTerm] = useState("")
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(false);
 
 
 
-    const fetchStudents = async (page = 1) => {
-        const token = localStorage.getItem("token")
-        if (token) {
-            await axios.get(`/api/quick_users_view/?N=&S=&page=${page}&username=${searchTerm.replace(/ /g, "")}`)
-                .then(respone => {
-                    const data = respone.data;
-                    setTotalUsers(data.count)
-                    const newData = data.results.filter((user) => {
-                        if (user.is_student_or_teacher) {
-                            return user
-                        }
-                    })
-                    setUsers(newData);
-                    setLoading(false)
-                    console.log("Loading DOne")
-                }).catch(e => {
-                    if (e.response.data["detail"] == "Invalid page.") {
-                        setCurrentPage(1)
-                        fetchStudents();
-                    }
-                })
-        }
-    }
+    const { data,
+        isLoading,
+        isError,
+        error, isFetching } = useQuery(['classroom-students', currentPage, show, searchTerm], () => fetchData(currentPage, searchTerm),
+            {
+                refetchOnWindowFocus: false, // Refetch when window is focused
+                retry: 3,                   // Retry fetching up to 3 times
+                keepPreviousData: false,    // Prevents stale data display
+            });
 
-
-    // Pagination logic
     useEffect(() => {
         if (show) {
-            setLoading(true)
-            fetchStudents(currentPage);
             const StudentIds = selectedStudents.map(student => student.id)
             setSelectedOptions(StudentIds)
         }
 
-    }, [currentPage, searchTerm, show]);
-
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    }, [show]);
 
     return (
         <Modal show={show} size="lg" fullscreen scrollable onHide={handleClose}>
@@ -76,63 +61,52 @@ export const ClassroomStudentsSelectPopUp = ({ show, handleClose, selectedStuden
                     <Form.Control className="me-auto " placeholder='Search...' value={tempSearchTerm} onChange={(e) => {
                         setTempSearchTerm(e.target.value)
                     }} />
-                    <Button variant='outline-primary' onClick={() => setSearchTerm(tempSearchTerm)}>
+                    <Button variant='outline-primary' onClick={() => {
+                        setCurrentPage(1);
+                        setSearchTerm(tempSearchTerm);
+                    }}>
                         <Search className='me-2' />
                     </Button>
                 </InputGroup>
 
+                {isError && <ErrorAlert heading="Error While trying to fetch classrooms" message={ErrorMessageHandling(isError, error)} removable={true} />}
                 <ListGroup className="mb-3 ">
-                    {loading ? (
-                        <LoadingOverlay loading={loading} message='Fetching Students...' />
-                    ) : (
-                        users.length !== 0 ? (
-                            users.map((student) => (
-                                <ListGroup.Item key={student.id}
-                                    className={`d-flex justify-content-between align-items-center container
-                                 ${selectedOptions.includes(student.id) ? 'border-info' : ''}`}
-                                    onClick={() => {
-                                        if (!selectedOptions.includes(student.id)) {
-                                            setSelectedOptions([...selectedOptions, student.id])
-                                            setSelectedStudents(selectedStudents => [...selectedStudents, student]);
-                                        } else {
-                                            const removeStudentId = selectedOptions.filter(id => id !== student.id);
-                                            setSelectedOptions(removeStudentId)
-                                            const removeStudent = selectedStudents.filter(selectedStudent => selectedStudent.id !== student.id);
-                                            setSelectedStudents(removeStudent)
-                                        }
-                                    }}>
-                                    <div className="d-flex align-items-center">
-                                        <div className="me-3">
-                                            <img
-                                                src={student.profile_picture == null ? ("https://via.placeholder.com/40") : (student.profile_picture)}
-                                                className="rounded-circle"
-                                                style={{ width: '40px', height: '40px' }}
-                                            />
-                                        </div>
-                                        <div>
-                                            <div>{student.username}</div>
-                                            <div className="text-muted">{student.gender}</div>
-                                        </div>
-                                    </div>
-                                </ListGroup.Item>
-                            ))
-                        ) : (
-                            <ErrorAlert heading={"404 Not Found"} message={`${searchTerm} is not a valid teacher...`} removable={true} />
-                        ))}
+                    {!isLoading ?
+                        (data.results?.map((student) => (
+                            <UserCardItemComponent key={student.id} user={student} clickHandler={() => {
+                                if (!selectedOptions.includes(student.id)) {
+                                    setSelectedOptions([...selectedOptions, student.id])
+                                    setSelectedStudents(selectedStudents => [...selectedStudents, student]);
+                                } else {
+                                    const removeStudentId = selectedOptions.filter(id => id !== student.id);
+                                    setSelectedOptions(removeStudentId)
+                                    const removeStudent = selectedStudents.filter(selectedStudent => selectedStudent.id !== student.id);
+                                    setSelectedStudents(removeStudent)
+                                }
+                            }} selectedDisplay={selectedOptions.includes(student.id) ? 'border-info' : ''} />
+                        ))) : (
+                            <>
+                                <LoadingOverlay loading={isLoading} message='Fetching Students...' />
+                                <LoadingOverlay loading={isFetching} message='Fetching Students...' />
+                            </>
+                        )}
 
                 </ListGroup>
-
                 {/* Pagination */}
 
 
             </Modal.Body>
             <Modal.Footer>
-                <Pagination className='me-5'>
-                    {Array.from({ length: Math.ceil(totalUsers / usersPerPage) }, (_, index) => (
-                        <Pagination.Item key={index} active={index + 1 === currentPage} onClick={() => paginate(index + 1)}>
-                            {index + 1}
-                        </Pagination.Item>
-                    ))}
+                <Pagination className="justify-content-center">
+                    <Pagination.Prev
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    />
+                    <Pagination.Item active>{currentPage}</Pagination.Item>
+                    <Pagination.Next
+                        disabled={currentPage === Math.ceil(data?.count / usersPerPage)}
+                        onClick={() => setCurrentPage((prev) => prev + 1)}
+                    />
                 </Pagination>
                 <Button variant="outline-primary" onClick={handleClose}>
                     Done

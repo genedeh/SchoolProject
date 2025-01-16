@@ -36,6 +36,7 @@ export const ClassroomsProvider = ({ children }) => {
                 setNextPage(data.next);
                 setPrevPage(data.previous);
                 setTotalClassrooms(data.count);
+                setCurrentPage(page);
             } catch (err) {
                 console.log('There was an error fetching the items!', err)
             }
