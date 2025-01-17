@@ -1,21 +1,21 @@
 import { useState, useEffect, useContext } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
-import { UsersListContext } from "../../../../../contexts/UsersList.contexts";
-import { ClassroomsContext } from "../../../../../contexts/Classrooms.contexts";
+import { useClassrooms } from "../../../../../contexts/Classrooms.contexts";
 import { ClassRoomTeacherSelectPopUp } from '../SelectPopUps/ClassroomTeacherSelectPopupComponent';
 import { ClassroomStudentsSelectPopUp } from '../SelectPopUps/ClassroomStudentsSelectPopupComponent';
 import axios from 'axios';
 
 export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
-    const { refresh, setRefresh } = useContext(UsersListContext);
-    const { setClassrooms } = useContext(ClassroomsContext);
+    const { refetchNewData } = useClassrooms();
     const [name, setName] = useState('');
     const [assignedTeacher, setAssignedTeacher] = useState(null);
     const [students, setStudents] = useState([]);
     const [listShow, setListShow] = useState(false);
     const [listShow2, setListShow2] = useState(false);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
+    const [updated, setUpdated] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (show) {
@@ -32,8 +32,20 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
         }
     }, [show]);
 
+    const updateClassroomCloseHandler = () => {
+        setLoading(false)
+    };
+
     const handleUpdate = async (e) => {
         e.preventDefault();
+        const token = localStorage.getItem("token")
+        setUpdated(false);
+        setError(null);
+        setSuccess(null);
+        
+        if (!token) {
+            throw new Error("Authentication token is missing!");
+        }
         if (name.length < 8 && name.length !== 0) {
             try {
                 const data = {
@@ -43,36 +55,44 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
                         return student.id
                     }),
                 }
-                await axios.put(`api/classrooms/${classroom.id}/`, data)
-                    .then((response) => {
-                        setClassrooms((prevClassrooms) =>
-                            prevClassrooms.map((classroom) =>
-                                classroom.id === response.data['id'] ? response.data : classroom
-                            )
-                        );
+                await axios.put(`api/classrooms/${classroom.id}/`, data,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                )
+                    .then(() => {
+                        setSuccess('Classroom updated successfully.');
+                        console.log(success);
+                        setUpdated(true);
+                        setLoading(false);
+                        updateClassroomCloseHandler();
                     });
-                setSuccess('Classroom updated successfully.');
-                handleClose();
-                setSuccess(null)
-                setError(null)
-                setRefresh(!refresh)
+
             } catch (error) {
                 setError('Failed to update classroom.');
+                setLoading(false);
             }
         } else {
-            setError('Class Name Exceeds Max Length.')
+            setError('Class Name Exceeds Max Length.');
+            setLoading(false);
         }
     };
 
     return (
         <>
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={show} fullscreen scrollable onHide={() => {
+                if (!loading) {
+                    updateClassroomCloseHandler();
+                    handleClose();
+                    if (updated) {
+                        refetchNewData();
+                    }
+                }
+            }}>
                 <Modal.Header closeButton>
                     <Modal.Title>Update Classroom</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    {success && <Alert variant="success">{success}</Alert>}
                     <Form>
                         <Form.Group controlId="formName">
                             <Form.Label>Classroom Name</Form.Label>
@@ -120,11 +140,17 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
                                 ))}
                             </div>
                         </Form.Group>
+                        <br />
+                        {error && <Alert variant="danger" dismissible onClose={() => setError(null)}>{error}</Alert>}
+                        {success && <Alert variant="success" dismissible onClose={() => setSuccess(null)}>{success}</Alert>}
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={handleUpdate}>
-                        Update Classroom
+                    <Button variant="primary" onClick={(e) => {
+                        setLoading(true);
+                        handleUpdate(e);
+                    }} disabled={loading} type='submit'>
+                        {loading ? 'Updating classroom...' : 'Update Classroom'}
                     </Button>
                 </Modal.Footer>
             </Modal>

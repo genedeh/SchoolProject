@@ -1,17 +1,33 @@
 import { UserContext } from "../../../../contexts/User.contexts";
-import { ClassroomsContext } from "../../../../contexts/Classrooms.contexts";
+import { useClassrooms } from "../../../../contexts/Classrooms.contexts";
 import { useContext, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { Button, Accordion, Card, ListGroup, Spinner, Image, InputGroup, Form } from "react-bootstrap";
+import { Button, Accordion, Card, ListGroup, InputGroup, Form } from "react-bootstrap";
+import { Search } from "react-bootstrap-icons";
 import { GenderFemale, GenderMale, Trash, Pencil, PlusCircleFill } from "react-bootstrap-icons";
 import { DeleteClassroomModal } from "./ClassroomTools/DeleteClassroom.components";
 import { CreateClassroomModal } from "./ClassroomTools/CreateClassroom.components";
 import { UpdateClassroomModal } from "./ClassroomTools/UpdateClassroom.components";
-import { LoadingOverlay } from "../../../Loading/LoadingOverlay.components";
+import { ErrorAlert } from "../../../Alerts/ErrorAlert.components";
+import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
+import { CenteredSpinner } from "../../../Loading/CenteredSpinner.components";
 
 export const Classrooms = () => {
     const { currentUser } = useContext(UserContext);
-    const { classrooms, goToPrevPage, goToNextPage, currentPage, nextPage, totalClassrooms, prevPage, setTerm, loading } = useContext(ClassroomsContext);
+    const {
+        classrooms,
+        currentPage,
+        nextPage,
+        prevPage,
+        loading,
+        error,
+        isError,
+        goToNextPage,
+        goToPrevPage,
+        setTerm,
+        totalClassrooms,
+        handleSearch,
+    } = useClassrooms();
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
@@ -40,29 +56,34 @@ export const Classrooms = () => {
         setShowUpdateModal(true)
     }
 
-    if (loading) {
-        return (
-            <LoadingOverlay loading={loading} message="Fetching Classrooms..." />
-        );
-    }
-
     if (!currentUser.is_student_or_teacher && currentUser && currentUser.is_admin) {
-        if (classrooms.length !== 0) {
-            return (
-                <>
-                    <InputGroup>
-                        <Form.Control className="m-4" size="sm" placeholder='Enter Classroom Name...' value={searchTerm} onChange={(e) => {
-                            setSearchTerm(e.target.value)
-                            setTerm(e.target.value)
-                        }} />
-                    </InputGroup>
-                    <div className="d-grid gap-2 m-2">
-                        <Button variant="outline-primary" size="lg" onClick={() => setShowCreateModal(true)} >
-                            New classroom <PlusCircleFill />
-                        </Button>
-                    </div>
-                    <Accordion flush={true} className="m-3">
-                        {classrooms.map(({ assigned_teacher, id, name, students }) => (
+        return (
+            <>
+                <br />
+                <InputGroup>
+                    <Form.Control className="me-auto " placeholder='Search...' value={searchTerm} onChange={(e) => {
+                        setSearchTerm(e.target.value)
+                    }} />
+                    <Button variant='outline-primary' onClick={() => {
+                        setTerm(searchTerm);
+                        handleSearch();
+                    }}>
+                        <Search className='me-2' />
+                    </Button>
+                </InputGroup>
+                <div className="d-grid gap-2 m-2">
+                    <Button variant="outline-primary" size="lg" onClick={() => setShowCreateModal(true)} >
+                        New classroom <PlusCircleFill />
+                    </Button>
+                </div>
+                <Accordion flush={true} className="m-3">
+                    {loading && <CenteredSpinner caption="Fetching Classrooms..." />}
+                    {isError && <ErrorAlert heading="Error while fetching classrooms" message={ErrorMessageHandling(isError, error)} removable={true} />}
+                    {!loading && !isError && classrooms.length === 0 && (
+                        <p>No classrooms found!</p>
+                    )}
+                    {!loading && !isError && classrooms.length > 0 && (
+                        classrooms?.map(({ assigned_teacher, id, name, students }) => (
                             <Card key={id} className="mb-2">
                                 <Accordion.Item eventKey={id}>
                                     <Accordion.Header eventKey={id} className="d-flex justify-content-between align-items-center">
@@ -105,53 +126,30 @@ export const Classrooms = () => {
                                 </Accordion.Item>
 
                             </Card>
-                        ))}
-                    </Accordion>
-                    <div className="d-flex justify-content-between align-items-center my-4">
-                        <Button onClick={goToPrevPage} disabled={!prevPage}>
-                            Previous
-                        </Button>
-                        <span>Page {currentPage}</span>
-                        <Button onClick={goToNextPage} disabled={!nextPage}>
-                            Next
-                        </Button>
-                    </div>
+                        ))
+                    )}
 
-                    <p>Total Classrooms: {totalClassrooms}</p>
-                    <DeleteClassroomModal
-                        show={showDeleteModal}
-                        handleClose={() => setShowDeleteModal(false)}
-                        classroomId={selectedClassroomId}
-                    />
-                    <CreateClassroomModal show={showCreateModal} handleClose={() => setShowCreateModal(false)} />
-                    <UpdateClassroomModal show={showUpdateModal} handleClose={() => setShowUpdateModal(false)} classroom={selectedClassroomForUpdate} />
-                </>
-            );
-        } else {
-            return (
-                <>
-                    <div className="d-grid gap-2 m-2">
-                        <Button variant="outline-primary" size="lg" onClick={() => setShowCreateModal(true)} >
-                            New classroom <PlusCircleFill />
-                        </Button>
-                    </div>
-                    <InputGroup>
-                        <Form.Control className="m-4" size="sm" placeholder='Enter Classroom Name...' value={searchTerm} onChange={(e) => {
-                            setSearchTerm(e.target.value)
-                            setTerm(e.target.value)
-                        }} />
-                    </InputGroup>
-                    <h1>NO CLASSROOMS WHERE FOUND</h1>
-                    <DeleteClassroomModal
-                        show={showDeleteModal}
-                        handleClose={() => setShowDeleteModal(false)}
-                        classroomId={selectedClassroomId}
-                    />
-                    <CreateClassroomModal show={showCreateModal} handleClose={() => setShowCreateModal(false)} />
-                    <UpdateClassroomModal show={showUpdateModal} handleClose={() => setShowUpdateModal(false)} classroom={selectedClassroomForUpdate} />
-                </>
-            )
-        }
+                </Accordion>
+                <div className="d-flex justify-content-between align-items-center my-4">
+                    <Button onClick={goToPrevPage} disabled={!prevPage || loading}>
+                        Previous
+                    </Button>
+                    <span>Page {currentPage}</span>
+                    <Button onClick={goToNextPage} disabled={!nextPage || loading}>
+                        Next
+                    </Button>
+                </div>
+
+                <p>Total Classrooms: {totalClassrooms}</p>
+                <DeleteClassroomModal
+                    show={showDeleteModal}
+                    handleClose={() => setShowDeleteModal(false)}
+                    classroomId={selectedClassroomId}
+                />
+                <CreateClassroomModal show={showCreateModal} handleClose={() => setShowCreateModal(false)} />
+                <UpdateClassroomModal show={showUpdateModal} handleClose={() => setShowUpdateModal(false)} classroom={selectedClassroomForUpdate} />
+            </>
+        );
     } return (
         <Navigate to='/dashboard/home' />
     );

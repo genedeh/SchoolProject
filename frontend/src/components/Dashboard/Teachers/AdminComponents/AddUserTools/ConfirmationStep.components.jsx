@@ -20,24 +20,36 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
     })
     const [displayProfilePicture, setDisplayProfilePicture] = useState(null)
     const [userType, setUserType] = useState('');
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        throw new Error("Authentication token is missing!");
+    }
 
     const handleSubmit = async () => {
         setLoading(true)
         axios.post('api/users/', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`,
             },
         })
             .then(response => {
                 if (response.data['username'] === username) {
-                    axios.patch(`api/users/${response.data["id"]}/`, { "classes": formData.classes, "subjects": formData.subjects })
+                    axios.patch(`api/users/${response.data["id"]}/`, { "classes": formData.classes, "subjects": formData.subjects },
+                        {
+                            headers: { Authorization: `Bearer ${token}` },
+                        }
+                    )
                         .then(response => {
                             setLoading(false)
                             setAlert({ "success": `User ${response.data["username"]} was added succesfully`, "fail": null })
 
                         }).catch(e => {
                             setLoading(false)
-                            axios.delete(`api/users/${response.data["id"]}/`).catch(e => {
+                            axios.delete(`api/users/${response.data["id"]}/`, {
+                                headers: { Authorization: `Bearer ${token}` },
+                            }).catch(e => {
                                 setAlert({ "fail": `Failed To Add User ${formData["username"]}`, "success": null })
                             })
                             setAlert({ "fail": `Failed To Add User ${formData["username"]}`, "success": null })
@@ -55,7 +67,11 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
 
     const fetchClassSubjects = async (subjects) => {
         if (subjects.length !== 0) {
-            await axios.post('/api/get-subjects/', { "subject_ids": subjects })
+            await axios.post('/api/get-subjects/', { "subject_ids": subjects },
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            )
                 .then(response => {
                     const data = response.data
                     setOfferingSubjects(data)
@@ -63,7 +79,10 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
         }
     }
     const fetchClassroom = async (classId) => {
-        await axios.get(`/api/classrooms/${classId}/`)
+        await axios.get(`/api/classrooms/${classId}/`,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            })
             .then(response => {
                 if (response.data["detail"]) {
                     setCurrentClassroom(null)

@@ -25,8 +25,17 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
                 }))
             }
         }
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            throw new Error("Authentication token is missing!");
+        }
         if (firstName !== '' && lastName !== '') {
-            axios.get(`api/users/?username=${firstName}_${lastName}`)
+            axios.get(`api/users/?username=${firstName}_${lastName}`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            )
                 .then(response => {
                     if (response.data.results.length > 0 && response.data.results[0]['is_student_or_teacher'] === formData['is_student_or_teacher']) {
                         setError((prevData) => ({

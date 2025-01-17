@@ -8,20 +8,25 @@ import { UserProvider } from './contexts/User.contexts';
 import { UsersListProvider } from './contexts/UsersList.contexts';
 import { SubjectsProvider } from './contexts/Subjects.contexts';
 import { ClassroomsProvider } from './contexts/Classrooms.contexts';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <UserProvider>
-        <UsersListProvider>
-          <SubjectsProvider>
-            <ClassroomsProvider>
-              <App />
-            </ClassroomsProvider>
-          </SubjectsProvider>
-        </UsersListProvider>
-      </UserProvider>
+      <QueryClientProvider client={queryClient}>
+        <UserProvider>
+          <UsersListProvider>
+            <SubjectsProvider>
+              <ClassroomsProvider>
+                <App />
+              </ClassroomsProvider>
+            </SubjectsProvider>
+          </UsersListProvider>
+        </UserProvider>
+      </QueryClientProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

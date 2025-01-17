@@ -9,7 +9,16 @@ import { ErrorMessageHandling } from '../../../../../utils/ErrorHandler.utils'
 import { UserCardItemComponent } from './UserCardItem.components';
 
 const fetchData = async (page, query) => {
-    const response = await axios.get(`/api/quick_users_view/?N=&T=&page=${page}&username=${query.replace(/ /g, "")}`);
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        throw new Error("Authentication token is missing!");
+    }
+
+    const response = await axios.get(`/api/quick_users_view/?N=&T=&page=${page}&username=${query.replace(/ /g, "")}`,
+        {
+            headers: { Authorization: `Bearer ${token}` },
+        });
     return response.data;
 };
 
