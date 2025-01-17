@@ -78,6 +78,7 @@ class UserProfileView(APIView):
 
 class CreateAndSearchUserView(generics.ListCreateAPIView):
     parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [IsAuthenticated]
     serializer_class = serializers.UserListSerializer
 
     def get_queryset(self):
@@ -102,6 +103,7 @@ class CreateAndSearchUserView(generics.ListCreateAPIView):
 
 class QuickUserViewList(generics.ListAPIView):
     serializer_class = serializers.QuickUserViewSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         # Extract query parameters
@@ -158,6 +160,7 @@ class QuickUserViewList(generics.ListAPIView):
 
 
 class UpdateAndDeleteUserView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = serializers.UserUpdateSerializer
     lookup_field = 'pk'
