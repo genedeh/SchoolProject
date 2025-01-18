@@ -39,7 +39,7 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
             throw new Error("Authentication token is missing!");
         }
 
-        if (name.length < 8 && name.length !== 0) {
+        if (name.length < 100 && name.length !== 0) {
             axios.get(`api/classrooms/?name=${name}`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
@@ -68,7 +68,7 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
                             }
                         )
                             .then(() => {
-                                setSuccess('Subject created successfully.');
+                                setSuccess('Classroom created successfully.');
                                 setCreated(true);
                                 createClassroomCloseHandler();
                             })

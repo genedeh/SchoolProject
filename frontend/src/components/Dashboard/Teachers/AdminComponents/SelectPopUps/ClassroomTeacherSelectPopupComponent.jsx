@@ -7,6 +7,7 @@ import { LoadingOverlay } from '../../../../Loading/LoadingOverlay.components'
 import { ErrorAlert } from '../../../../Alerts/ErrorAlert.components';
 import { ErrorMessageHandling } from '../../../../../utils/ErrorHandler.utils'
 import { UserCardItemComponent } from './UserCardItem.components';
+import { CenteredSpinner } from "../../../../Loading/CenteredSpinner.components";
 
 const fetchData = async (page, query) => {
     const token = localStorage.getItem("token");
@@ -67,8 +68,7 @@ export const ClassRoomTeacherSelectPopUp = ({ show, handleClose, selectedTeacher
                             <UserCardItemComponent key={teacher.id} user={teacher} clickHandler={setSelectedTeacher} selectedDisplay={selectedTeacher ? (selectedTeacher.id === teacher.id ? 'border-info' : '') : ("")} />
                         ))) : (
                             <>
-                                <LoadingOverlay loading={isLoading} message='Fetching Teachers...' />
-                                <LoadingOverlay loading={isFetching} message='Fetching Teachers...' />
+                                <CenteredSpinner caption="Fetching Teachers..."/>
                             </>
                         )}
 
