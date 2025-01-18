@@ -1,42 +1,45 @@
-import { Modal, Button, ListGroup, Pagination, Form } from 'react-bootstrap';
-import { useEffect, useState } from 'react';
+import { Modal, Button, ListGroup, Pagination, Form, InputGroup } from 'react-bootstrap';
+import { useState } from 'react';
+import { useQuery } from 'react-query';
+import { Search } from 'react-bootstrap-icons';
 import axios from "axios";
+import { LoadingOverlay } from '../../../../Loading/LoadingOverlay.components'
+import { ErrorAlert } from '../../../../Alerts/ErrorAlert.components';
+import { ErrorMessageHandling } from '../../../../../utils/ErrorHandler.utils'
+import { UserCardItemComponent } from './UserCardItem.components';
+import { CenteredSpinner } from "../../../../Loading/CenteredSpinner.components";
+
+
+const fetchData = async (page, query) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        throw new Error("Authentication token is missing!");
+    }
+
+    const response = await axios.get(`/api/quick_users_view/?T=&page=${page}&username=${query.replace(/ /g, "")}`,
+        {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+    return response.data;
+};
 
 export const TeacherSelectPopUp = ({ show, handleClose, selectedTeacher, setSelectedTeacher }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 2;
-    const [totalUsers, setTotalUsers] = useState(0);
     const [searchTerm, setSearchTerm] = useState("");
-    const [users, setUsers] = useState([]);
+    const [tempSearchTerm, setTempSearchTerm] = useState("");
 
 
-    const fetchTeachers = async (page = 1) => {
-        const token = localStorage.getItem("token")
-        if (token) {
-            await axios.get(`/api/quick_users_view/?T=&page=${page}&username=${searchTerm.replace(/ /g, "") }`)
-                .then(respone => {
-                    const data = respone.data;
-                    setTotalUsers(data.count)
-                    const newData = data.results.filter((user) => {
-                        if (!user.is_student_or_teacher) {
-                            return user
-                        }
-                    })
-                    setUsers(newData);
-                })
-
-        }
-    }
-
-
-    // Pagination logic
-    useEffect(() => {
-        if (show) {
-            fetchTeachers(currentPage);
-        }
-    }, [currentPage, searchTerm, show]);
-
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    const { data,
+        isLoading,
+        isError,
+        error, isFetching } = useQuery(['subject-teachers', currentPage, show, searchTerm], () => fetchData(currentPage, searchTerm),
+            {
+                refetchOnWindowFocus: false, // Refetch when window is focused
+                retry: 3,                   // Retry fetching up to 3 times
+                keepPreviousData: false,    // Prevents stale data display
+            });
 
     return (
         <Modal show={show} size="lg" fullscreen scrollable onHide={handleClose}>
@@ -44,45 +47,46 @@ export const TeacherSelectPopUp = ({ show, handleClose, selectedTeacher, setSele
                 <Modal.Title>Teachers</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form.Control className="me-auto mb-3" placeholder='Search...' value={searchTerm} onChange={(e) => {
-                    setSearchTerm(e.target.value)
-                }} />
+                <InputGroup>
+                    <Form.Select className="me-2">
+                        <option value="">{!selectedTeacher ? ("Select a Teacher") : (selectedTeacher.username)}</option>
+                    </Form.Select>
+                    <Form.Control className="me-auto " placeholder='Search...' value={tempSearchTerm} onChange={(e) => {
+                        setTempSearchTerm(e.target.value)
+                    }} />
+                    <Button variant='outline-primary' onClick={() => {
+                        setCurrentPage(1);
+                        setSearchTerm(tempSearchTerm);
+                    }}>
+                        <Search className='me-2' />
+                    </Button>
+                </InputGroup>
 
+                {isError && <ErrorAlert heading="Error While trying to fetch classrooms" message={ErrorMessageHandling(isError, error)} removable={true} />}
                 <ListGroup className="mb-3 ">
-                    {users.map((teacher) => (
-                        <ListGroup.Item key={teacher.id} className={`d-flex justify-content-between align-items-center container 
-                            ${selectedTeacher ? ( selectedTeacher.id == teacher.id ? 'border-info' : '' ):("") }`}
-                            onClick={() => {
-                                setSelectedTeacher(teacher);
-                            }}>
-                            <div className="d-flex align-items-center">
-                                <div className="me-3">
-                                    <img
-                                        src={teacher.profile_picture == null ? ("https://via.placeholder.com/40") : (teacher.profile_picture)}
-                                        className="rounded-circle"
-                                        style={{ width: '40px', height: '40px' }}
-                                    />
-                                </div>
-                                <div>
-                                    <div>{teacher.username}</div>
-                                    <div className="text-muted">{teacher.gender}</div>
-                                </div>
-                            </div>
-                        </ListGroup.Item>
-                    ))}
+                    {!isLoading ?
+                        (data.results?.map((teacher) => (
+                            <UserCardItemComponent key={teacher.id} user={teacher} clickHandler={setSelectedTeacher} selectedDisplay={selectedTeacher ? (selectedTeacher.id === teacher.id ? 'border-info' : '') : ("")} />
+                        ))) : (
+                            <>
+                                <CenteredSpinner caption='Fetching Teachers...' />
+                            </>
+                        )}
+
                 </ListGroup>
-
-                {/* Pagination */}
-
 
             </Modal.Body>
             <Modal.Footer>
-                <Pagination className='me-5'>
-                    {Array.from({ length: Math.ceil(totalUsers / usersPerPage) }, (_, index) => (
-                        <Pagination.Item key={index} active={index + 1 === currentPage} onClick={() => paginate(index + 1)}>
-                            {index + 1}
-                        </Pagination.Item>
-                    ))}
+                <Pagination className="justify-content-center">
+                    <Pagination.Prev
+                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    />
+                    <Pagination.Item active>{currentPage}</Pagination.Item>
+                    <Pagination.Next
+                        disabled={currentPage === Math.ceil(data?.count / usersPerPage)}
+                        onClick={() => setCurrentPage((prev) => prev + 1)}
+                    />
                 </Pagination>
                 <Button variant="outline-primary" onClick={handleClose}>
                     Done

@@ -1,16 +1,33 @@
 import { useContext, useState } from "react";
 import { UserContext } from "../../../../contexts/User.contexts";
-import { SubjectsContext } from "../../../../contexts/Subjects.contexts";
+import { useSubjects } from "../../../../contexts/Subjects.contexts";
 import { Navigate } from "react-router-dom";
-import { Accordion, Card, Button, ListGroup, Spinner, Form, InputGroup } from 'react-bootstrap';
+import { Accordion, Card, Button, ListGroup, Form, InputGroup } from 'react-bootstrap';
 import { Trash, Pencil, PlusCircleFill, GenderFemale, GenderMale } from 'react-bootstrap-icons';
+import { Search } from "react-bootstrap-icons";
 import { DeleteSubjectModal } from "./SubjectTools/DeleteSubject.components";
 import { CreateSubjectModal } from "./SubjectTools/CreateSubject.components";
 import { UpdateSubjectModal } from "./SubjectTools/UpdateSubject.components";
+import { ErrorAlert } from "../../../Alerts/ErrorAlert.components";
+import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
+import CenteredSpinner from "../../../Loading/CenteredSpinner.components";
 
 export const Subjects = () => {
     const { currentUser } = useContext(UserContext);
-    const { subjects, goToPrevPage, goToNextPage, currentPage, nextPage, totalSubjects, prevPage, setTerm } = useContext(SubjectsContext);
+    const {
+        subjects,
+        currentPage,
+        nextPage,
+        prevPage,
+        loading,
+        error,
+        isError,
+        goToNextPage,
+        goToPrevPage,
+        setTerm,
+        totalSubjects,
+        handleSearch,
+    } = useSubjects();
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
@@ -41,22 +58,33 @@ export const Subjects = () => {
     }
 
     if (!currentUser.is_student_or_teacher && currentUser && currentUser.is_admin) {
-        if (subjects.length !== 0) {
-            return (
-                <>
-                    <div className="d-grid gap-2 m-2">
-                        <Button variant="outline-primary" size="lg" onClick={() => setShowCreateModal(true)} >
-                            New subject <PlusCircleFill />
-                        </Button>
-                    </div>
-                    <InputGroup>
-                        <Form.Control className="m-4" size="sm" placeholder='Enter Subject Name...' value={searchTerm} onChange={(e) => {
-                            setSearchTerm(e.target.value)
-                            setTerm(e.target.value)
-                        }} />
-                    </InputGroup>
-                    <Accordion flush={true} className="m-3">
-                        {subjects.map(({ assigned_teacher, id, name, students_offering }) => (
+        return (
+            <>
+                <br />
+                <InputGroup>
+                    <Form.Control className="me-auto " placeholder='Search...' value={searchTerm} onChange={(e) => {
+                        setSearchTerm(e.target.value)
+                    }} />
+                    <Button variant='outline-primary' onClick={() => {
+                        setTerm(searchTerm);
+                        handleSearch();
+                    }}>
+                        <Search className='me-2' />
+                    </Button>
+                </InputGroup>
+                <div className="d-grid gap-2 m-2">
+                    <Button variant="outline-primary" size="lg" onClick={() => setShowCreateModal(true)} >
+                        New subject <PlusCircleFill />
+                    </Button>
+                </div>
+                <Accordion flush={true} className="m-3">
+                    {loading && <CenteredSpinner caption="Fetching Subjects..." />}
+                    {isError && <ErrorAlert heading="Error while fetching subjects" message={ErrorMessageHandling(isError, error)} removable={true} />}
+                    {!loading && !isError && subjects.length === 0 && (
+                        <p>No subjects found!</p>
+                    )}
+                    {!loading && !isError && subjects.length > 0 && (
+                        subjects?.map(({ assigned_teacher, id, name, students_offering }) => (
                             <Card key={id} className="mb-2">
                                 <Accordion.Item eventKey={id}>
                                     <Accordion.Header eventKey={id} className="d-flex justify-content-between align-items-center">
@@ -99,41 +127,29 @@ export const Subjects = () => {
                                 </Accordion.Item>
 
                             </Card>
-                        ))}
-                    </Accordion>
-                    <div className="d-flex justify-content-between align-items-center my-4">
-                        <Button onClick={goToPrevPage} disabled={!prevPage}>
-                            Previous
-                        </Button>
-                        <span>Page {currentPage}</span>
-                        <Button onClick={goToNextPage} disabled={!nextPage}>
-                            Next
-                        </Button>
-                    </div>
+                        ))
+                    )}
+                </Accordion>
+                <div className="d-flex justify-content-between align-items-center my-4">
+                    <Button onClick={goToPrevPage} disabled={!prevPage || loading}>
+                        Previous
+                    </Button>
+                    <span>Page {currentPage}</span>
+                    <Button onClick={goToNextPage} disabled={!nextPage || loading}>
+                        Next
+                    </Button>
+                </div>
 
-                    <p>Total Subjects: {totalSubjects}</p>
-                    <DeleteSubjectModal
-                        show={showDeleteModal}
-                        handleClose={() => setShowDeleteModal(false)}
-                        subjectId={selectedSubjectId}
-                    />
-                    <CreateSubjectModal show={showCreateModal} handleClose={() => setShowCreateModal(false)} />
-                    <UpdateSubjectModal show={showUpdateModal} handleClose={() => setShowUpdateModal(false)} subject={selectedSubjectForUpdate} />
-                </>
-            );
-        } else {
-            return (
-                <>
-                    <InputGroup>
-                        <Form.Control className="m-4" size="sm" placeholder='Enter Subject Name...' value={searchTerm} onChange={(e) => {
-                            setSearchTerm(e.target.value)
-                            setTerm(e.target.value)
-                        }} />
-                    </InputGroup>
-                    <h1>NO SUBJECTS WHERE FOUND</h1>
-                </>
-            )
-        }
+                <p>Total Subjects: {totalSubjects}</p>
+                <DeleteSubjectModal
+                    show={showDeleteModal}
+                    handleClose={() => setShowDeleteModal(false)}
+                    subjectId={selectedSubjectId}
+                />
+                <CreateSubjectModal show={showCreateModal} handleClose={() => setShowCreateModal(false)} />
+                <UpdateSubjectModal show={showUpdateModal} handleClose={() => setShowUpdateModal(false)} subject={selectedSubjectForUpdate} />
+            </>
+        )
     } return (
         <Navigate to='/dashboard/home' />
     );

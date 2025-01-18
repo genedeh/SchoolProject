@@ -1,12 +1,12 @@
 import { useState, useEffect, useContext } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
-import { SubjectsContext } from "../../../../../contexts/Subjects.contexts";
+import { useSubjects } from "../../../../../contexts/Subjects.contexts";
 import { TeacherSelectPopUp } from "../SelectPopUps/SubjectTeacherSelectPopupComponent";
 import { StudentsSelectPopUp } from "../SelectPopUps/SubjectStudentsSelectPopupComponent";
 import axios from 'axios';
 
 export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
-    const { setSubjects } = useContext(SubjectsContext);
+    const { refetchNewData } = useSubjects();
     const [name, setName] = useState('');
     const [assignedTeacher, setAssignedTeacher] = useState(null);
     const [students, setStudents] = useState([]);
@@ -14,23 +14,38 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
     const [listShow2, setListShow2] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [updated, setUpdated] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (show) {
             if (subject) {
-                setName(subject.name)
+                setName(subject.name);
                 try {
                     setAssignedTeacher(subject.assigned_teacher || '');
                 } catch (error) {
                     setAssignedTeacher(null)
                 }
+
                 setStudents(subject.students_offering);
             }
         }
     }, [show]);
 
+    const updateSubjectCloseHandler = () => {
+        setLoading(false)
+    };
+
     const handleUpdate = async (e) => {
         e.preventDefault();
+        const token = localStorage.getItem("token")
+        setUpdated(false);
+        setError(null);
+        setSuccess(null);
+
+        if (!token) {
+            throw new Error("Authentication token is missing!");
+        }
         if (name.length < 100 && name.length !== 0) {
             try {
                 const data = {
@@ -40,35 +55,44 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                         return student.id
                     }),
                 }
-                await axios.put(`api/subjects/${subject.id}/`, data)
-                    .then((response) => {
-                        setSubjects((prevSubjects) =>
-                            prevSubjects.map((subject) =>
-                                subject.id === response.data['id'] ? response.data : subject
-                            )
-                        );
+                await axios.put(`api/subjects/${subject.id}/`, data,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                )
+                    .then(() => {
+                        setSuccess('Subject updated successfully.');
+                        console.log(success);
+                        setUpdated(true);
+                        setLoading(false);
+                        updateSubjectCloseHandler();
                     });
-                setSuccess('Subject updated successfully.');
-                handleClose();
-                setSuccess(null)
-                setError(null)
+
             } catch (error) {
                 setError('Failed to update subject.');
+                setLoading(false);
             }
         } else {
-            setError("Subject Name Exceded Max Length")
+            setError('Subject Name Exceeds Max Length.');
+            setLoading(false);
         }
     };
 
     return (
         <>
-            <Modal show={show} onHide={handleClose}>
+            <Modal show={show} fullscreen scrollable onHide={() => {
+                if (!loading) {
+                    updateSubjectCloseHandler();
+                    handleClose();
+                    if (updated) {
+                        refetchNewData();
+                    }
+                }
+            }}>
                 <Modal.Header closeButton>
                     <Modal.Title>Update Subject</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    {success && <Alert variant="success">{success}</Alert>}
                     <Form >
                         <Form.Group controlId="formName">
                             <Form.Label>Subject Name</Form.Label>
@@ -118,10 +142,16 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                         </Form.Group>
 
                     </Form>
+                    <hr />
+                    {error && <Alert variant="danger">{error}</Alert>}
+                    {success && <Alert variant="success">{success}</Alert>}
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={handleUpdate}>
-                        Update Subject
+                    <Button variant="primary" onClick={(e) => {
+                        setLoading(true);
+                        handleUpdate(e);
+                    }} disabled={loading} type='submit'>
+                        {loading ? 'Updating subject...' : 'Update Subject'}
                     </Button>
                 </Modal.Footer>
             </Modal>

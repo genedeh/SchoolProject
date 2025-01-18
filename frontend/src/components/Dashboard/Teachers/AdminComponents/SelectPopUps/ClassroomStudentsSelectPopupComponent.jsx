@@ -96,7 +96,7 @@ export const ClassroomStudentsSelectPopUp = ({ show, handleClose, selectedStuden
                             }} selectedDisplay={selectedOptions.includes(student.id) ? 'border-info' : ''} />
                         ))) : (
                             <>
-                                <CenteredSpinner caption="Fetching Students"/>
+                                <CenteredSpinner caption="Fetching Students..."/>
                             </>
                         )}
 

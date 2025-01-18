@@ -1,11 +1,11 @@
-import { useState, useContext, useEffect } from "react";
+import { useState,  useEffect } from "react";
 import { Button, Row, Col, Card, Badge, Alert } from "react-bootstrap";
-import { SubjectsContext } from "../../../../../contexts/Subjects.contexts";
+import { useSubjects } from "../../../../../contexts/Subjects.contexts";
 import axios from "axios";
 
 
 export const SubjectSelectStep = ({ formData, updateFormData, nextStep, prevStep }) => {
-    const { subjects, goToPrevPage, goToNextPage, currentPage, nextPage, prevPage, setTerm } = useContext(SubjectsContext);
+    const { subjects, goToPrevPage, goToNextPage, currentPage, nextPage, prevPage, setTerm } = useSubjects();
     const [error, setError] = useState(null);
     const [classSubjects, setClassSubjects] = useState(formData.subjects || []);
 
@@ -30,7 +30,15 @@ export const SubjectSelectStep = ({ formData, updateFormData, nextStep, prevStep
     }
 
     const fetchClassSubject = async () => {
-        await axios.get(`/api/classrooms/${formData.classes[0]}`)
+        const token = localStorage.getItem("token");
+        if (!token) {
+            throw new Error("Authentication token is missing!");
+        }
+        await axios.get(`/api/classrooms/${formData.classes[0]}`,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        )
             .then(async response => {
                 const classroomName = response.data["name"]
                 setTerm(classroomName)
