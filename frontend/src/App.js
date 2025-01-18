@@ -11,9 +11,9 @@ import TeacherProfile from './components/Dashboard/Teachers/Profile.components';
 import { AddUser } from './components/Dashboard/Teachers/AdminComponents/AddUser.components';
 import  {AdminPrivateRoute, PrivateRoute} from './components/Routes/PrivateRoute.components';
 import { Subjects } from './components/Dashboard/Teachers/AdminComponents/Subjects.components';
-import { AssignedSubjects } from './components/Dashboard/Teachers/BasicComponents/AssignedSubject.components';
+import { AssignedSubjects } from './components/Dashboard/Teachers/TeacherComponents/AssignedSubject.components';
 import { Classrooms } from './components/Dashboard/Teachers/AdminComponents/Classrooms.components';
-import { AssignedClassrooms } from './components/Dashboard/Teachers/BasicComponents/AssignedClassroom.components';
+import { AssignedClassrooms } from './components/Dashboard/Teachers/TeacherComponents/AssignedClassroom.components';
 // axios.defaults.baseURL = 'https://schoolproject-6io4.onrender.com';
 axios.defaults.baseURL = 'http://127.0.0.1:8000/';
 
