@@ -2,46 +2,11 @@ import { useContext, useEffect, useState } from 'react';
 import { Card, Image, Button, Container, Row, Col, Badge, ListGroup } from 'react-bootstrap';
 import { GenderFemale, GenderMale, GeoAlt, Telephone } from 'react-bootstrap-icons';
 import { UserContext } from '../../../contexts/User.contexts';
-import { UsersListContext } from '../../../contexts/UsersList.contexts';
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 
-const ClassMateCard = (({ classMate }) => {
-    const { username, profile_picture, gender } = classMate
-    return (
-        <ListGroup.Item >
-            <div className="d-flex align-items-center">
-                {profile_picture ? (<Image
-                    src={profile_picture.includes('http://') ? (profile_picture) : (`http://127.0.0.1:8000/media/${profile_picture}`)}
-                    roundedCircle
-                    style={{ width: '35px', height: '35px', objectFit: 'cover' }}
-                    className="me-3" />)
-                    : (<Image
-                        src="http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg"
-                        roundedCircle
-                        style={{ width: '35px', height: '35px', objectFit: 'cover' }}
-                        className="me-3" />)
-                }
-                <div>
-                    <div className="fw-bold">{username.replace('_', ' ')}</div>
-                    <div className="d-flex align-items-center mt-2">
-                        {gender === 'male' ?
-                            (<Button className="me-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
-                                <GenderMale />
-                            </Button>) :
-                            (<Button className="me-2" size="sm" style={{ 'backgroundColor': 'pink', 'borderColor': 'white' }}>
-                                <GenderFemale />
-                            </Button>)}
-                    </div>
-                </div>
-            </div>
-            <hr />
-        </ListGroup.Item>
-    )
-})
 const StudentProfile = () => {
     const { currentUser } = useContext(UserContext);
-    const { usersList } = useContext(UsersListContext);
     const [offeringSubjects, setOfferingSubjects] = useState([]);
     const { first_name, last_name, username, address, phone_number, email, profile_picture, birth_date, gender, user_class, offering_subjects } = currentUser;
     const fetchSubjects = async () => {

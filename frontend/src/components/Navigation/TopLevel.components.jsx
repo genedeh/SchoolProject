@@ -1,12 +1,10 @@
 import { Stack, Form, Image, Button, InputGroup } from 'react-bootstrap'
 import { UserContext } from '../../contexts/User.contexts';
 import { useContext, useState } from 'react';
-import { UsersListContext } from '../../contexts/UsersList.contexts';
 import { Search } from 'react-bootstrap-icons';
 
 const TopLevel = ({ searchHandler, term }) => {
     const { currentUser, setCurrentUser } = useContext(UserContext);
-    const { setUsersList } = useContext(UsersListContext);
     const { profile_picture } = currentUser;
     const [searchTerm, setSearchTerm] = useState(term);
 
@@ -16,7 +14,6 @@ const TopLevel = ({ searchHandler, term }) => {
     const logoutHandler = () => {
         localStorage.removeItem('token');
         setCurrentUser(null);
-        setUsersList([]);
     }
     return (
         <>

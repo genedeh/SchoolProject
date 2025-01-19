@@ -83,9 +83,19 @@ class CreateAndSearchUserView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         username = self.request.query_params.get('username', None)
-        if username is not None:
-            return User.objects.filter(username__icontains=username)
-        return User.objects.all()
+        # Initialize filters
+        filters = {}
+
+        if username:
+            # Case-insensitive username search
+            filters['username__icontains'] = username
+
+        queryset = User.objects.filter(**filters)
+
+        if not queryset.exists():
+            raise NotFound(detail="No such user was found")
+        
+        return queryset
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
