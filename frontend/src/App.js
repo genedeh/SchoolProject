@@ -14,8 +14,8 @@ import { Subjects } from './components/Dashboard/Teachers/AdminComponents/Subjec
 import { AssignedSubjects } from './components/Dashboard/Teachers/TeacherComponents/AssignedSubject.components';
 import { Classrooms } from './components/Dashboard/Teachers/AdminComponents/Classrooms.components';
 import { AssignedClassrooms } from './components/Dashboard/Teachers/TeacherComponents/AssignedClassroom.components';
-// axios.defaults.baseURL = 'https://schoolproject-6io4.onrender.com';
-axios.defaults.baseURL = 'http://127.0.0.1:8000/';
+axios.defaults.baseURL = 'https://schoolproject-6io4.onrender.com';
+// axios.defaults.baseURL = 'http://127.0.0.1:8000/';
 
 function App() {
   return (
