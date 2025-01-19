@@ -1,23 +1,12 @@
 import { Card, Button, Col, Image, Modal, Row, Badge } from 'react-bootstrap';
 import { GenderFemale, GenderMale } from 'react-bootstrap-icons';
 import { BsThreeDots, BsArrowLeft, BsArrowReturnRight } from "react-icons/bs";
-import { useState, useEffect, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { UserContext } from '../../contexts/User.contexts';
 
-const ProfileModal = ({ user, show, handleClose }) => {
-    const { username, is_student_or_teacher, gender, profile_picture_url, classes, classrooms, birth_date, subjects, subject, phone_number, email, address, id } = user;
+const ProfileModal = ({ user, show, handleClose, className, classroomName }) => {
+    const { username, is_student_or_teacher, gender, profile_picture_url, birth_date, subjects, subject, phone_number, email, address, id } = user;
     const current_date = new Date();
-    let className = "None"
-    let classroomName = "None"
-    useEffect(() => {
-        if (classes.length !== 0) {
-            const dummy = classes[0]
-            className = dummy.name
-        }
-        if (classrooms) {
-            classroomName = classrooms.name
-        }
-    }, [])
 
     return (
         <Modal show={show} onHide={handleClose} centered size="lg" style={{ 'borderRadius': '1rem' }}>
@@ -148,7 +137,7 @@ const SearchedProfileCard = ({ user }) => {
                     </Card.Body>
                 </Card>
             </Col>
-            <ProfileModal user={user} handleClose={handleClose} show={show} />
+            <ProfileModal user={user} handleClose={handleClose} show={show} className={className} classroomName={classroomName} />
         </>
     );
 }

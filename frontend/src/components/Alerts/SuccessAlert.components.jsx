@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import { CheckCircleFill } from 'react-bootstrap-icons';
 import './Alert.styles.css';
 
@@ -17,21 +17,20 @@ export const SuccessAlert = ({ message, heading, children }) => {
             keyboard={false}
             className="custom-alert-modal"
         >
+            <Modal.Header className='alert-text-success alert-text' closeButton>
+                <h5 >{heading}</h5>
+            </Modal.Header>
             <Modal.Body className="custom-alert-body">
                 <div className="alert-content">
                     <div className="alert-icon-success">
                         <CheckCircleFill />
                     </div>
                     <div className="alert-text-success alert-text">
-                        <h5>{heading}</h5>
                         <p>{message}</p>
                         <p>{children}</p>
                     </div>
                 </div>
             </Modal.Body>
-            <Button variant="outline-success" onClick={onClose} className="close-btn">
-                Close
-            </Button>
         </Modal>
     )
 };

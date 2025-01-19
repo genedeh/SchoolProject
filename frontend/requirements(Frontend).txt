@@ -1,4 +1,5 @@
 axios
 bootstrap
 react-bootstrap
+react-query
 react-bootstrap-icons

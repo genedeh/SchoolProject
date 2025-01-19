@@ -1,39 +1,64 @@
 import { UserContext } from "../../../../contexts/User.contexts";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
+import { useQuery } from "react-query";
 import { Navigate } from "react-router-dom";
 import { Card, Button, ListGroup, Accordion } from 'react-bootstrap';
 import { GenderFemale, GenderMale } from "react-bootstrap-icons";
+import { ErrorAlert } from "../../../Alerts/ErrorAlert.components";
+import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
+import { CenteredSpinner } from "../../../Loading/CenteredSpinner.components"
 import axios from "axios";
 
 
-export const AssignedClassrooms = () => {
-    const { currentUser } = useContext(UserContext);
-    const [classroom, setClassroom] = useState([])
 
-    const fetchClassroom = async () => {
-        await axios.get(`/api/classrooms/?name=${currentUser.user_class}`)
-            .then(response => {
-                const data = response.data
-                console.log(data)
-                setClassroom(data.results)
-            })
-    }
-    useEffect(() => {
-        if (currentUser.user_class) {
-            fetchClassroom();
-        };
-    }, [currentUser])
+export const AssignedSubjects = () => {
+    const { currentUser } = useContext(UserContext);
+
+    const fetchSubjects = async () => {
+        const token = localStorage.getItem("token");
+        // console.log({ "subject_ids": currentUser["teaching_subjects"] })
+
+        if (!token) {
+            throw new Error("Authentication token is missing!");
+        }
+
+        const response = await axios.post(
+            "api/get-subjects/", { "subject_ids": currentUser["teaching_subjects"] },
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        );
+        return response.data;
+    };
+    const { data, error, isError, isLoading } = useQuery(
+        ["assigned_subjects", currentUser.teaching_subjects], // Query key
+        fetchSubjects,
+        {
+            enabled: !!currentUser["teaching_subjects"],
+            keepPreviousData: true,
+            refetchOnWindowFocus: true,
+            retry: 3,
+            staleTime: 1000 * 60 * 5,
+            cacheTime: 1000 * 60 * 10,
+        }
+    );
+
 
 
     if (!currentUser.is_student_or_teacher && currentUser && !currentUser.is_admin) {
-        if (classroom.length !== 0) {
-            return (
-                <div>
-                    <center>
-                        <hr /> <h3>Assigned Classrooms</h3><hr />
-                    </center>
-                    <Accordion flush={true} className="m-3">
-                        {classroom.map(({ id, name, students }) => (
+        return (
+            <div>
+                <center>
+                    <hr /> <h3>Assigned Subjects</h3><hr />
+                </center>
+                <Accordion flush={true} className="m-3">
+                    {isLoading && <CenteredSpinner caption="Fetching Teaching Subjects..." />}
+                    {isError && <ErrorAlert heading="Error while fetching teaching Subjects" message={ErrorMessageHandling(isError, error)} removable={true} />}
+                    {!isLoading && !isError && data?.length === 0 && (
+                        <p>No Teaching Subjects found!</p>
+                    )}
+                    {!isLoading && !isError && data.length > 0 && (
+                        data?.map(({ id, name, students_offering }) => (
                             <Card key={id} className="mb-2">
                                 <Accordion.Item eventKey={id}>
                                     <Accordion.Header eventKey={id} className="d-flex justify-content-between align-items-center">
@@ -45,7 +70,7 @@ export const AssignedClassrooms = () => {
                                     <Accordion.Body>
                                         <hr /><h5>Students</h5><hr />
                                         <ListGroup>
-                                            {students && students.length !== 0 ? (students.map(({ id, username, gender, profile_picture }) => (
+                                            {students_offering.length !== 0 ? (students_offering.map(({ id, username, gender, profile_picture }) => (
                                                 <ListGroup.Item key={id} className="container">
                                                     <div className="d-flex align-items-center">
                                                         <div className="me-3">
@@ -73,13 +98,12 @@ export const AssignedClassrooms = () => {
                                 </Accordion.Item>
 
                             </Card>
-                        ))}
-                    </Accordion>
-                </div>
-            )
-        } else {
-            return (< h1 className="text-center"> No assigned classrooms where found</h1 >)
-        }
+                        ))
+                    )}
+                </Accordion>
+            </div>
+        )
+
     } return (
         <Navigate to='/dashboard/home' />
     );

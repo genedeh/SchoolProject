@@ -1,62 +1,87 @@
-import { createContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { createContext, useContext, useState } from "react";
+import { useQuery } from "react-query";
+import axios from "axios";
 
-export const UsersListContext = createContext();
+const UsersContext = createContext();
 
-export const UsersListProvider = ({ children }) => {
-    const [usersList, setUsersList] = useState([]);
-    const [refresh, setRefresh] = useState(false)
+// Custom hook for accessing the context
+export const useUsers = () => useContext(UsersContext);
+
+export const UsersProvider = ({ children }) => {
     const [currentPage, setCurrentPage] = useState(1); // Current page
-    const [term, setTerm] = useState("");
-    const [nextPage, setNextPage] = useState(null);   // URL of next page
-    const [prevPage, setPrevPage] = useState(null);   // URL of previous page
-    const [totalUsers, setTotalUsers] = useState(0);  // Total number of users
-    const [loading, setLoading] = useState(false);    // Loading state
+    const [term, setTerm] = useState(""); // Search term
 
-    // Functions to handle pagination
+    // Function to fetch classrooms
+    const fetchUsers = async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            throw new Error("Authentication token is missing!");
+        }
+
+        const response = await axios.get(
+            `/api/users/?page=${currentPage}&username=${term || ''}`,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        );
+        return response.data;
+    };
+
+    // Using React Query for data fetching
+    const { data, error, isError, isLoading, isFetching, refetch } = useQuery(
+        ["users", currentPage, term], // Query key
+        fetchUsers,
+        {
+            keepPreviousData: true,
+            retry: 3,
+            staleTime: 1000 * 60 * 5,
+            cacheTime: 1000 * 60 * 10,
+        }
+    );
+    // Pagination handlers
     const goToNextPage = () => {
-        if (nextPage) {
-            setCurrentPage(currentPage + 1);
+        if (data?.next) {
+            setCurrentPage((prev) => prev + 1);
         }
     };
 
     const goToPrevPage = () => {
-        if (prevPage) {
-            setCurrentPage(currentPage - 1);
+        if (data?.previous) {
+            setCurrentPage((prev) => Math.max(prev - 1, 1));
         }
     };
+
+    const handleSearch = () => {
+        setCurrentPage(1); // Reset to the first page on search
+        refetch(); // Refetch data based on the new term
+    };
+
+    const refetchNewData = () => {
+        setCurrentPage(1); // Reset to the first page on search
+        setTerm("")
+        refetch(); // Refetch data based on the new term
+    };
+
     const value = {
-        usersList, setUsersList, refresh, setRefresh, currentPage, setCurrentPage,
-        totalUsers,
-        nextPage,
-        prevPage,
-        loading,
+        users: data?.results || [],
+        totalUsers: data?.count || 0,
+        currentPage,
+        nextPage: data?.next,
+        prevPage: data?.previous,
+        loading: isLoading || isFetching,
+        usersError: error,
+        usersIsError: isError,
         goToNextPage,
-        goToPrevPage, setTerm
+        goToPrevPage,
+        setTerm,
+        handleSearch,
+        refetchNewData,
     };
 
-    const fetchUserProfilesList = async (page = 1) => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            setLoading(true);
-            console.log(term)
-            try {
-                const response = await axios.get(`/api/users/?page=${page}&username=${term}`)
-                const data = await response.data;
-                setUsersList(data.results);
-                setNextPage(data.next);
-                setPrevPage(data.previous);
-                setTotalUsers(data.count);
-            } catch (err) {
-                console.error('There was an error fetching the items!', err);
-            }
-            setLoading(false);
-        }
-    };
-    useEffect(() => {
-        fetchUserProfilesList(currentPage);
-    }, [refresh, currentPage, term]);
-
-
-    return <UsersListContext.Provider value={value}>{children}</UsersListContext.Provider>;
-}
+    return (
+        <UsersContext.Provider value={value}>
+            {children}
+        </UsersContext.Provider>
+    );
+};

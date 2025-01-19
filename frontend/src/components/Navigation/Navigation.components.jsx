@@ -1,16 +1,20 @@
 import { useContext, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { UserContext } from "../../contexts/User.contexts";
-import { Container, Row, Col, Button, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 import TopLevel from "./TopLevel.components";
 import { StudentSidebar, TeacherSidebar } from "./Side_Navigation_Bar/SideBar.components";
-import { UsersListContext } from "../../contexts/UsersList.contexts";
+import { useUsers } from "../../contexts/UsersList.contexts";
 import SearchedProfileCard from "../Dashboard/SearchedProfileCard.components";
 import { ErrorAlert } from "../Alerts/ErrorAlert.components";
 import { WarningAlert } from "../Alerts/WarningAlert.components";
+import { ErrorMessageHandling } from "../../utils/ErrorHandler.utils";
 import { LoadingOverlay } from "../Loading/LoadingOverlay.components";
+import { CenteredSpinner } from "../Loading/CenteredSpinner.components";
 
-const MainContent = ({ searchTerm, usersList, totalUsers, currentPage, prevPage, nextPage, goToPrevPage, goToNextPage, loading }) => {
+
+const MainContent = ({ searchTerm, users, totalUsers, currentPage, prevPage, nextPage, goToPrevPage, goToNextPage, loading, usersError, usersIsError }) => {
+    console.log(users);
     if (searchTerm.length === 0) {
         return <Outlet />;
     }
@@ -18,29 +22,25 @@ const MainContent = ({ searchTerm, usersList, totalUsers, currentPage, prevPage,
     return (
         <Container fluid>
             <Row className='m-2'>
-                {loading ? (
-                    <div className="d-flexalign-items-center my-4">
-                        <Spinner className="m-4" />
-                    </div>)
-                    : (
-                        usersList.length !== 0 ? ((
-                            usersList.map((user) => (
-                                <SearchedProfileCard key={user.id} user={user} />
-                            ))
-                        )) : (
-                            <ErrorAlert
-                                message={`We couldn't find any results matching user "${searchTerm}".`}
-                                heading="Oops! No Results Found"
-                            />
-                        )
-
-                    )}
+                {loading && <CenteredSpinner caption="Fetching Users..." />}
+                {usersIsError && <ErrorAlert heading="Error while fetching users" message={ErrorMessageHandling(usersIsError, usersError)} removable={true} />}
+                {!loading && !usersIsError && users.length === 0 && (
+                    <p>No users found!</p>
+                )}
+                {!loading && !usersIsError && users.length > 0 && (
+                    users.map((user) => (<SearchedProfileCard key={user.id} user={user} />))
+                )}
+                
                 <div className="d-flex justify-content-between align-items-center my-4">
-                    <Button onClick={goToPrevPage} disabled={!prevPage}>Previous</Button>
+                    <Button onClick={goToPrevPage} disabled={!prevPage || loading}>
+                        Previous
+                    </Button>
                     <span>Page {currentPage}</span>
-                    <Button onClick={goToNextPage} disabled={!nextPage}>Next</Button>
+                    <Button onClick={goToNextPage} disabled={!nextPage || loading}>
+                        Next
+                    </Button>
                 </div>
-                <p>Total Users: {totalUsers}</p>
+                    <p>Total Users: {totalUsers}</p>
             </Row>
         </Container>
     );
@@ -52,7 +52,7 @@ const Sidebar = ({ currentUser }) => (
     </Col>
 );
 
-const ContentWrapper = ({ currentUser, searchTerm, usersList, totalUsers, currentPage, prevPage, nextPage, goToPrevPage, goToNextPage, loading, SearchHandler }) => (
+const ContentWrapper = ({ currentUser, searchTerm, users, totalUsers, currentPage, prevPage, nextPage, goToPrevPage, goToNextPage, loading, SearchHandler, usersError, usersIsError }) => (
     <Container fluid>
         <Row>
             <Sidebar currentUser={currentUser} />
@@ -60,7 +60,7 @@ const ContentWrapper = ({ currentUser, searchTerm, usersList, totalUsers, curren
                 <TopLevel searchHandler={SearchHandler} term={searchTerm} />
                 <MainContent
                     searchTerm={searchTerm}
-                    usersList={usersList}
+                    users={users}
                     totalUsers={totalUsers}
                     currentPage={currentPage}
                     prevPage={prevPage}
@@ -68,6 +68,8 @@ const ContentWrapper = ({ currentUser, searchTerm, usersList, totalUsers, curren
                     goToPrevPage={goToPrevPage}
                     goToNextPage={goToNextPage}
                     loading={loading}
+                    usersIsError={usersIsError}
+                    usersError={usersError}
                 />
             </Col>
         </Row>
@@ -84,7 +86,7 @@ const ErrorDisplay = ({ error }) => {
     }
 
     return (
-        <ErrorAlert heading="User Data Fetch Error" message="We encountered an issue while retrieving your user information. Please try again shortly.">
+        <ErrorAlert heading="User Data Fetch Error" message="We encountered an issue while retrieving your user information. Please try again shortly." removable={true}>
             <a href='/' className='me-3'>GO TO LOGIN PAGE</a>
         </ErrorAlert>
     );
@@ -94,19 +96,24 @@ const Navigation = () => {
     const { currentUser, error } = useContext(UserContext);
     const [searchTerm, setSearchTerm] = useState('');
     const {
-        usersList,
+        users,
         currentPage,
-        totalUsers,
         nextPage,
         prevPage,
+        loading,
+        usersError,
+        usersIsError,
         goToNextPage,
-        goToPrevPage, setCurrentPage, setTerm, loading
-    } = useContext(UsersListContext);
+        goToPrevPage,
+        setTerm,
+        totalUsers,
+        handleSearch,
+    } = useUsers();
 
-    const SearchHandler = (e) => {
-        setSearchTerm(e.target.value);
-        setTerm(e.target.value.replace(/ /g, ""));
-        setCurrentPage(1);
+    const SearchHandler = (v) => {
+        setSearchTerm(v);
+        setTerm(v);
+        // handleSearch();
     }
 
     if (!currentUser) {
@@ -117,7 +124,7 @@ const Navigation = () => {
         <ContentWrapper
             currentUser={currentUser}
             searchTerm={searchTerm}
-            usersList={usersList}
+            users={users}
             totalUsers={totalUsers}
             currentPage={currentPage}
             prevPage={prevPage}
@@ -125,6 +132,8 @@ const Navigation = () => {
             goToPrevPage={goToPrevPage}
             goToNextPage={goToNextPage}
             loading={loading}
+            usersError={usersError}
+            usersIsError={usersIsError}
             SearchHandler={SearchHandler}
         />
     );

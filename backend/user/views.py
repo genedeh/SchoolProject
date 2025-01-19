@@ -1,5 +1,6 @@
 from rest_framework import generics
 from django.contrib.auth import authenticate
+from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User
@@ -17,10 +18,10 @@ class LoginView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
         password = request.data.get('password')
-        user = authenticate(username=username,password=password)
+        user = authenticate(username=username, password=password)
         if user is None:
             try:
-              user = User.objects.get(username=username, password=password)
+                user = User.objects.get(username=username, password=password)
             except:
                 return Response({'error': 'Invalid Credentials'}, status=401)
         refresh = RefreshToken.for_user(user)
@@ -28,7 +29,8 @@ class LoginView(generics.GenericAPIView):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }, status=200)
-        
+
+
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
@@ -40,15 +42,15 @@ class UserProfileView(APIView):
             'first_name': user.first_name,
             'last_name': user.last_name,
             'address': user.address,
-            'username':user.username,
-            'phone_number':user.phone_number,
-            'birth_date':user.birth_date,
+            'username': user.username,
+            'phone_number': user.phone_number,
+            'birth_date': user.birth_date,
             'profile_picture': None,
             'email': user.email,
             'gender': user.gender,
             'is_student_or_teacher': user.is_student_or_teacher,
             'user_class': "",
-            'is_admin':user.is_superuser,
+            'is_admin': user.is_superuser,
             'teaching_subjects': [],
             'offering_subjects': []
         }
@@ -56,71 +58,119 @@ class UserProfileView(APIView):
         if user_data['is_student_or_teacher']:
             dummy_value = list(user.classes.all().values_list('id', flat=True))
             if dummy_value:
-              class_id = dummy_value[0]
-              user_data.update({'user_class': ClassRoom.objects.get(id=int(class_id)).name})
-            user_data.update({'offering_subjects':list(user.subjects.all().values_list('id', flat=True)) })
+                class_id = dummy_value[0]
+                user_data.update(
+                    {'user_class': ClassRoom.objects.get(id=int(class_id)).name})
+            user_data.update({'offering_subjects': list(
+                user.subjects.all().values_list('id', flat=True))})
 
         else:
             try:
-              user_data.update({'user_class': user.classrooms.name})
+                user_data.update({'user_class': user.classrooms.name})
             except Exception as e:
                 user_data.update({'user_class': None})
-            user_data.update({'teaching_subjects':list(user.subject.all().values_list('id', flat=True)) })
+            user_data.update({'teaching_subjects': list(
+                user.subject.all().values_list('id', flat=True))})
         if user.profile_picture:
             user_data.update({"profile_picture": user.profile_picture.url})
         return Response(user_data, status=200)
-    
+
+
 class CreateAndSearchUserView(generics.ListCreateAPIView):
     parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [IsAuthenticated]
     serializer_class = serializers.UserListSerializer
+
     def get_queryset(self):
         username = self.request.query_params.get('username', None)
-        if username is not None:
-            return User.objects.filter(username__icontains=username)
-        return User.objects.all()
-    
+        # Initialize filters
+        filters = {}
+
+        if username:
+            # Case-insensitive username search
+            filters['username__icontains'] = username
+
+        queryset = User.objects.filter(**filters)
+
+        if not queryset.exists():
+            raise NotFound(detail="No such user was found")
+        
+        return queryset
+
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return serializers.UserListSerializer
         elif self.request.method == 'POST':
             return serializers.UserCreateSerializer
-        
+
     def post(self, request, *args, **kwargs):
         serializer = serializers.UserCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=201)
         return Response(serializer.errors, status=400)
-        
+
+
 class QuickUserViewList(generics.ListAPIView):
     serializer_class = serializers.QuickUserViewSerializer
+    permission_classes = [IsAuthenticated]
+
     def get_queryset(self):
+        # Extract query parameters
         teacher = self.request.query_params.get('T', None)
         student = self.request.query_params.get('S', None)
         no_classroom = self.request.query_params.get('N', None)
         username = self.request.query_params.get('username', None)
+
+        # Initialize filters
+        filters = {}
+
+        # Apply filters based on query params
         if teacher is not None:
+            # Assuming True means teacher
+            filters['is_student_or_teacher'] = False
             if no_classroom is not None:
-                if username is not None:
-                  return User.objects.filter(username__icontains=username, is_student_or_teacher=False, classrooms=None)
-                return User.objects.filter(is_student_or_teacher=False, classrooms=None)
-            else:
-                if username is not None:
-                  return User.objects.filter(username__icontains=username, is_student_or_teacher=False)
-                return User.objects.filter(is_student_or_teacher=False)
+                filters['classrooms'] = None  # Students without classrooms
         elif student is not None:
+            # Assuming True means student
+            filters['is_student_or_teacher'] = True
             if no_classroom is not None:
-                if username is not None:
-                  return User.objects.filter(username__icontains=username, is_student_or_teacher=True, classes=None)
-                return User.objects.filter(is_student_or_teacher=True, classes=None)
-            else:
-                if username is not None:
-                  return User.objects.filter(username__icontains=username, is_student_or_teacher=True)
-                return User.objects.filter(is_student_or_teacher=True)
-        return User.objects.all()
+                filters['classes'] = None  # Teachers without classrooms
+
+        if username:
+            # Case-insensitive username search
+            filters['username__icontains'] = username
+
+        # Get queryset with applied filters
+        print(filters)
+        queryset = User.objects.filter(**filters)
+
+        # Handle empty queryset scenario
+        if not queryset.exists():
+            error_message = self._generate_error_message(filters)
+            raise NotFound(detail=error_message)
+
+        return queryset
+
+    def _generate_error_message(self, filters):
+        """
+        Helper function to generate appropriate error messages based on filters.
+        """
+        if filters.get('is_student_or_teacher') is True:
+            if 'classes' in filters:
+                return "No teachers found without a classroom."
+            elif 'classrooms' in filters:
+                return "No students found without a classroom."
+            return "No users found matching the specified teacher/student filter."
+        elif filters.get('is_student_or_teacher') is False:
+            return "No users found who are not students or teachers."
+        elif 'username__icontains' in filters:
+            return f"No users found with username matching '{filters['username__icontains']}'."
+        return "No users found with the given filters."
+
 
 class UpdateAndDeleteUserView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
     queryset = User.objects.all()
     serializer_class = serializers.UserUpdateSerializer
     lookup_field = 'pk'
-

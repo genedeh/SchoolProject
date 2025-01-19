@@ -80,15 +80,6 @@
   margin-bottom: 5px;
 }
 
-/* Close button styling */
-.close-btn {
-  margin-top: 10px;
-  font-weight: bold;
-  color: #ff4c4c;
-  border-color: #ff4c4c;
-  padding: 8px 20px;
-  border-radius: 8px;
-}
 
 /* Animation */
 @keyframes fadeIn {

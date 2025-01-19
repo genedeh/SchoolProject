@@ -1,58 +1,88 @@
-import { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
+import { useQuery } from "react-query";
 import axios from "axios";
 
-export const ClassroomsContext = createContext();
+const ClassroomsContext = createContext();
+
+// Custom hook for accessing the context
+export const useClassrooms = () => useContext(ClassroomsContext);
 
 export const ClassroomsProvider = ({ children }) => {
-    const [classrooms, setClassrooms] = useState([]);
     const [currentPage, setCurrentPage] = useState(1); // Current page
-    const [term, setTerm] = useState("");
-    const [nextPage, setNextPage] = useState(null);   // URL of next page
-    const [prevPage, setPrevPage] = useState(null);   // URL of previous page
-    const [totalClassrooms, setTotalClassrooms] = useState(0);  // Total number of users
-    const [loading, setLoading] = useState(false);    // Loading state
+    const [term, setTerm] = useState(""); // Search term
 
-    // Functions to handle pagination
+    // Function to fetch classrooms
+    const fetchClassrooms = async () => {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            throw new Error("Authentication token is missing!");
+        }
+
+        const response = await axios.get(
+            `/api/classrooms/?page=${currentPage}&name=${term}`,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        );
+        return response.data;
+    };
+
+    // Using React Query for data fetching
+    const { data, error, isError, isLoading, isFetching, refetch } = useQuery(
+        ["classrooms", currentPage, term], // Query key
+        fetchClassrooms,
+        {
+            keepPreviousData: true,
+            retry: 3,
+            staleTime: 1000 * 60 * 5,
+            cacheTime: 1000 * 60 * 10,
+        }
+    );
+
+    // Pagination handlers
     const goToNextPage = () => {
-        if (nextPage) {
-            setCurrentPage(currentPage + 1);
+        if (data?.next) {
+            setCurrentPage((prev) => prev + 1);
         }
     };
 
     const goToPrevPage = () => {
-        if (prevPage) {
-            setCurrentPage(currentPage - 1);
+        if (data?.previous) {
+            setCurrentPage((prev) => Math.max(prev - 1, 1));
         }
     };
-    const value = {
-        classrooms, setClassrooms, currentPage, setCurrentPage,
-        totalClassrooms,
-        nextPage,
-        prevPage,
-        loading,
-        goToNextPage,
-        goToPrevPage, setTerm
-    };
-    const fetchClassrooms = async (page = 1) => {
-        const token = localStorage.getItem('token')
-        if (token) {
-            setLoading(true);
-            try {
-                const response = await axios.get(`api/classrooms/?page=${page}&name=${term}`)
-                const data = await response.data;
-                setClassrooms(data.results);
-                setNextPage(data.next);
-                setPrevPage(data.previous);
-                setTotalClassrooms(data.count);
-            } catch (err) {
-                console.log('There was an error fetching the items!', err)
-            }
-            setLoading(false);
-        }
-    }
 
-    useEffect(() => {
-        fetchClassrooms(currentPage);
-    }, [currentPage, term])
-    return <ClassroomsContext.Provider value={value}>{children}</ClassroomsContext.Provider>
-}
+    const handleSearch = () => {
+        setCurrentPage(1); // Reset to the first page on search
+        refetch(); // Refetch data based on the new term
+    };
+
+    const refetchNewData = () => {
+        setCurrentPage(1); // Reset to the first page on search
+        setTerm("")
+        refetch(); // Refetch data based on the new term
+    };
+
+    const value = {
+        classrooms: data?.results || [],
+        totalClassrooms: data?.count || 0,
+        currentPage,
+        nextPage: data?.next,
+        prevPage: data?.previous,
+        loading: isLoading || isFetching,
+        error,
+        isError,
+        goToNextPage,
+        goToPrevPage,
+        setTerm,
+        handleSearch,
+        refetchNewData,
+    };
+
+    return (
+        <ClassroomsContext.Provider value={value}>
+            {children}
+        </ClassroomsContext.Provider>
+    );
+};

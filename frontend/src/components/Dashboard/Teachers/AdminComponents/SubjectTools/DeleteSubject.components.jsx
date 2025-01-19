@@ -1,66 +1,60 @@
-import { Modal, Button } from 'react-bootstrap';
-import { useState, useContext } from 'react';
-import { SubjectsContext } from '../../../../../contexts/Subjects.contexts';
+import { Modal, Button, Alert } from 'react-bootstrap';
+import { useState } from 'react';
+import { useSubjects } from '../../../../../contexts/Subjects.contexts';
 import axios from 'axios';
 
 export const DeleteSubjectModal = ({ show, handleClose, subjectId }) => {
-    const [deleteStatus, setDeleteStatus] = useState(null);
-    const { subjects, setSubjects } = useContext(SubjectsContext);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const { refetchNewData } = useSubjects();
 
     const handleDelete = async () => {
+        const token = localStorage.getItem("token")
+        setError(null);
+        if (!token) {
+            throw new Error("Authentication token is missing!");
+        }
         try {
-            await axios.delete(`api/subjects/${subjectId}/`);
-            setDeleteStatus("success");
-            setSubjects(subjects.filter(subject => subject.id !== subjectId));
+            setLoading(true);
+            await axios.delete(`api/subjects/${subjectId}/`,
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            );
+            handleClose();
+            setError(null);
+            refetchNewData();
         } catch (error) {
-            setDeleteStatus("failed");
+            setError('Failed to delete subject');
+        } finally {
+            setLoading(false);
         }
     };
 
 
     return (
         <>
-            <Modal show={show} onHide={() => {
-                handleClose()
-                setDeleteStatus(null);
-            }}>
-                {deleteStatus == null ?
-                    (
-                        <>
-                            <Modal.Header closeButton>
-                                <Modal.Title>Delete Subject</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                                Are you sure you want to delete this subject?
-                            </Modal.Body>
-                            <Modal.Footer>
-                                <Button variant="secondary" onClick={handleClose}>
-                                    Cancel
-                                </Button>
-                                <Button variant="danger" onClick={handleDelete}>
-                                    Delete
-                                </Button>
-                            </Modal.Footer>
-                        </>) :
-                    (<>
-                        <Modal.Header closeButton>
-                            <Modal.Title>{deleteStatus === "success" ? "Success" : "Error"}</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            {deleteStatus === "success"
-                                ? "The subject was deleted successfully."
-                                : "Failed to delete the subject."}
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="primary" onClick={() => {
-                                handleClose()
-                                setDeleteStatus(null);
-                            }}>
-                                Close
-                            </Button>
-                        </Modal.Footer>
-                    </>)}
-
+            <Modal show={show}>
+                {error && <Alert variant="danger m-2" dismissible onClose={() => setError(null)}>{error}</Alert>}
+                <Modal.Header >
+                    <Modal.Title>Delete Subject</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Are you sure you want to delete this subject?
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => {
+                        if (!loading) {
+                            setError(null);
+                            handleClose();
+                        }
+                    }}>
+                        Cancel
+                    </Button>
+                    <Button variant="danger" onClick={handleDelete} disabled={loading}>
+                        {loading ? 'Deleting...' : 'Delete'}
+                    </Button>
+                </Modal.Footer>
             </Modal>
         </>
     );

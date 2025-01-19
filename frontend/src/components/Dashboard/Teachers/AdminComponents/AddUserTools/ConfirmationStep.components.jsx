@@ -4,6 +4,7 @@ import { ErrorAlert } from '../../../../Alerts/ErrorAlert.components';
 import { SuccessAlert } from '../../../../Alerts/SuccessAlert.components';
 import axios from 'axios';
 import './AddUser.styles.css'
+import { LoadingOverlay } from '../../../../Loading/LoadingOverlay.components';
 
 export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) => {
     const { username, first_name, last_name, password, email, address, birth_date,
@@ -12,42 +13,65 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
     const current_date = new Date();
     const [currentClassroom, setCurrentClassroom] = useState(null);
     const [offeringSubjects, setOfferingSubjects] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [alert, setAlert] = useState({
         "success": null,
         "fail": null,
     })
     const [displayProfilePicture, setDisplayProfilePicture] = useState(null)
     const [userType, setUserType] = useState('');
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        throw new Error("Authentication token is missing!");
+    }
 
     const handleSubmit = async () => {
-        console.log(formData)
+        setLoading(true)
         axios.post('api/users/', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
+                'Authorization': `Bearer ${token}`,
             },
         })
             .then(response => {
                 if (response.data['username'] === username) {
-                    console.log({ "classes": formData.classes, "subjects": formData.subjects })
-                    axios.patch(`api/users/${response.data["id"]}/`, { "classes": formData.classes, "subjects": formData.subjects })
+                    axios.patch(`api/users/${response.data["id"]}/`, { "classes": formData.classes, "subjects": formData.subjects },
+                        {
+                            headers: { Authorization: `Bearer ${token}` },
+                        }
+                    )
                         .then(response => {
+                            setLoading(false)
                             setAlert({ "success": `User ${response.data["username"]} was added succesfully`, "fail": null })
 
                         }).catch(e => {
-                            axios.delete(`api/users/${response.data["id"]}/`).catch(e => {
+                            setLoading(false)
+                            axios.delete(`api/users/${response.data["id"]}/`, {
+                                headers: { Authorization: `Bearer ${token}` },
+                            }).catch(e => {
                                 setAlert({ "fail": `Failed To Add User ${formData["username"]}`, "success": null })
                             })
                             setAlert({ "fail": `Failed To Add User ${formData["username"]}`, "success": null })
                         })
+                    setLoading(false)
                 }
             }).catch(e => {
+                setLoading(false)
                 setAlert({ "fail": `Failed To Add User ${formData["username"]}`, "success": null })
             })
+        setTimeout(() => {
+            setAlert({ "fail": null, "success": null })
+        }, 5000)
     }
 
     const fetchClassSubjects = async (subjects) => {
         if (subjects.length !== 0) {
-            await axios.post('/api/get-subjects/', { "subject_ids": subjects })
+            await axios.post('/api/get-subjects/', { "subject_ids": subjects },
+                {
+                    headers: { Authorization: `Bearer ${token}` },
+                }
+            )
                 .then(response => {
                     const data = response.data
                     setOfferingSubjects(data)
@@ -55,7 +79,10 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
         }
     }
     const fetchClassroom = async (classId) => {
-        await axios.get(`/api/classrooms/${classId}/`)
+        await axios.get(`/api/classrooms/${classId}/`,
+            {
+                headers: { Authorization: `Bearer ${token}` },
+            })
             .then(response => {
                 if (response.data["detail"]) {
                     setCurrentClassroom(null)
@@ -87,7 +114,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
             };
             reader.readAsDataURL(profile_picture);
         }
-    }, [])
+    }, [is_student_or_teacher, profile_picture, is_superuser, subjects, classes])
 
 
     return (
@@ -165,6 +192,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                     </Card>}
 
             </div>
+            {loading && <LoadingOverlay loading={loading} message='User creation in progress...' />}
             {alert.fail &&
                 <ErrorAlert heading="User creation failed" message={alert.fail} >
                     <Alert.Link onClick={() => setStep(1)}>Go Back</Alert.Link>
