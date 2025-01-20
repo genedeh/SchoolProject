@@ -17,7 +17,7 @@ const LoginForm = () => {
     const [error, setError] = useState(null);
     let navigate = useNavigate();
 
-    useEffect(() => setUsername(`${firstname}_${lastname}`)
+    useEffect(() => setUsername(`${firstname.replace(/ /g, "")}_${lastname.replace(/ /g, "")}`)
         , [firstname, lastname])
     const handleLogin = async (event) => {
         event.preventDefault();
@@ -80,7 +80,7 @@ const LoginForm = () => {
                                 </Form.Group>
                                 <br />
                                 <Form.Group controlId="formPassword">
-                                    <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                                    <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value.replace(/ /g, ""))} required />
                                 </Form.Group>
                                 <br />
                                 <Button variant="primary" type="submit" block="true">
