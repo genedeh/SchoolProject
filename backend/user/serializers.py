@@ -52,12 +52,10 @@ class UserCreateSerializer(serializers.ModelSerializer):
 class UserUpdateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
     username = serializers.CharField(read_only=True, required=False)
-    classes = serializers.PrimaryKeyRelatedField(queryset=ClassRoom.objects.all(),many=True)
-    subjects = serializers.PrimaryKeyRelatedField(queryset=Subject.objects.all(), many=True)
 
     class Meta:
         model = User
-        fields = ['username','password', 'email', 'first_name', 'last_name', 'profile_picture', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes',  'subjects', 'subject']
+        fields = ['username','password', 'email', 'first_name', 'last_name', 'profile_picture',  'birth_date', 'address', 'phone_number', 'gender']
 
     def update(self, instance, validated_data):
         instance.email = validated_data.get('email', instance.email)
@@ -65,21 +63,15 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.username = validated_data.get('username', f"{instance.first_name}_{instance.last_name}")
         instance.profile_picture = validated_data.get('profile_picture', instance.profile_picture)
-        instance.is_student_or_teacher = validated_data.get('is_student_or_teacher', instance.is_student_or_teacher)
         instance.birth_date = validated_data.get('birth_date', instance.birth_date)
         instance.address = validated_data.get('address', instance.address)
-        instance.is_superuser = validated_data.get('is_superuser', instance.is_superuser)
         instance.phone_number = validated_data.get('phone_number', instance.phone_number)
         instance.gender = validated_data.get('gender', instance.gender)
-        classes_data = validated_data.pop('classes')
-        subjects_data = validated_data.pop('subjects')
         
         # Handle password update
         password = validated_data.get('password', None)
         if password:
             instance.set_password(password)
-        instance.subjects.set(subjects_data)
-        instance.classes.set(classes_data)
         instance.save() 
         return instance
 
