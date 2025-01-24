@@ -89,12 +89,17 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
         if (!selectedFile) return;
     };
 
+    const validatePhoneNumber = (number) => {
+        const nigerianPhoneRegex = /^(070|080|081|090|091)\d{8}$/;
+        return nigerianPhoneRegex.test(number);
+    };
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         if (name == "password" && value.length == 0) {
             console.log("Gone")
             delete formData["password"]
-        } else {
+        }
+        else {
             setFormData({ ...formData, [name]: value });
         }
     };
@@ -102,6 +107,7 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
     useEffect(() => {
         setFormData({ ...formData, 'username': `${formData.first_name}_${formData.last_name}` })
     }, [formData.first_name, formData.last_name])
+
 
     const handleSave = (e) => {
         e.preventDefault()
@@ -113,7 +119,11 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
         delete formData["profile_picture_url"]
         delete formData["is_student_or_teacher"]
         delete formData["is_superuser"]
-        updateUser(formData);
+        if (validatePhoneNumber(formData.phone_number)) {
+            updateUser(formData);
+        } else {
+            setError("Invalid Nigerian Phone Number")
+        }
     };
 
     const handleDelete = () => {
@@ -131,7 +141,6 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                 <Modal.Title>{isEditMode ? "Edit User" : "User Profile"}</Modal.Title>
             </Modal.Header>
             <Modal.Body className="text-center" style={{ backgroundColor: 'white' }}>
-                {error && <Alert variant="danger">{error}</Alert>}
                 <div className="position-relative d-inline-block">
                     <Image
                         src={isEditMode ? (!displayProfilePicture ? profile_picture_url : displayProfilePicture) : (profile_picture_url)}
@@ -265,6 +274,8 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                                 disabled={!isEditMode}
                                 required
                             />
+                            <hr />
+                            {error && <Alert variant="danger">{error}</Alert>}
                         </Form.Group>
                         <Form.Group className="mb-3">
                             <Form.Label>Date of Birth</Form.Label>
