@@ -93,8 +93,8 @@ class CreateAndSearchUserView(generics.ListCreateAPIView):
         queryset = User.objects.filter(**filters)
 
         if not queryset.exists():
-            raise NotFound(detail="No such user was found")
-        
+            return []
+
         return queryset
 
     def get_serializer_class(self):
