@@ -2,53 +2,81 @@ from .models import User
 from academics.models import ClassRoom, Subject
 from rest_framework import serializers
 
+
 class ViewClassRoomNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassRoom
-        fields = ['id','name']
+        fields = ['id', 'name']
+
 
 class ViewSubjectNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subject
-        fields = ['id','name']
+        fields = ['id', 'name']
+
 
 class QuickUserViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','username', 'profile_picture_url', 'gender', 'is_student_or_teacher','classrooms', 'classes']
+        fields = ['id', 'username', 'profile_picture_url', 'gender',
+                  'is_student_or_teacher', 'classrooms', 'classes']
+
 
 class UserLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username','password')
+        fields = ('username', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 
+
 class UserCreateSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)  # Ensure password is write-only
-    classes = serializers.PrimaryKeyRelatedField(queryset=ClassRoom.objects.all(),many=True)
-    subjects = serializers.PrimaryKeyRelatedField(queryset=Subject.objects.all(), many=True)
+    # Ensure password is write-only
+    password = serializers.CharField(write_only=True)
+    classes = serializers.ListField(
+        child=serializers.IntegerField(), write_only=True, required=False, allow_empty=True)
+    subjects = serializers.ListField(
+        child=serializers.IntegerField(), write_only=True, required=False, allow_empty=True)
 
     class Meta:
         model = User
-        fields = ['id','username','password', 'email', 'first_name', 'last_name', 'profile_picture', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes',  'subjects']
+        fields = ['id', 'username', 'password', 'email',
+                  'first_name', 'last_name', 'profile_picture',
+                  'is_student_or_teacher', 'birth_date', 'address', 'is_superuser',
+                  'phone_number', 'gender', 'classes',  'subjects']
 
     def validate_username(self, value):
         # Check if the username already exists
         if User.objects.filter(username=value).exists():
-            raise serializers.ValidationError("A user with this username already exists.")
+            raise serializers.ValidationError(
+                "A user with this username already exists.")
         return value
 
     def create(self, validated_data):
-        classes_data = validated_data.pop('classes')
-        subjects_data = validated_data.pop('subjects')
+        classes = validated_data.pop("classes", [])
+        subjects = validated_data.pop("subjects", [])
 
+        print(validated_data, classes, subjects)
         user = User.objects.create(**validated_data)
-        user.subjects.set(subjects_data)
-        user.classes.set(classes_data)
-        user.set_password(validated_data['password'])  # This handles password encryption
+
+        # Validate and set classes
+        valid_classes = ClassRoom.objects.filter(id__in=classes)
+        if len(valid_classes) != len(classes):
+            raise serializers.ValidationError("Some class IDs are invalid.")
+
+        # Validate and set subjects
+        valid_subjects = Subject.objects.filter(id__in=subjects)
+        if len(valid_subjects) != len(subjects):
+            raise serializers.ValidationError("Some subject IDs are invalid.")
+
+        user.classes.set(valid_classes)
+        user.subjects.set(valid_subjects)
+        user.set_password(validated_data['password'])
         user.save()
+
         return user
-    
+
+
+
 class UserUpdateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
     username = serializers.CharField(read_only=True, required=False)
@@ -75,11 +103,14 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         instance.save() 
         return instance
 
+
 class UserListSerializer(serializers.ModelSerializer):
     classrooms = ViewClassRoomNameSerializer()
     classes = ViewClassRoomNameSerializer(many=True)
     subjects = ViewSubjectNameSerializer(many=True)
     subject = ViewSubjectNameSerializer(many=True)
+
     class Meta:
         model = User
-        fields = ['id','username', 'email', 'first_name', 'last_name', 'profile_picture_url', 'is_student_or_teacher', 'birth_date', 'address','is_superuser', 'phone_number', 'gender', 'classes',  'subjects', 'classrooms', 'subject']
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile_picture_url', 'is_student_or_teacher',
+                  'birth_date', 'address', 'is_superuser', 'phone_number', 'gender', 'classes',  'subjects', 'classrooms', 'subject']
