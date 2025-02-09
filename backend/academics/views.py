@@ -1,12 +1,24 @@
+import logging
 from rest_framework import generics, status
-from rest_framework.exceptions import NotFound
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from collections import defaultdict
 from . import serializers
 from .models import ClassRoom, StudentResult, Subject
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
 
-# Create your views here.
+
+class CustomPagination(PageNumberPagination):
+    page_size = 2  # Default items per page
+    page_size_query_param = 'page_size'  # Allow clients to override page size
+
+    # max_page_size = 50  # Maximum allowed page size
+
+
+# Configure logger
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 
 class ClassRoomRetrieveView(generics.RetrieveUpdateDestroyAPIView):
@@ -174,3 +186,77 @@ class GetSubjectsById(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+# ✅ Helper Function to Group Results by Session and Term
+
+
+def group_results(results):
+    grouped_data = defaultdict(lambda: {"session": "", "terms": []})
+
+    for result in results:
+        session = result.session
+        term = result.term
+
+        key = session  # Group by session
+
+        # Initialize session
+        grouped_data[key]["session"] = session
+
+        # Check if term exists in that session
+        term_entry = next(
+            (t for t in grouped_data[key]["terms"] if t["term"] == term), None)
+
+        if not term_entry:
+            grouped_data[key]["terms"].append({
+                "term": term,
+                "results": []
+            })
+
+        # Add result under correct term
+        for term_data in grouped_data[key]["terms"]:
+            if term_data["term"] == term:
+                term_data["results"].append(
+                    serializers.StudentResultSerializer(result).data)
+
+    return list(grouped_data.values())  # Convert defaultdict to list
+
+
+# ✅ Django API View
+class GetStudentResultView(generics.ListAPIView):
+    serializer_class = serializers.StudentResultSerializer
+    authentication_classes = [IsAuthenticated]
+    pagination_class = CustomPagination
+
+    def get_queryset(self):
+        student_id = self.request.query_params.get("student_id", None)
+
+        # ✅ Validate student_id
+        if not student_id:
+            return Response({"error": "student_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            student_id = int(student_id)  # Ensure it's a number
+        except ValueError:
+            return Response({"error": "Invalid student_id format. Must be an integer."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # ✅ Get Student Results
+        results = StudentResult.objects.filter(assigned_student_id=student_id)
+        if not results.exists():
+            return Response({"error": "No results found for this student."}, status=status.HTTP_404_NOT_FOUND)
+
+        return results
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        # ✅ If queryset is a Response (error case), return it
+        if isinstance(queryset, Response):
+            return queryset
+
+        grouped_results = group_results(queryset)
+
+        # ✅ Apply Pagination
+        page = self.paginate_queryset(grouped_results)
+        if page is not None:
+            return self.get_paginated_response(page)
+
+        return Response(grouped_results, status=status.HTTP_200_OK)
