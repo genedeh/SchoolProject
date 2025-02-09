@@ -113,3 +113,14 @@ class StudentResultSerializer(serializers.ModelSerializer):
                 "profile_picture": obj.assigned_student.profile_picture.url if obj.assigned_student.profile_picture else None,
             }
         return None
+
+
+class StudentCreateResultSerializer(serializers.ModelSerializer):
+    scores = serializers.JSONField()  # Ensures scores are JSON
+    comments = serializers.JSONField()  # Handles comments as JSON
+    general_remarks = serializers.JSONField()  # Handles additional remarks
+    class Meta:
+        model = StudentResult
+        fields = "__all__"
+
+    
