@@ -11,4 +11,6 @@ urlpatterns = [
     path("get-student-result/", views.GetStudentResultView.as_view(), name="get-student-result"),
     path("create-student-result/", views.CreateStudentResultView.as_view(),
          name="create-student-result"),
+    path("update-student-result/<int:pk>/", views.UpdateStudentResultView.as_view(),
+         name="update-student-result"),
 ]

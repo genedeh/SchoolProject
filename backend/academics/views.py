@@ -1,10 +1,13 @@
 import json
 import logging
 import re
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from collections import defaultdict
+
+from yaml import serialize
 from . import serializers
 from .models import ClassRoom, StudentResult, Subject
 from rest_framework.permissions import IsAuthenticated
@@ -391,7 +394,7 @@ class CreateStudentResultView(generics.CreateAPIView):
         for subject, score_data in json_scores.items():
             exam_score = score_data.get("exam", 0)
             test_score = score_data.get("test", 0)
-            if not (0 <= exam_score  <= 60 and 0 <= test_score <= 40):
+            if not (0 <= exam_score <= 60 and 0 <= test_score <= 40):
                 return Response(
                     {"error": f"Invalid scores for {subject}. Exam and test scores must be between 0 and 100."},
                     status=status.HTTP_400_BAD_REQUEST
@@ -424,3 +427,97 @@ class CreateStudentResultView(generics.CreateAPIView):
             return Response({"message": "Student result created successfully!", "result": serializer.data}, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateStudentResultView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = StudentResult.objects.all()
+    serializer_class = serializers.StudentUpdateResultSerializer
+    lookup_field = 'pk'
+
+    def update(self, request, *args, **kwargs):
+        # Retrieve the result or return 404
+        result = self.get_object()
+        print(result)
+
+        data = request.data
+        allowed_fields = {"uploaded", "scores", "comments",
+                          "general_remarks", "term", "session"}
+        # ✅ Validate session format (YYYY/YYYY)
+        if not is_valid_session_format(data["session"]):
+            return Response({"error": "Invalid session format. Expected format: YYYY/YYYY"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # ✅ Validate term selection
+        valid_terms = {"1st Term", "2nd Term", "3rd Term"}
+        if "term" in data:
+            term = data["term"]
+            if term not in valid_terms:
+                return Response({"error": "Invalid term. Must be '1st Term', '2nd Term', or '3rd Term'."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # 🔄 Prevent duplicate term-session assignment
+            if "session" in data:
+                session = data["session"]
+            else:
+                session = result.session  # Use existing session if not provided in update request
+
+            existing_result = StudentResult.objects.filter(
+                assigned_student=result.assigned_student, session=session, term=term
+            ).exclude(id=result.id).exists()
+
+            if existing_result:
+                return Response(
+                    {"error": f"A result for {term} in session {session} already exists for this student."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        # ✅ Validate scores (must be between 0 and 100)
+        if "scores" in data:
+            scores = data["scores"]
+            json_scores = json.loads(scores)
+            if not isinstance(json_scores, dict):
+                return Response({"error": "Scores must be a dictionary of subjects and their marks."}, status=status.HTTP_400_BAD_REQUEST)
+
+            for subject, score_data in json_scores.items():
+                exam_score = score_data.get("exam", 0)
+                test_score = score_data.get("test", 0)
+                if not (0 <= exam_score <= 60 and 0 <= test_score <= 40):
+                    return Response(
+                        {"error": f"Invalid scores for {subject}. Exam and test scores must be between 0 and 100."},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
+        # ✅ Validate comments structure
+        if "comments" in data:
+            comments = data["comments"]
+            json_comments = json.loads(comments)
+            required_comment_keys = {"principals_comment",
+                                     "teachers_comment", "resumption_date"}
+
+            if not isinstance(json_comments, dict):
+                return Response(
+                    {"error": "Comments must be a dictionary containing 'principal_comment', 'teacher_comment', and 'resumption_date'."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            missing_comment_keys = required_comment_keys - json_comments.keys()
+            if missing_comment_keys:
+                return Response(
+                    {"error": f"Missing required comment fields: {', '.join(missing_comment_keys)}"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        # ✅ Validate general remarks (optional but must be a dictionary)
+        if "general_remarks" in data:
+            general_remarks = data["general_remarks"]
+            json_general_remarks = json.loads(general_remarks)
+            if not isinstance(json_general_remarks, dict):
+                return Response({"error": "General remarks must be a dictionary of remark categories."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # ✅ Apply the updates to the result instance
+        for field in allowed_fields:
+            if field in data:
+                setattr(result, field, data[field])
+        serializer = self.get_serializer(result, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save() # Save the updated result
+
+        return Response({"message": "Student result updated successfully!", "result": serializer.data}, status=status.HTTP_200_OK)
