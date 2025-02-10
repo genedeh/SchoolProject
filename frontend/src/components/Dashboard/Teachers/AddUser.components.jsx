@@ -1,14 +1,14 @@
 import { useContext, useState } from "react";
-import { UserContext } from "../../../../contexts/User.contexts";
+import { UserContext } from "../../../contexts/User.contexts";
 import { Navigate } from "react-router-dom";
-import { SelectUserTypeStep } from "./AddUserTools/SelectUserTypeStep.components";
-import { BasicInformationStep } from "./AddUserTools/BasicInformationStep.components";
-import { PasswordStep } from "./AddUserTools/PasswordStep.components";
-import { ProfilePictureStep } from "./AddUserTools/ProfilePictureStep.components";
-import { PersonalInfromationStep } from "./AddUserTools/PersonalInformationStep.components";
-import { ClassSelectStep } from "./AddUserTools/ClassSelectStep.componets";
-import { SubjectSelectStep } from "./AddUserTools/SubjectSelectStep.componets";
-import { ConfirmationStep } from "./AddUserTools/ConfirmationStep.components";
+import { SelectUserTypeStep } from "./AdminComponents/AddUserTools/SelectUserTypeStep.components";
+import { BasicInformationStep } from "./AdminComponents/AddUserTools/BasicInformationStep.components";
+import { PasswordStep } from "./AdminComponents/AddUserTools/PasswordStep.components";
+import { ProfilePictureStep } from "./AdminComponents/AddUserTools/ProfilePictureStep.components";
+import { PersonalInfromationStep } from "./AdminComponents/AddUserTools/PersonalInformationStep.components";
+import { ClassSelectStep } from "./AdminComponents/AddUserTools/ClassSelectStep.componets";
+import { SubjectSelectStep } from "./AdminComponents/AddUserTools/SubjectSelectStep.componets";
+import { ConfirmationStep } from "./AdminComponents/AddUserTools/ConfirmationStep.components";
 
 export const AddUser = () => {
     const { currentUser } = useContext(UserContext);
@@ -40,17 +40,29 @@ export const AddUser = () => {
         }));
     };
 
-    if (currentUser.is_admin && currentUser) {
+    if (!currentUser.is_admin && currentUser.is_student_or_teacher) {
+        return <Navigate to="/dashboard/home" />; // Redirect students to home
+    }
+
+    if (currentUser.is_admin || !currentUser.is_student_or_teacher) {
+        // Check user type and restrict step 1 for teachers
+        if (!currentUser.is_admin && step === 1) {
+            setStep(2); // Automatically skip Step 1 for teachers
+        }
+
         switch (step) {
             case 1:
-                return (
-                    <SelectUserTypeStep
-                        nextStep={nextStep}
-                        updateFormData={updateFormData}
-                        selectedOption={selectedOption}
-                        setSelectedOption={setSelectedOption}
-                    />
-                );
+                if (currentUser.is_admin) {
+                    return (
+                        <SelectUserTypeStep
+                            nextStep={nextStep}
+                            updateFormData={updateFormData}
+                            selectedOption={selectedOption}
+                            setSelectedOption={setSelectedOption}
+                        />
+                    );
+                }
+                break; // Prevent fall-through
             case 2:
                 return (
                     <BasicInformationStep
@@ -90,7 +102,6 @@ export const AddUser = () => {
             case 6:
                 if (formData.is_student_or_teacher) {
                     return (
-
                         <ClassSelectStep
                             formData={formData}
                             updateFormData={updateFormData}
@@ -99,6 +110,7 @@ export const AddUser = () => {
                         />
                     );
                 }
+                break; // Prevent fall-through
             case 7:
                 if (formData.is_student_or_teacher) {
                     return (
@@ -110,6 +122,7 @@ export const AddUser = () => {
                         />
                     );
                 }
+                break; // Prevent fall-through
             case 8:
                 return (
                     <ConfirmationStep
@@ -120,10 +133,17 @@ export const AddUser = () => {
                     />
                 );
             default:
-                return <div className="text-center"><hr /><h1>Unknown Step</h1><hr /></div>;
+                return (
+                    <div className="text-center">
+                        <hr />
+                        <h1>Unknown Step</h1>
+                        <hr />
+                    </div>
+                );
         }
-    } return (
-        <Navigate to="/dashboard/home" />
-    );
+    }
+
+    // Default redirection for unexpected cases
+    return <Navigate to="/dashboard/home" />;
 };
 

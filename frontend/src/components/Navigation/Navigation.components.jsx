@@ -5,7 +5,7 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import TopLevel from "./TopLevel.components";
 import { StudentSidebar, TeacherSidebar } from "./Side_Navigation_Bar/SideBar.components";
 import { useUsers } from "../../contexts/UsersList.contexts";
-import SearchedProfileCard from "../Dashboard/SearchedProfileCard.components";
+import SearchedProfileCard from "../Dashboard/UsersProfileCards/SearchedProfileCard.components";
 import { ErrorAlert } from "../Alerts/ErrorAlert.components";
 import { WarningAlert } from "../Alerts/WarningAlert.components";
 import { ErrorMessageHandling } from "../../utils/ErrorHandler.utils";

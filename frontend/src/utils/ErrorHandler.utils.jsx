@@ -10,6 +10,9 @@ export const ErrorMessageHandling = (isError, error) => {
                 case 500:
                     errorMessage = "Server error (500). Please try again later.";
                     break;
+                case 401:
+                    errorMessage = "Unauthorized (401). Please Login.";
+                    break;
                 default:
                     errorMessage = `Unexpected error: ${error.response.status}`;
             }

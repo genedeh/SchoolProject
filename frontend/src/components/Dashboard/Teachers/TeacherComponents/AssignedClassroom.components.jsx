@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { useQuery } from "react-query";
 import { Navigate } from "react-router-dom";
 import { Card, Button, ListGroup, Accordion } from 'react-bootstrap';
-import { GenderFemale, GenderMale } from "react-bootstrap-icons";
+import { GenderFemale, GenderMale, PersonFillAdd } from "react-bootstrap-icons";
 import { ErrorAlert } from "../../../Alerts/ErrorAlert.components";
 import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import { CenteredSpinner } from "../../../Loading/CenteredSpinner.components"
@@ -59,50 +59,57 @@ export const AssignedClassrooms = () => {
                         <p>No Assigned Classroom found!</p>
                     )}
                     {!isLoading && !isError && data.length > 0 && (
-                        data?.map(({ id, name, students }) => (
-                            <Card key={id} className="mb-2">
-                                <Accordion.Item eventKey={id}>
-                                    <Accordion.Header eventKey={id} className="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h5>{name.replace('_', ' ')}</h5>
-                                        </div>
-
-                                    </Accordion.Header>
-                                    <Accordion.Body>
-                                        <hr /><h5>Students</h5><hr />
-                                        <ListGroup>
-                                            {students.length !== 0 ? (students.map(({ id, username, gender, profile_picture }) => (
-                                                <ListGroup.Item key={id} className="container">
-                                                    <div className="d-flex align-items-center">
-                                                        <div className="me-3">
-                                                            <img
-                                                                src={profile_picture == null ? ("https://via.placeholder.com/40") : (profile_picture)}
-                                                                className="rounded-circle"
-                                                                style={{ width: '40px', height: '40px' }}
-                                                            />
+                        <>
+                            <div className="d-grid gap-2 m-4">
+                                <Button size="lg" variant='outline-dark border-2 border-primary' href="/dashboard/add-user">
+                                    <PersonFillAdd className="me-2" />
+                                </Button>
+                            </div>
+                            {data?.map(({ id, name, students }) => (
+                                <Card key={id} className="mb-2">
+                                    <Accordion.Item eventKey={id}>
+                                        <Accordion.Header eventKey={id} className="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h5>{name.replace('_', ' ')}</h5>
+                                            </div>
+                                        </Accordion.Header>
+                                        <Accordion.Body>
+                                            <hr /><h5>Students</h5><hr />
+                                            <ListGroup>
+                                                {students.length !== 0 ? (students.map(({ id, username, gender, profile_picture }) => (
+                                                    <ListGroup.Item key={id} className="container">
+                                                        <div className="d-flex align-items-center">
+                                                            <div className="me-3">
+                                                                <img
+                                                                    src={profile_picture == null ? ("https://via.placeholder.com/40") : (profile_picture)}
+                                                                    className="rounded-circle"
+                                                                    style={{ width: '40px', height: '40px' }}
+                                                                />
+                                                            </div>
+                                                            <div>
+                                                                <div>{username}</div>
+                                                            </div>
+                                                            {gender === 'male' ?
+                                                                (<Button className="m-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
+                                                                    <GenderMale />
+                                                                </Button>) :
+                                                                (<Button className="m-2" size="sm" style={{ 'backgroundColor': 'pink', 'borderColor': 'white' }}>
+                                                                    <GenderFemale />
+                                                                </Button>)}
                                                         </div>
-                                                        <div>
-                                                            <div>{username}</div>
-                                                        </div>
-                                                        {gender === 'male' ?
-                                                            (<Button className="m-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
-                                                                <GenderMale />
-                                                            </Button>) :
-                                                            (<Button className="m-2" size="sm" style={{ 'backgroundColor': 'pink', 'borderColor': 'white' }}>
-                                                                <GenderFemale />
-                                                            </Button>)}
-                                                    </div>
-                                                </ListGroup.Item>
-                                            ))) : ('NO Student Available')}
-                                        </ListGroup>
-                                    </Accordion.Body>
-                                </Accordion.Item>
+                                                    </ListGroup.Item>
+                                                ))) : ('NO Student Available')}
+                                            </ListGroup>
+                                        </Accordion.Body>
+                                    </Accordion.Item>
 
-                            </Card>
-                        ))
+                                </Card>
+
+                            ))}
+                        </>
                     )}
                 </Accordion>
-            </div>
+            </div >
         )
     } return (
         <Navigate to='/dashboard/home' />

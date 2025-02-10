@@ -8,7 +8,7 @@ import Navigation from './components/Navigation/Navigation.components';
 import TeacherHome from './components/Dashboard/Teachers/Home.components';
 import StudentProfile from './components/Dashboard/Students/Profile.components';
 import TeacherProfile from './components/Dashboard/Teachers/Profile.components';
-import { AddUser } from './components/Dashboard/Teachers/AdminComponents/AddUser.components';
+import { AddUser } from './components/Dashboard/Teachers/AddUser.components';
 import  {AdminPrivateRoute, PrivateRoute} from './components/Routes/PrivateRoute.components';
 import { Subjects } from './components/Dashboard/Teachers/AdminComponents/Subjects.components';
 import { AssignedSubjects } from './components/Dashboard/Teachers/TeacherComponents/AssignedSubject.components';

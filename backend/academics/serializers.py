@@ -1,40 +1,17 @@
 from rest_framework import serializers
 
 from user.models import User
-from .models import ClassRoom, Subject, Result
+from .models import ClassRoom, StudentResult, Subject
 
 class ViewUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'gender', 'profile_picture']
+        fields = ['id', 'username', 'gender', 'profile_picture', 'classes']
         
 class ViewClassroomSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClassRoom
         fields = ['id', 'name']
-
-class ResultListSerializer(serializers.ModelSerializer):
-    assigned_student = ViewUserSerializer()
-    classroom = ViewClassroomSerializer()
-    class Meta:
-        model = Result
-        fields = [
-            'id', 'name', 'term', 'year_span', 'result_file', 'uploaded', 'created_at',
-            'uploaded_at', 'assigned_student', 'classroom'
-        ]
-
-class ResultCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Result
-        fields = fields = [
-            'id', 'name', 'term', 'year_span', 'result_file', 'uploaded', 'created_at',
-            'uploaded_at', 'assigned_student', 'classroom'
-        ]
-
-    def validate_name(self, value):
-        if Result.objects.filter(name=value).exists():
-            raise serializers.ValidationError("Result with this name already exists.")
-        return value
 
 class ClassRoomListSerializer(serializers.ModelSerializer):
     assigned_teacher = ViewUserSerializer()
@@ -76,13 +53,6 @@ class ClassroomUpdateSerializer(serializers.ModelSerializer):
         
         instance.save()
         return instance
-    
-class ResultUpdateSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Result
-        fields = ['uploaded']
-
 
 class SubjectsListSerializer(serializers.ModelSerializer):
     assigned_teacher = ViewUserSerializer()
@@ -124,3 +94,40 @@ class SubjectUpdateSerializer(serializers.ModelSerializer):
         
         instance.save()
         return instance
+    
+
+class StudentResultSerializer(serializers.ModelSerializer):
+    assigned_student = serializers.SerializerMethodField()
+    classroom = ViewClassroomSerializer()
+
+    class Meta:
+        model = StudentResult
+        fields = "__all__"
+
+    def get_assigned_student(self, obj):
+        if obj.assigned_student:
+            return {
+                "id": obj.assigned_student.id,
+                "username": obj.assigned_student.username,
+                "gender": obj.assigned_student.gender,
+                "profile_picture": obj.assigned_student.profile_picture.url if obj.assigned_student.profile_picture else None,
+            }
+        return None
+
+
+class StudentCreateResultSerializer(serializers.ModelSerializer):
+    scores = serializers.JSONField()  # Ensures scores are JSON
+    comments = serializers.JSONField()  # Handles comments as JSON
+    general_remarks = serializers.JSONField()  # Handles additional remarks
+    class Meta:
+        model = StudentResult
+        fields = "__all__"
+
+    
+class StudentUpdateResultSerializer(serializers.ModelSerializer):
+    scores = serializers.JSONField()  # Ensures scores are JSON
+    comments = serializers.JSONField()  # Handles comments as JSON
+    general_remarks = serializers.JSONField()  # Handles additional remarks
+    class Meta:
+        model = StudentResult
+        fields = "__all__"

@@ -1,8 +1,9 @@
-from rest_framework import generics
+from rest_framework import generics, status
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.core.exceptions import ValidationError
 from .models import User
 from rest_framework.parsers import MultiPartParser, FormParser
 from academics.models import ClassRoom
@@ -10,6 +11,11 @@ from . import serializers
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
+import logging
+
+# Configure logger
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 
 class LoginView(generics.GenericAPIView):
@@ -93,8 +99,8 @@ class CreateAndSearchUserView(generics.ListCreateAPIView):
         queryset = User.objects.filter(**filters)
 
         if not queryset.exists():
-            raise NotFound(detail="No such user was found")
-        
+            return []
+
         return queryset
 
     def get_serializer_class(self):
@@ -104,11 +110,43 @@ class CreateAndSearchUserView(generics.ListCreateAPIView):
             return serializers.UserCreateSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = serializers.UserCreateSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=201)
-        return Response(serializer.errors, status=400)
+        try:
+            # Get list values properly
+            # ✅ Correct way to get multiple values
+            classes = request.POST.getlist("classes[]")
+            subjects = request.POST.getlist("subjects[]")
+
+            # Convert to integers if needed
+            classes = [int(cls) for cls in classes if cls.isdigit()]
+            subjects = [int(subj) for subj in subjects if subj.isdigit()]
+
+            logger.info(f"Received classes: {classes}, subjects: {subjects}")
+
+            # Include other request data in user creation
+
+            user_data = request.data.copy()
+            user_data.setlist("classes", classes)
+            user_data.setlist("subjects", subjects)
+            if "classes[]" in user_data:
+                del user_data["classes[]"]
+            if "subjects[]" in user_data:
+                del user_data["subjects[]"]
+
+
+            # ✅ Get profile picture
+            profile_picture = request.FILES.get("profile_picture")
+            if profile_picture:
+                user_data["profile_picture"] = profile_picture
+
+            serializer = self.get_serializer(data=user_data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class QuickUserViewList(generics.ListAPIView):
