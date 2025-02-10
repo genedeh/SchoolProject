@@ -88,7 +88,7 @@ const LoginForm = () => {
                                 </Button>
                             </Form>
                             <div className="login-footer">
-                                <b>V2.0.0--Ogunboyejo Adeola Memorial School--V2.0.0</b>
+                                <b>V2.1.2--Ogunboyejo Adeola Memorial School--V2.1.2</b>
                             </div>
                         </div>
                         {/* )- */}
