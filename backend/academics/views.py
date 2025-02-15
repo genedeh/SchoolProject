@@ -1,6 +1,7 @@
 import json
 import logging
 import re
+from django.db.models import Max
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.views import APIView
@@ -233,45 +234,70 @@ def is_valid_session_format(session):
 # ✅ Django API View
 
 
-class GetStudentResultView(generics.ListAPIView):
-    serializer_class = serializers.StudentResultSerializer
-    # authentication_classes = [IsAuthenticated]
-    pagination_class = CustomPagination
+class StudentResultView(APIView):
+    def get(self, request, *args, **kwargs):
+        student_id = request.GET.get("student_id")
+        session_year = request.GET.get("session")
+        classroom_id = request.GET.get("classroom_id")
 
-    def get_queryset(self):
-        student_id = self.request.query_params.get("student_id", None)
-
-        # ✅ Validate student_id
         if not student_id:
             return Response({"error": "student_id is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            student_id = int(student_id)  # Ensure it's a number
-        except ValueError:
-            return Response({"error": "Invalid student_id format. Must be an integer."}, status=status.HTTP_400_BAD_REQUEST)
+        if classroom_id:
+            return self.get_results_by_classroom(student_id, classroom_id)
 
-        # ✅ Get Student Results
-        results = StudentResult.objects.filter(assigned_student_id=student_id)
-        if not results.exists():
+        if session_year:
+            return self.get_results_by_session(student_id, session_year)
+
+        return self.get_latest_session_results(student_id)
+
+    def get_latest_session_results(self, student_id):
+        latest_session = StudentResult.objects.filter(
+            assigned_student_id=student_id).aggregate(Max("session"))["session__max"]
+
+        if not latest_session:
             return Response({"error": "No results found for this student."}, status=status.HTTP_404_NOT_FOUND)
 
-        return results
+        results = StudentResult.objects.filter(
+            assigned_student_id=student_id, session=latest_session)
+        return self.format_results(results, latest_session)
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
+    def get_results_by_session(self, student_id, session_year):
+        results = StudentResult.objects.filter(
+            assigned_student_id=student_id, session=session_year)
 
-        # ✅ If queryset is a Response (error case), return it
-        if isinstance(queryset, Response):
-            return queryset
+        if not results.exists():
+            return Response({"error": "No results found for this session."}, status=status.HTTP_404_NOT_FOUND)
 
-        grouped_results = group_results(queryset)
+        return self.format_results(results, session_year)
 
-        # ✅ Apply Pagination
-        page = self.paginate_queryset(grouped_results)
-        if page is not None:
-            return self.get_paginated_response(page)
+    def get_results_by_classroom(self, student_id, classroom_id):
+        results = StudentResult.objects.filter(
+            assigned_student_id=student_id, classroom_id=classroom_id)
 
-        return Response(grouped_results, status=status.HTTP_200_OK)
+        if not results.exists():
+            return Response({"error": "No results found for this student in the given classroom."}, status=status.HTTP_404_NOT_FOUND)
+
+        return self.format_results(results, results.first().session)
+
+    def format_results(self, results, session_year):
+        terms = {}
+        available_sessions = StudentResult.objects.filter(assigned_student_id=results.first(
+        ).assigned_student_id).values_list("session", flat=True).distinct()
+
+        for result in results:
+            term_name = result.term
+            if term_name not in terms:
+                terms[term_name] = []
+
+            terms[term_name].append(
+                serializers.StudentResultSerializer(result).data)
+
+        return Response({
+            "session": session_year,
+            "terms": terms,
+            "available_sessions": sorted(available_sessions, reverse=True),
+        }, status=status.HTTP_200_OK)
 
 
 # ✅ Student Result Creation API View
@@ -518,6 +544,6 @@ class UpdateStudentResultView(generics.RetrieveUpdateDestroyAPIView):
                 setattr(result, field, data[field])
         serializer = self.get_serializer(result, data=data, partial=True)
         if serializer.is_valid():
-            serializer.save() # Save the updated result
+            serializer.save()  # Save the updated result
 
         return Response({"message": "Student result updated successfully!", "result": serializer.data}, status=status.HTTP_200_OK)
