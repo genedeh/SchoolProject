@@ -8,21 +8,7 @@ import { ErrorAlert } from "../../../Alerts/ErrorAlert.components"
 import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import { Tab, Nav, Button } from "react-bootstrap";
 import { ResultModal } from "./ResultModal.components";
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, RadialBarChart, RadialBar, ResponsiveContainer,LineChart, CartesianGrid, Line } from "recharts";
-const COLORS = ["#4caf50", "#00c853", "#d32f2f", "#3f51b5"];
-
-// Function to determine WAEC-style grades
-const getGrade = (score) => {
-    if (score >= 75) return "A1";
-    if (score >= 70) return "B2";
-    if (score >= 65) return "B3";
-    if (score >= 60) return "C4";
-    if (score >= 55) return "C5";
-    if (score >= 50) return "C6";
-    if (score >= 45) return "D7";
-    if (score >= 40) return "E8";
-    return "F9";
-};
+import { getGrade, GradeDistributionComponent, SubjectScoreDistribution, TermPerformance } from "../../../../utils/AnalyticalHandler.utils";
 // Function to fetch student result
 const fetchStudentResults = async ({ queryKey }) => {
     const [, session, id] = queryKey; // Extract page number
@@ -37,8 +23,6 @@ const fetchStudentResults = async ({ queryKey }) => {
             headers: { Authorization: `Bearer ${token}` },
         }
     );
-
-    console.log(response); // Debugging purpose
     return response.data;
 };
 
@@ -47,8 +31,6 @@ const StudentViewResult = () => {
     const [showModal, setShowModal] = useState(false);
     const [studentResult, setStudentResult] = useState();
     const [selectedSession, setSelectedSession] = useState("");
-    const [studentResults, setStudentResults] = useState([]);
-    const [sessionData, setSessionData] = useState([]);
 
 
     // React Query for fetching data with pagination
@@ -57,7 +39,6 @@ const StudentViewResult = () => {
         fetchStudentResults,
         {
             onSuccess: (data) => {
-                setSessionData(data);
                 setSelectedSession(data?.session);
             },
             keepPreviousData: true,
@@ -75,9 +56,10 @@ const StudentViewResult = () => {
                 <h2 className="m-4">📊 Student Results Dashboard</h2>
 
                 {isLoading && <CenteredSpinner caption="Fetching Results..." />}
+                {isFetching && <CenteredSpinner caption="Fetching Results..." />}
                 {isError && <ErrorAlert heading="Error while fetching results" message={ErrorMessageHandling(isError, error)} removable={true} />}
 
-                {!isLoading && !isError && (
+                {!isLoading && !isFetching && !isError && (
                     <div className="mt-4">
                         <div className="p-4 bg-light shadow rounded mb-4 text-center">
                             <h5 className="fw-bold">📊 Analytical Overview: {selectedSession}</h5>
@@ -92,13 +74,13 @@ const StudentViewResult = () => {
                                 let termDetails = [];
 
                                 Object.entries(data.terms).forEach(([termName, termData]) => {
-                                    
+
 
                                     let termTotal = 0;
                                     let termSubjects = 0;
 
                                     termData.forEach(result => {
-                                        if (result.scores && result.uploaded ) {
+                                        if (result.scores && result.uploaded) {
                                             if (!termData || termData.length === 0) {
                                                 termDetails.push({ term: termName, avg: null, subjects: 0 });
                                                 return;
@@ -126,7 +108,7 @@ const StudentViewResult = () => {
                                         }
                                         let termAvg = termSubjects > 0 ? (termTotal / termSubjects).toFixed(2) : 0;
                                         if (termAvg !== 0) {
-                                        
+
                                             termAverages.push({ term: termName, avg: termAvg });
                                             termDetails.push({ term: termName, avg: termAvg, subjects: termSubjects });
                                         }
@@ -150,11 +132,6 @@ const StudentViewResult = () => {
                                 let bestTerm = termDetails.reduce((best, term) => (term.avg > (best.avg || 0) ? term : best), {});
                                 let worstTerm = termDetails.reduce((worst, term) => (term.avg < (worst.avg || 100) ? term : worst), {});
 
-                                // if (worstTerm.avg === bestTerm.avg) {
-                                //     worstTerm.term = null
-                                //     worstTerm.avg = null
-                                // }
-
                                 return (
                                     <div className="row">
                                         {/* 🔹 Missing Terms Alert */}
@@ -177,14 +154,7 @@ const StudentViewResult = () => {
                                         <div className="col-md-8">
                                             <div className="p-3 shadow rounded text-center">
                                                 <h6>📊 Grade Distribution</h6>
-                                                <ResponsiveContainer width="100%" height={250}>
-                                                    <BarChart data={Object.keys(gradeDistribution).map(grade => ({ grade, count: gradeDistribution[grade] }))}>
-                                                        <XAxis dataKey="grade" />
-                                                        <YAxis />
-                                                        <Tooltip />
-                                                        <Bar dataKey="count" fill={COLORS[Math.floor(Math.random() * COLORS.length)]} />
-                                                    </BarChart>
-                                                </ResponsiveContainer>
+                                                <GradeDistributionComponent gradeDistribution={gradeDistribution} />
                                             </div>
                                         </div>
 
@@ -192,15 +162,7 @@ const StudentViewResult = () => {
                                         <div className="col-md-12 mt-4">
                                             <div className="p-3 shadow rounded text-center">
                                                 <h6>📊 Performance Over Terms</h6>
-                                                <ResponsiveContainer width="100%" height={250}>
-                                                    <LineChart data={termAverages}>
-                                                        <CartesianGrid strokeDasharray="3 3" />
-                                                        <XAxis dataKey="term" />
-                                                        <YAxis />
-                                                        <Tooltip />
-                                                        <Line type="monotone" dataKey="avg" stroke={COLORS[Math.floor(Math.random() * COLORS.length)]} strokeWidth={2} />
-                                                    </LineChart>
-                                                </ResponsiveContainer>
+                                                <TermPerformance termAverages={termAverages} />
                                             </div>
                                         </div>
 
@@ -239,22 +201,7 @@ const StudentViewResult = () => {
                                         <div className="col-md-12 mt-4">
                                             <div className="p-3 shadow rounded text-center">
                                                 <h6>📊 Subject Score Distribution</h6>
-                                                <ResponsiveContainer width="100%" height={400}>
-                                                    <BarChart
-                                                        layout="vertical"  // This makes it a horizontal bar chart
-                                                        data={subjectStats}
-                                                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                                                    >
-                                                        <XAxis type="number" domain={[0, 100]} />
-                                                        <YAxis dataKey="subject" type="category" width={100} />
-                                                        <Tooltip />
-                                                        <Bar
-                                                            dataKey="score"
-                                                            fill={COLORS[Math.floor(Math.random() * COLORS.length)]}
-                                                            barSize={20}
-                                                        />
-                                                    </BarChart>
-                                                </ResponsiveContainer>
+                                                <SubjectScoreDistribution subjectStats={subjectStats} />
                                             </div>
                                         </div>
                                     </div>
