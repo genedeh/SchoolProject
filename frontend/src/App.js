@@ -14,6 +14,7 @@ import { Subjects } from './components/Dashboard/Teachers/AdminComponents/Subjec
 import { AssignedSubjects } from './components/Dashboard/Teachers/TeacherComponents/AssignedSubject.components';
 import { Classrooms } from './components/Dashboard/Teachers/AdminComponents/Classrooms.components';
 import { AssignedClassrooms } from './components/Dashboard/Teachers/TeacherComponents/AssignedClassroom.components';
+import StudentViewResult from './components/Dashboard/Students/Results/StudentViewResult.components';
 // axios.defaults.baseURL = 'https://schoolproject-6io4.onrender.com';
 axios.defaults.baseURL = 'http://127.0.0.1:8000/';
 
@@ -28,6 +29,7 @@ function App() {
         <Route path='add-user' element={<AddUser />} />
         <Route path='subjects' element={<AdminPrivateRoute Component={Subjects} AltComponent={AssignedSubjects} />} />
         <Route path='classrooms' element={<AdminPrivateRoute Component={Classrooms} AltComponent={AssignedClassrooms} />} />
+        <Route path='student-result' element={<StudentViewResult />} />
       </Route>
     </Routes>
   );

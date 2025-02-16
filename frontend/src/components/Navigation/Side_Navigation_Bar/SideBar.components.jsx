@@ -27,7 +27,7 @@ export const StudentSidebar = () => {
                         <Nav.Link href="#achivements"><Award className="me-1" /> Achievements <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link href="#results"><BarChart className="me-2" /> Results <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                        <Nav.Link href="/dashboard/student-result"><BarChart className="me-2" /> Results <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                     </Nav.Item>
                 </Nav>
             </Navbar.Collapse>
