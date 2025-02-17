@@ -1,37 +1,28 @@
-import React, { createContext, useContext, useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "react-query";
 import axios from "axios";
 
-const UsersContext = createContext();
+const fetchUsers = async (page, term) => {
+    const token = localStorage.getItem("token");
 
-// Custom hook for accessing the context
-export const useUsers = () => useContext(UsersContext);
+    if (!token) {
+        throw new Error("Authentication token is missing!");
+    }
 
-export const UsersProvider = ({ children }) => {
-    const [currentPage, setCurrentPage] = useState(1); // Current page
-    const [term, setTerm] = useState(""); // Search term
+    const response = await axios.get(`/api/users/?page=${page}&username=${term || ''}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
 
-    // Function to fetch classrooms
-    const fetchUsers = async () => {
-        const token = localStorage.getItem("token");
+    return response.data;
+};
 
-        if (!token) {
-            throw new Error("Authentication token is missing!");
-        }
+const useUsers = () => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [term, setTerm] = useState("");
 
-        const response = await axios.get(
-            `/api/users/?page=${currentPage}&username=${term || ''}`,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            }
-        );
-        return response.data;
-    };
-
-    // Using React Query for data fetching
     const { data, error, isError, isLoading, isFetching, refetch } = useQuery(
-        ["users", currentPage, term], // Query key
-        fetchUsers,
+        ["users", currentPage, term],
+        () => fetchUsers(currentPage, term),
         {
             keepPreviousData: true,
             retry: 3,
@@ -39,6 +30,8 @@ export const UsersProvider = ({ children }) => {
             cacheTime: 1000 * 60 * 10,
         }
     );
+
+
     // Pagination handlers
     const goToNextPage = () => {
         if (data?.next) {
@@ -53,35 +46,31 @@ export const UsersProvider = ({ children }) => {
     };
 
     const handleSearch = () => {
-        setCurrentPage(1); // Reset to the first page on search
-        refetch(); // Refetch data based on the new term
+        setCurrentPage(1);
+        refetch();
     };
 
     const refetchNewData = () => {
-        setCurrentPage(1); // Reset to the first page on search
-        setTerm("")
-        refetch(); // Refetch data based on the new term
+        setCurrentPage(1);
+        setTerm("");
+        refetch();
     };
 
-    const value = {
+    return useMemo(() => ({
         users: data?.results || [],
         totalUsers: data?.count || 0,
         currentPage,
         nextPage: data?.next,
         prevPage: data?.previous,
         loading: isLoading || isFetching,
-        usersError: error,
-        usersIsError: isError,
+        error,
+        isError,
         goToNextPage,
         goToPrevPage,
         setTerm,
         handleSearch,
         refetchNewData,
-    };
-
-    return (
-        <UsersContext.Provider value={value}>
-            {children}
-        </UsersContext.Provider>
-    );
+    }), [data, currentPage, isLoading, isFetching, isError]);
 };
+
+export default useUsers;

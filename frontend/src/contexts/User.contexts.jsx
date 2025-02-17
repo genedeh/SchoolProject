@@ -1,43 +1,49 @@
-import { createContext, useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useMemo, createContext, useContext } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-export const UserContext = createContext({
+const UserContext = createContext({
     currentUser: null,
     setCurrentUser: () => null,
-    error: '',
-    setError: () => '',
+    error: "",
+    setError: () => "",
 });
+
+export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [error, setError] = useState(null);
-    const value = { currentUser, setCurrentUser, error };
-    let navigate = useNavigate();
-    const token = localStorage.getItem('token');
+    const navigate = useNavigate();
+    const token = localStorage.getItem("token");
 
     useEffect(() => {
         const fetchUserProfile = async () => {
             if (token) {
                 try {
-                    const response = await axios.get('api/profile/', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                        },
+                    const response = await axios.get("/api/profile/", {
+                        headers: { Authorization: `Bearer ${token}` },
                     });
                     setError(null);
                     setCurrentUser(response.data);
                 } catch (err) {
-                    setError('Failed to fetch user profile'.toLocaleUpperCase());
+                    setError("FAILED TO FETCH USER PROFILE");
                 }
             } else {
-                setError('No token found');
-                return navigate('/');
+                setError("NO TOKEN FOUND");
+                navigate("/");
             }
         };
+
         fetchUserProfile();
-    }, [token])
+    }, [token, navigate]);
 
+    const value = useMemo(() => ({
+        currentUser,
+        setCurrentUser,
+        error,
+        setError,
+    }), [currentUser, error]);
 
-    return <UserContext.Provider value={value}>{children}</UserContext.Provider>
-}
+    return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
+};
