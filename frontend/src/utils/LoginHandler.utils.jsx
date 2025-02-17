@@ -23,9 +23,6 @@ const useLogin = () => {
                 } else {
                     mutation.error = "401";
                 }
-                setTimeout(() => {
-                    mutation.reset();
-                }, 5000);
             },
         }
     );

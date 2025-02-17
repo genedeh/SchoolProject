@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { Container, Form, Row, Col, Button, Spinner } from 'react-bootstrap'
 import '../Authentication/Login.styles.css'
 import { ErrorAlert } from '../Alerts/ErrorAlert.components';
@@ -17,8 +15,6 @@ const LoginForm = () => {
 
     const { mutate, isLoading, error } = useLogin();
 
-    let navigate = useNavigate();
-
     useEffect(() => setUsername(`${firstname.replace(/ /g, "")}_${lastname.replace(/ /g, "")}`)
         , [firstname, lastname])
     const handleLogin = async (event) => {
@@ -29,7 +25,7 @@ const LoginForm = () => {
         <>
             <Container fluid="true" className="login-container" >
                 <Row className="justify-content-center align-items-center min-vh-100">
-                    {error == "Network" ? (
+                    {error?.status == 500 ? (
                         <WarningAlert
                             heading={"Network Error"}
                             message={"We are unable to connect to the server. Please check your internet connection and try again."}
@@ -37,7 +33,7 @@ const LoginForm = () => {
                             <a href="/">Try Again!</a>
                         </WarningAlert>) : ("")
                     }
-                    {error == "401" ? (
+                    {error?.status == 401 ? (
                         <ErrorAlert
                             heading={"Authentication Problem 401"}
                             message={"Access denied. You do not have permission to view this page. Please contact support if you believe this is a mistake."}
