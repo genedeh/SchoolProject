@@ -73,9 +73,9 @@ const StudentViewResult = () => {
                                 let gradeDistribution = { A1: 0, B2: 0, B3: 0, C4: 0, C5: 0, C6: 0, D7: 0, E8: 0, F9: 0 };
                                 let termDetails = [];
 
+                                const subjectAggregatedStats = {}; // Object to store aggregated subject scores
+
                                 Object.entries(data.terms).forEach(([termName, termData]) => {
-
-
                                     let termTotal = 0;
                                     let termSubjects = 0;
 
@@ -85,20 +85,25 @@ const StudentViewResult = () => {
                                                 termDetails.push({ term: termName, avg: null, subjects: 0 });
                                                 return;
                                             }
+
                                             Object.keys(result.scores).forEach(subject => {
                                                 let score = result.scores[subject].exam + result.scores[subject].test;
+
+                                                // Aggregate scores for each subject
+                                                if (!subjectAggregatedStats[subject]) {
+                                                    subjectAggregatedStats[subject] = { totalScore: 0, count: 0 };
+                                                }
+
+                                                subjectAggregatedStats[subject].totalScore += score;
+                                                subjectAggregatedStats[subject].count += 1;
+
                                                 totalScore += score;
                                                 totalSubjects++;
                                                 termTotal += score;
                                                 termSubjects++;
 
-                                                subjectStats.push({
-                                                    "subject": `${subject} (${termName})`,
-                                                    score: (score / 100) * 100, // Convert to percentage
-                                                });
-
                                                 let grade = getGrade(score);
-                                                gradeDistribution[grade] += 1;
+                                                gradeDistribution[grade] = (gradeDistribution[grade] || 0) + 1;
 
                                                 if (!subjectScores[subject]) {
                                                     subjectScores[subject] = [];
@@ -106,15 +111,23 @@ const StudentViewResult = () => {
                                                 subjectScores[subject].push(score);
                                             });
                                         }
-                                        let termAvg = termSubjects > 0 ? (termTotal / termSubjects).toFixed(2) : 0;
-                                        if (termAvg !== 0) {
-
-                                            termAverages.push({ term: termName, avg: termAvg });
-                                            termDetails.push({ term: termName, avg: termAvg, subjects: termSubjects });
-                                        }
-                                        console.log(termAvg, termAverages, termDetails)
                                     });
 
+                                    let termAvg = termSubjects > 0 ? (termTotal / termSubjects).toFixed(2) : 0;
+                                    if (termAvg !== 0) {
+                                        termAverages.push({ term: termName, avg: termAvg });
+                                        termDetails.push({ term: termName, avg: termAvg, subjects: termSubjects });
+                                    }
+                                });
+
+                                // Convert aggregated subject scores into final subjectStats array
+                                Object.keys(subjectAggregatedStats).forEach(subject => {
+                                    let avgScore = subjectAggregatedStats[subject].totalScore / subjectAggregatedStats[subject].count;
+
+                                    subjectStats.push({
+                                        subject: subject, // Keep only subject name (remove term details)
+                                        score: (avgScore / 100) * 100, // Convert to percentage
+                                    });
                                 });
 
                                 let avgScore = totalSubjects > 0 ? (totalScore / totalSubjects).toFixed(2) : 0;
