@@ -1,5 +1,5 @@
-import { useState, useContext } from "react";
-import { UserContext } from "../../../../contexts/User.contexts"
+import { useState } from "react";
+import { useUser } from "../../../../contexts/User.contexts"
 import { useQuery } from "react-query";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
@@ -27,7 +27,7 @@ const fetchStudentResults = async ({ queryKey }) => {
 };
 
 const StudentViewResult = () => {
-    const { currentUser } = useContext(UserContext);
+    const { currentUser } = useUser();
     const [showModal, setShowModal] = useState(false);
     const [studentResult, setStudentResult] = useState();
     const [selectedSession, setSelectedSession] = useState("");

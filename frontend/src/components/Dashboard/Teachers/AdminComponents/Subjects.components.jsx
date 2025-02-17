@@ -1,6 +1,6 @@
-import { useContext, useState } from "react";
-import { UserContext } from "../../../../contexts/User.contexts";
-import { useSubjects } from "../../../../contexts/Subjects.contexts";
+import {  useState } from "react";
+import { useUser } from "../../../../contexts/User.contexts";
+import useSubjects from "../../../../contexts/Subjects.contexts";
 import { Navigate } from "react-router-dom";
 import { Accordion, Card, Button, ListGroup, Form, InputGroup } from 'react-bootstrap';
 import { Trash, Pencil, PlusCircleFill, GenderFemale, GenderMale } from 'react-bootstrap-icons';
@@ -13,7 +13,7 @@ import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import CenteredSpinner from "../../../Loading/CenteredSpinner.components";
 
 export const Subjects = () => {
-    const { currentUser } = useContext(UserContext);
+    const { currentUser } = useUser();
     const {
         subjects,
         currentPage,

@@ -1,9 +1,8 @@
 import { Card, Container, Row, Col, ListGroup } from 'react-bootstrap';
-import { UserContext } from '../../../contexts/User.contexts';
-import { useContext } from 'react';
+import { useUser } from '../../../contexts/User.contexts';
 import { Navigate } from 'react-router-dom';
 const StudentHome = () => {
-    const { currentUser } = useContext(UserContext)
+    const { currentUser } = useUser();
     const { username } = currentUser;
     if (currentUser.is_student_or_teacher && currentUser) {
         return (

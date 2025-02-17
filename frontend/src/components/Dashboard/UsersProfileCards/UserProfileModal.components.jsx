@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Button, Image, Badge, Card, Alert, Form } from "react-bootstrap";
-import { UserContext } from "../../../contexts/User.contexts";
+import { useUser } from "../../../contexts/User.contexts";
 import { FaPencilAlt } from "react-icons/fa";
 import { useMutation, useQueryClient } from "react-query";
 import { CenteredSpinner } from '../../Loading/CenteredSpinner.components';
@@ -10,7 +10,7 @@ import axios from "axios";
 export const ProfileModal = ({ user, show, handleClose, className, classroomName }) => {
     const token = localStorage.getItem("token")
     const queryClient = useQueryClient()
-    const { currentUser } = useContext(UserContext);
+    const { currentUser } = useUser();
     const { username, is_student_or_teacher, profile_picture_url, subjects, subject, birth_date, is_superuser } = user;
     const current_date = new Date();
 

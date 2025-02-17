@@ -1,5 +1,5 @@
-import { useContext, useState } from "react";
-import { UserContext } from "../../../contexts/User.contexts";
+import { useState } from "react";
+import { useUser } from "../../../contexts/User.contexts";
 import { Navigate } from "react-router-dom";
 import { SelectUserTypeStep } from "./AdminComponents/AddUserTools/SelectUserTypeStep.components";
 import { BasicInformationStep } from "./AdminComponents/AddUserTools/BasicInformationStep.components";
@@ -11,7 +11,7 @@ import { SubjectSelectStep } from "./AdminComponents/AddUserTools/SubjectSelectS
 import { ConfirmationStep } from "./AdminComponents/AddUserTools/ConfirmationStep.components";
 
 export const AddUser = () => {
-    const { currentUser } = useContext(UserContext);
+    const { currentUser } = useUser();
     const [step, setStep] = useState(1);
     const [selectedOption, setSelectedOption] = useState(1);
     const [formData, setFormData] = useState({

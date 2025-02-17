@@ -1,5 +1,4 @@
-import { UserContext } from "../../../../contexts/User.contexts";
-import { useContext } from "react";
+import { useUser } from "../../../../contexts/User.contexts";
 import { useQuery } from "react-query";
 import { Navigate } from "react-router-dom";
 import { Card, Button, ListGroup, Accordion } from 'react-bootstrap';
@@ -12,7 +11,7 @@ import axios from "axios";
 
 
 export const AssignedSubjects = () => {
-    const { currentUser } = useContext(UserContext);
+    const { currentUser } = useUser();
 
     const fetchSubjects = async () => {
         const token = localStorage.getItem("token");

@@ -1,6 +1,6 @@
-import { UserContext } from "../../../../contexts/User.contexts";
-import { useClassrooms } from "../../../../contexts/Classrooms.contexts";
-import { useContext, useState } from "react";
+import { useUser } from "../../../../contexts/User.contexts";
+import useClassrooms from "../../../../contexts/Classrooms.contexts";
+import {  useState } from "react";
 import { Navigate } from "react-router-dom";
 import { Button, Accordion, Card, ListGroup, InputGroup, Form } from "react-bootstrap";
 import { Search } from "react-bootstrap-icons";
@@ -13,7 +13,7 @@ import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import { CenteredSpinner } from "../../../Loading/CenteredSpinner.components";
 
 export const Classrooms = () => {
-    const { currentUser } = useContext(UserContext);
+    const { currentUser } = useUser();
     const {
         classrooms,
         currentPage,

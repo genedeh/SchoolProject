@@ -1,6 +1,6 @@
 import { Modal, Button, Alert } from 'react-bootstrap';
 import { useState } from 'react';
-import { useSubjects } from '../../../../../contexts/Subjects.contexts';
+import useSubjects from '../../../../../contexts/Subjects.contexts';
 import axios from 'axios';
 
 export const DeleteSubjectModal = ({ show, handleClose, subjectId }) => {
