@@ -3,3 +3,6 @@ bootstrap
 react-bootstrap
 react-query
 react-bootstrap-icons
+recharts
+jspdf
+html2canvas

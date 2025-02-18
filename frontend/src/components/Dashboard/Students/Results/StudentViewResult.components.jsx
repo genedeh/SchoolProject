@@ -7,7 +7,7 @@ import { CenteredSpinner } from "../../../Loading/CenteredSpinner.components"
 import { ErrorAlert } from "../../../Alerts/ErrorAlert.components"
 import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import { Tab, Nav, Button } from "react-bootstrap";
-import { ResultModal } from "./ResultModal.components";
+import { ResultModal } from "../../ResultModal.components";
 import { getGrade, GradeDistributionComponent, SubjectScoreDistribution, TermPerformance } from "../../../../utils/AnalyticalHandler.utils";
 // Function to fetch student result
 const fetchStudentResults = async ({ queryKey }) => {
