@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useUser } from "../../contexts/User.contexts";
 import { Modal, Table, Card, Image, Alert, Row, Col, Button, Spinner } from "react-bootstrap";
 import { FaUser, FaCalendarAlt, FaBook, FaComments, FaStar, FaChartPie, FaFileDownload } from "react-icons/fa";
 import { PieChart, Pie, Tooltip, BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
@@ -36,6 +37,7 @@ const renderStars = (rating) => {
 export const ResultModal = ({ show, handleClose, result }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const { currentUser } = useUser();
     if (!result) return null;
 
 
@@ -106,6 +108,11 @@ export const ResultModal = ({ show, handleClose, result }) => {
                 <Modal.Title>Student Result</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+                {!currentUser.is_student_or_teacher && <div>
+                    <hr />
+                    <Button variant="outline-primary">Edit User</Button>
+                    <hr />
+                </div>}
                 <div id="result-content" className="position-relative">
                     {loading && (
                         <div className="loading-overlay">

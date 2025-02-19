@@ -12,7 +12,6 @@ import { getGrade, GradeDistributionComponent, SubjectScoreDistribution, TermPer
 // Function to fetch student result
 const fetchStudentResults = async ({ queryKey }) => {
     const [, session, id] = queryKey; // Extract page number
-    console.log(queryKey)
     const token = localStorage.getItem("token");
 
     if (!token) throw new Error("Authentication token is missing!");
