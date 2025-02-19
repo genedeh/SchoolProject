@@ -7,12 +7,14 @@ const UserContext = createContext({
     setCurrentUser: () => null,
     error: "",
     setError: () => "",
+    fetching: true,
 });
 
 export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
+    const [fetching, setFetching] = useState(true);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
@@ -29,8 +31,10 @@ export const UserProvider = ({ children }) => {
                 } catch (err) {
                     setError("FAILED TO FETCH USER PROFILE");
                 }
+                setFetching(false);
             } else {
                 setError("NO TOKEN FOUND");
+                setFetching(false);
                 navigate("/");
             }
         };
@@ -43,6 +47,7 @@ export const UserProvider = ({ children }) => {
         setCurrentUser,
         error,
         setError,
+        fetching,
     }), [currentUser, error]);
 
     return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

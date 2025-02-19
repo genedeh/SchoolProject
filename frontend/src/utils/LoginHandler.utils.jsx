@@ -13,9 +13,7 @@ const useLogin = () => {
         {
             onSuccess: (data) => {
                 localStorage.setItem('token', data.access);
-                setTimeout(() => {
-                    navigate('/dashboard/home');
-                }, 5000);
+                navigate('/dashboard/home');
             },
             onError: (error) => {
                 if (error.message === "Network Error") {

@@ -92,7 +92,7 @@ const ErrorDisplay = ({ error }) => {
 };
 
 const Navigation = () => {
-    const { currentUser, error } = useUser();
+    const { currentUser, error, fetching } = useUser();
     const [searchTerm, setSearchTerm] = useState('');
     const {
         users,
@@ -115,6 +115,10 @@ const Navigation = () => {
         setTerm(v);
     }
 
+    if (error == "NO TOKEN FOUND") {
+        return <LoadingOverlay loading={true} message="Fetching User Information
+        ..." />;
+    }
     if (!currentUser) {
         return error ? <ErrorDisplay error={error} /> : <LoadingOverlay loading={true} message="Fetching Necessary Information..." />;
     }
