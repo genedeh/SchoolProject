@@ -1,5 +1,6 @@
 import json
 import logging
+from math import perm
 import re
 from django.db.models import Max
 from django.shortcuts import get_object_or_404
@@ -235,6 +236,8 @@ def is_valid_session_format(session):
 
 
 class StudentResultView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, *args, **kwargs):
         student_id = request.GET.get("student_id")
         session_year = request.GET.get("session")
@@ -303,6 +306,7 @@ class StudentResultView(APIView):
 # ✅ Student Result Creation API View
 class CreateStudentResultView(generics.CreateAPIView):
     serializer_class = serializers.StudentResultSerializer
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         data = request.data
@@ -379,6 +383,7 @@ class CreateStudentResultView(generics.CreateAPIView):
 # ✅ Student Result Creation API View
 class CreateStudentResultView(generics.CreateAPIView):
     serializer_class = serializers.StudentCreateResultSerializer
+    permissions_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         data = request.data
@@ -459,7 +464,7 @@ class UpdateStudentResultView(generics.RetrieveUpdateDestroyAPIView):
     queryset = StudentResult.objects.all()
     serializer_class = serializers.StudentUpdateResultSerializer
     lookup_field = 'pk'
-
+    permission_classes = [IsAuthenticated]
     def update(self, request, *args, **kwargs):
         # Retrieve the result or return 404
         result = self.get_object()

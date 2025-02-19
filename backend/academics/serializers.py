@@ -6,7 +6,7 @@ from .models import ClassRoom, StudentResult, Subject
 class ViewUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'gender', 'profile_picture', 'classes']
+        fields = ['id', 'username', 'gender', 'profile_picture_url', 'classes']
         
 class ViewClassroomSerializer(serializers.ModelSerializer):
     class Meta:
