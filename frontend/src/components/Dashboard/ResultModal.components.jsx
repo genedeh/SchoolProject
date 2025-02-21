@@ -5,6 +5,8 @@ import { FaUser, FaCalendarAlt, FaBook, FaComments, FaStar, FaChartPie, FaFileDo
 import { PieChart, Pie, Tooltip, BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import { useNavigate } from "react-router-dom";
+
 // Colors for different grades
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#FF4560"];
 
@@ -37,6 +39,7 @@ const renderStars = (rating) => {
 export const ResultModal = ({ show, handleClose, result }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
     const { currentUser } = useUser();
     if (!result) return null;
 
@@ -103,14 +106,25 @@ export const ResultModal = ({ show, handleClose, result }) => {
     const overallGrade = calculateGrade(overallPercentage);
 
     return (
-        <Modal show={show} onHide={handleClose} fullscreen scrollable>
+        <Modal show={show} onHide={handleClose} fullscreen={true} scrollable={true}>
             <Modal.Header closeButton>
                 <Modal.Title>Student Result</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 {!currentUser.is_student_or_teacher && <div>
                     <hr />
-                    <Button variant="outline-primary">Edit User</Button>
+                    <Button
+                        size="sm"
+                        variant="outline-primary"
+                        onClick={() => {
+                            const encodedResult = encodeURIComponent(JSON.stringify(result[0]));
+                            const url = `/dashboard/update-student-result/${assigned_student.username}_${term}_session?data=${encodedResult}`;
+                            window.open(url, "_blank"); // Open in new tab
+                        }}
+                        disabled={!result[0]} // Disable button if result is not available
+                    >
+                        ✏️ Update Result
+                    </Button>
                     <hr />
                 </div>}
                 <div id="result-content" className="position-relative">
@@ -176,7 +190,7 @@ export const ResultModal = ({ show, handleClose, result }) => {
                         </Card.Header>
 
                         <Card.Body className="p-0">
-                            <Table responsive className="mb-0">
+                            <Table responsive={true} className="mb-0">
                                 {/* Table Head */}
                                 <thead>
                                     <tr style={{ background: "#1E3A8A", color: "#ffffff", textTransform: "uppercase" }}>

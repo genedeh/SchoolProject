@@ -2,7 +2,7 @@ import { useUser } from "../../../../contexts/User.contexts";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { Navigate } from "react-router-dom";
-import { Button, Card, ListGroup, Spinner,  Modal } from "react-bootstrap";
+import { Button, Card, ListGroup, Spinner, Modal } from "react-bootstrap";
 import { PersonFillAdd, GenderMale, GenderFemale, EyeFill, XCircleFill } from "react-bootstrap-icons";
 import { ErrorAlert } from "../../../Alerts/ErrorAlert.components";
 import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
@@ -66,9 +66,9 @@ export const AssignedClassrooms = () => {
         }
     );
 
-    const { data: studentResult, isLoading: isLoadingResult, isFetching: isFetchingResult, isError: isResultError, error: resultError } =
+    const { data: studentResult, isLoading: isLoadingResult, isFetching: isFetchingResult, isError: isResultError, error: resultError, refetch } =
         useQuery(["studentResult", selectedStudent],
-            () => fetchStudentResults(selectedStudent.studentId, selectedStudent.classroomId),
+            () => fetchStudentResults(selectedStudent?.studentId, selectedStudent?.classroomId),
             { enabled: !!selectedStudent, onSuccess: () => setShowOverlay(true) }
         );
 
@@ -105,8 +105,8 @@ export const AssignedClassrooms = () => {
                         </div>
 
                         <div>
-                            {data.map(({ classid, name, students }) => (
-                                <div key={classid} className="mb-4">
+                            {data.map(({ name, students }) => (
+                                <div key={name} className="mb-4">
                                     <Card className="shadow-lg border-0 rounded">
                                         {/* Classroom Header with Gradient */}
                                         <div
@@ -125,7 +125,7 @@ export const AssignedClassrooms = () => {
 
                                             <ListGroup variant="flush">
                                                 {students.length !== 0 ? (
-                                                    students.map(({ id, username, gender, profile_picture_url }) => (
+                                                    students.map(({ id, username, profile_picture_url }) => (
                                                         <ListGroup.Item
                                                             key={id}
                                                             className="d-flex align-items-center justify-content-between border-0"
@@ -140,22 +140,12 @@ export const AssignedClassrooms = () => {
                                                                     alt="Profile"
                                                                 />
                                                                 <div className="ms-3">
-                                                                    <div className="fw-semibold">{username}</div>
+                                                                    <div className="fw-semibold">{username.replace("_", " ")}</div>
                                                                 </div>
                                                             </div>
 
                                                             {/* Gender & View Button */}
                                                             <div className="d-flex align-items-center">
-                                                                {gender === "male" ? (
-                                                                    <Button size="sm" variant="primary" className="me-2">
-                                                                        <GenderMale />
-                                                                    </Button>
-                                                                ) : (
-                                                                    <Button size="sm" style={{ backgroundColor: "pink", borderColor: "white" }} className="me-2">
-                                                                        <GenderFemale />
-                                                                    </Button>
-                                                                )}
-
                                                                 {/* View Student Button */}
                                                                 <Button
                                                                     size="sm"
@@ -163,10 +153,12 @@ export const AssignedClassrooms = () => {
                                                                     onClick={() => {
                                                                         const ClassroomId = data[0].id;
                                                                         setSelectedStudent({ studentId: id, classroomId: ClassroomId });
+                                                                        // Show loading spinner before fetching
+                                                                        refetch();
                                                                     }}
                                                                     disabled={isFetchingResult && isLoadingResult && selectedStudent?.studentId === id}
                                                                 >
-                                                                    {isLoadingResult && selectedStudent?.studentId !== id ? (
+                                                                    {isFetchingResult && selectedStudent?.studentId === id ? (
                                                                         <Spinner animation="border" size="sm" />
                                                                     ) : (
                                                                         <>
