@@ -3,6 +3,7 @@ bootstrap
 react-bootstrap
 react-query
 react-bootstrap-icons
+react-hook-form
 recharts
 jspdf
 html2canvas
