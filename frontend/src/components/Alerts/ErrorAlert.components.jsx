@@ -2,7 +2,7 @@ import { Modal, Button } from 'react-bootstrap';
 import { ExclamationCircleFill } from 'react-bootstrap-icons';
 import './Alert.styles.css';
 import { useState } from 'react';
-export const ErrorAlert = ({ message, heading, removable=false, children }) => {
+export const ErrorAlert = ({ message, heading, removable=true, children }) => {
     const [show, setShow] = useState(true)
 
     return (

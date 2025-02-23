@@ -2,13 +2,15 @@ import { useUser } from "../../../../contexts/User.contexts";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { Navigate } from "react-router-dom";
-import { Button, Card, ListGroup, Spinner, Modal } from "react-bootstrap";
-import { PersonFillAdd, GenderMale, GenderFemale, EyeFill, XCircleFill } from "react-bootstrap-icons";
+import { Button, Card, ListGroup, Spinner } from "react-bootstrap";
+import { PersonFillAdd, EyeFill, PlusCircleFill } from "react-bootstrap-icons";
 import { ErrorAlert } from "../../../Alerts/ErrorAlert.components";
 import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import { CenteredSpinner } from "../../../Loading/CenteredSpinner.components"
 import axios from "axios";
-import { ResultModal } from "../../ResultModal.components";
+import { checkStudentResultCreationAvailaility } from "../ResultsTools/CreateStudentResult.components";
+import { ResultTermModal } from "../ResultsTools/ResultTermsModal.components";
+import { ResultViewHandlerButton } from "../ResultsTools/ResultHandlerButtons.components";
 
 const fetchStudentResults = async (studentId, classroomId) => {
     const token = localStorage.getItem("token");
@@ -48,8 +50,6 @@ export const AssignedClassrooms = () => {
     const { currentUser } = useUser();
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [showOverlay, setShowOverlay] = useState(false);
-    const [showResultModal, setShowResultModal] = useState(false);
-    const [selectedTerm, setSelectedTerm] = useState(null);
 
 
     // Using React Query for data fetching
@@ -69,7 +69,11 @@ export const AssignedClassrooms = () => {
     const { data: studentResult, isLoading: isLoadingResult, isFetching: isFetchingResult, isError: isResultError, error: resultError, refetch } =
         useQuery(["studentResult", selectedStudent],
             () => fetchStudentResults(selectedStudent?.studentId, selectedStudent?.classroomId),
-            { enabled: !!selectedStudent, onSuccess: () => setShowOverlay(true) }
+            {
+                enabled: !!selectedStudent, onSuccess: () => setShowOverlay(true),
+                refetchOnWindowFocus: false,
+                retry: 3,
+            }
         );
 
 
@@ -107,7 +111,7 @@ export const AssignedClassrooms = () => {
                         <div>
                             {data.map(({ name, students }) => (
                                 <div key={name} className="mb-4">
-                                    <Card className="shadow-lg border-0 rounded">
+                                    <Card className="border-0">
                                         {/* Classroom Header with Gradient */}
                                         <div
                                             className="p-3 text-white fw-bold"
@@ -149,23 +153,14 @@ export const AssignedClassrooms = () => {
                                                                 {/* View Student Button */}
                                                                 <Button
                                                                     size="sm"
-                                                                    variant="outline-dark"
+                                                                    variant="outline-success"
                                                                     onClick={() => {
-                                                                        const ClassroomId = data[0].id;
-                                                                        setSelectedStudent({ studentId: id, classroomId: ClassroomId });
-                                                                        // Show loading spinner before fetching
-                                                                        refetch();
+                                                                        console.log("View Student Clicked", id);
+                                                                        checkStudentResultCreationAvailaility(id, data[0].id);
                                                                     }}
-                                                                    disabled={isFetchingResult && isLoadingResult && selectedStudent?.studentId === id}
-                                                                >
-                                                                    {isFetchingResult && selectedStudent?.studentId === id ? (
-                                                                        <Spinner animation="border" size="sm" />
-                                                                    ) : (
-                                                                        <>
-                                                                            <EyeFill className="me-1" /> View Result
-                                                                        </>
-                                                                    )}
-                                                                </Button>
+                                                                    className="me-2"
+                                                                ><PlusCircleFill className="me-1" /> Add Result</Button>
+                                                                <ResultViewHandlerButton queryKeys={{ studentId: id, classroomId: data[0].id }} refetch={refetch} setSelectedStudent={setSelectedStudent} selectedStudent={selectedStudent} id={id} loading={{ isFetchingResult, isLoadingResult }} />
                                                             </div>
                                                         </ListGroup.Item>
                                                     ))
@@ -192,48 +187,10 @@ export const AssignedClassrooms = () => {
                             {studentResult && (
                                 <div className="mt-4 text-center">
                                     <h5 className="text-success">Result Loaded Successfully ✅</h5>
-                                    {/* <pre className="text-muted">{JSON.stringify(studentResult, null, 2)}</pre> */}
                                 </div>
                             )}
-
-                            <Modal
-                                show={showOverlay}
-                                onHide={() => setShowOverlay(false)}
-                                centered
-                                backdrop="static"
-                                keyboard={false}
-                                className="fade"
-                            >
-                                {/* Modal Background Blur Effect */}
-                                <div className="modal-backdrop-blur"></div>
-
-                                <Modal.Header className="bg-secondary text-white" closeButton>
-                                    <Modal.Title>📜 Available Terms</Modal.Title>
-                                </Modal.Header>
-
-                                <Modal.Body>
-                                    <ListGroup variant="flush">
-                                        {studentResult?.terms &&
-                                            Object.entries(studentResult.terms).map(([termName, termArray]) => {
-                                                const term = termArray[0]; // Get first term object
-                                                if (!term.uploaded) return null; // Hide if not uploaded
-
-                                                return (
-                                                    <ListGroup.Item key={termName} className="border-0 text-center">
-                                                        <Button variant="dark" className="w-100 fw-bold" onClick={() => {
-                                                            setSelectedTerm(termArray)
-                                                            setShowResultModal(true)
-                                                        }}>
-                                                            {termName}
-                                                        </Button>
-                                                    </ListGroup.Item>
-                                                );
-                                            })}
-                                    </ListGroup>
-                                </Modal.Body>
-                            </Modal>
+                            <ResultTermModal showOverlay={showOverlay} setShowOverlay={setShowOverlay} studentResult={studentResult} />
                         </div>
-                        <ResultModal show={showResultModal} handleClose={() => setShowResultModal(false)} result={selectedTerm} />
                     </>
                 )}
             </div>

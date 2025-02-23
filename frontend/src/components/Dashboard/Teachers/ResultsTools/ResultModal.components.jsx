@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { useUser } from "../../contexts/User.contexts";
+import { useUser } from "../../../../contexts/User.contexts";
 import { Modal, Table, Card, Image, Alert, Row, Col, Button, Spinner } from "react-bootstrap";
 import { FaUser, FaCalendarAlt, FaBook, FaComments, FaStar, FaChartPie, FaFileDownload } from "react-icons/fa";
 import { PieChart, Pie, Tooltip, BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import { useNavigate } from "react-router-dom";
 
 // Colors for different grades
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#FF4560"];
@@ -39,7 +38,6 @@ const renderStars = (rating) => {
 export const ResultModal = ({ show, handleClose, result }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
     const { currentUser } = useUser();
     if (!result) return null;
 

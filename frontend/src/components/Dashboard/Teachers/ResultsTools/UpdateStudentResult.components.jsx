@@ -3,10 +3,10 @@ import { Container, Form, Button, Row, Col, Card, Spinner } from "react-bootstra
 import { useMutation } from "react-query";
 import axios from "axios";
 import React, { useState } from "react";
-import { ErrorAlert } from "../../Alerts/ErrorAlert.components";
-import { SuccessAlert } from "../../Alerts/SuccessAlert.components";
-import { ErrorMessageHandling } from "../../../utils/ErrorHandler.utils";
-import { useUser } from "../../../contexts/User.contexts";
+import { ErrorAlert } from "../../../Alerts/ErrorAlert.components";
+import { SuccessAlert } from "../../../Alerts/SuccessAlert.components";
+import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
+import { useUser } from "../../../../contexts/User.contexts";
 import { FaCheckCircle, FaExclamationTriangle, FaUpload } from "react-icons/fa"; // 🎨 Import Icons
 
 const UpdateStudentResult = () => {
