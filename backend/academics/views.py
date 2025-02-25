@@ -323,7 +323,6 @@ class CreateStudentResultView(generics.CreateAPIView):
         session = data["session"]
         term = data["term"]
         scores = data["scores"]
-        comments = data["comments"]
 
         # ✅ Validate Session Format
         if not is_valid_session_format(session):
@@ -350,24 +349,6 @@ class CreateStudentResultView(generics.CreateAPIView):
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-        # ✅ Validate Comments Field
-        required_comment_keys = {"principals_comment",
-                                 "teachers_comment", "resumption_date"}
-        if not isinstance(comments, dict):
-            return Response({"error": "Comments must be a dictionary containing 'principals_comment', 'teachers_comment', and 'resumption_date'."}, status=status.HTTP_400_BAD_REQUEST)
-
-        missing_comment_keys = required_comment_keys - comments.keys()
-        if missing_comment_keys:
-            return Response(
-                {"error": f"Missing required comment fields: {', '.join(missing_comment_keys)}"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # ✅ Validate General Remarks (Flexible Fields)
-        general_remarks = data.get("general_remarks", {})
-        print(type(general_remarks))
-        if not isinstance(json.loads(general_remarks), dict):
-            return Response({"error": "General remarks must be a dictionary of remark categories."}, status=status.HTTP_400_BAD_REQUEST)
 
         # ✅ Create the Student Result Record
         serializer = self.get_serializer(data=data)
@@ -383,10 +364,10 @@ class UpdateStudentResultView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializers.StudentUpdateResultSerializer
     lookup_field = 'pk'
     permission_classes = [IsAuthenticated]
+
     def update(self, request, *args, **kwargs):
         # Retrieve the result or return 404
         result = self.get_object()
-
 
         data = request.data
         allowed_fields = {"uploaded", "scores", "comments",
@@ -432,31 +413,6 @@ class UpdateStudentResultView(generics.RetrieveUpdateDestroyAPIView):
                         {"error": f"Invalid scores for {subject}. Exam and test scores must be between 0 and 100."},
                         status=status.HTTP_400_BAD_REQUEST
                     )
-
-        # ✅ Validate comments structure
-        if "comments" in data:
-            comments = data["comments"]
-            required_comment_keys = {"principals_comment",
-                                     "teachers_comment", "resumption_date"}
-
-            if not isinstance(comments, dict):
-                return Response(
-                    {"error": "Comments must be a dictionary containing 'principal_comment', 'teacher_comment', and 'resumption_date'."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            missing_comment_keys = required_comment_keys - comments.keys()
-            if missing_comment_keys:
-                return Response(
-                    {"error": f"Missing required comment fields: {', '.join(missing_comment_keys)}"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-        # ✅ Validate general remarks (optional but must be a dictionary)
-        if "general_remarks" in data:
-            general_remarks = data["general_remarks"]
-            if not isinstance(general_remarks, dict):
-                return Response({"error": "General remarks must be a dictionary of remark categories."}, status=status.HTTP_400_BAD_REQUEST)
 
         # ✅ Apply the updates to the result instance
         for field in allowed_fields:
