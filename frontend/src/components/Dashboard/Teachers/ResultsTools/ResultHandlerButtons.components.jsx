@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Button, Spinner } from "react-bootstrap";
-import { EyeFill } from "react-bootstrap-icons";
+import { EyeFill, PlusCircleFill } from "react-bootstrap-icons";
 
 export const ResultViewHandlerButton = ({ queryKeys, refetch, setSelectedStudent, selectedStudent, id, loading }) => {
     return (
@@ -24,9 +25,19 @@ export const ResultViewHandlerButton = ({ queryKeys, refetch, setSelectedStudent
     );
 }
 
-export const ResultCreationHandlerButton = ({ }) => {
+export const ResultCreationHandlerButton = ({ studentName, classroomID }) => {
     return (
-        <div></div>
+        <>
+            < Button
+                size="sm"
+                variant="outline-success"
+                onClick={() => {
+                    const url = `/dashboard/create-student-result/?student_name=${studentName}&classroom_id=${classroomID}`;
+                    window.open(url, "_blank"); // Open in new tab
+                }}
+                className="me-2"
+            > <PlusCircleFill className="me-1" /> Add Result</Button >
+        </>
     );
 }
 

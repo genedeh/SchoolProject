@@ -2,15 +2,14 @@ import { useUser } from "../../../../contexts/User.contexts";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { Navigate } from "react-router-dom";
-import { Button, Card, ListGroup, Spinner } from "react-bootstrap";
-import { PersonFillAdd, EyeFill, PlusCircleFill } from "react-bootstrap-icons";
+import { Button, Card, ListGroup } from "react-bootstrap";
+import { PersonFillAdd } from "react-bootstrap-icons";
 import { ErrorAlert } from "../../../Alerts/ErrorAlert.components";
 import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import { CenteredSpinner } from "../../../Loading/CenteredSpinner.components"
 import axios from "axios";
-import { checkStudentResultCreationAvailaility } from "../ResultsTools/CreateStudentResult.components";
 import { ResultTermModal } from "../ResultsTools/ResultTermsModal.components";
-import { ResultViewHandlerButton } from "../ResultsTools/ResultHandlerButtons.components";
+import { ResultCreationHandlerButton, ResultViewHandlerButton } from "../ResultsTools/ResultHandlerButtons.components";
 
 const fetchStudentResults = async (studentId, classroomId) => {
     const token = localStorage.getItem("token");
@@ -42,6 +41,7 @@ const fetchClassrooms = async ({ queryKey }) => {
             headers: { Authorization: `Bearer ${token}` },
         }
     );
+    console.log(response.data.results[0].id)
     return response.data.results;
 };
 
@@ -79,7 +79,7 @@ export const AssignedClassrooms = () => {
 
     if (!currentUser.is_student_or_teacher && currentUser && !currentUser.is_admin) {
         return (
-            <div className="container">
+            <div>
                 <center>
                     <hr />
                     <h3 className="text-primary fw-bold">📚 Assigned Classrooms</h3>
@@ -102,21 +102,20 @@ export const AssignedClassrooms = () => {
                 {!isLoading && !isError && data.length > 0 && (
                     <>
                         {/* Add User Button */}
-                        <div className="d-flex justify-content-end mb-4">
-                            <Button size="lg" variant="primary" href="/dashboard/add-user">
-                                <PersonFillAdd className="me-2" /> Add User
+                        <div className="d-grid gap-2 m-4">
+                            <Button size="lg" variant="outline-primary" href="/dashboard/add-user">
+                                <PersonFillAdd className="me-2" /> Add New Student (Ensure To only Select Your Class)
                             </Button>
                         </div>
 
                         <div>
-                            {data.map(({ name, students }) => (
-                                <div key={name} className="mb-4">
+                            {data.map(({ id: classId, name, students }) => (
+                                <div key={classId} className="mb-4">
                                     <Card className="border-0">
                                         {/* Classroom Header with Gradient */}
                                         <div
-                                            className="p-3 text-white fw-bold"
+                                            className="p-3 text-light fw-bold bg-primary"
                                             style={{
-                                                background: "linear-gradient(to right, #007bff, #00c6ff)",
                                                 borderTopLeftRadius: "8px",
                                                 borderTopRightRadius: "8px"
                                             }}
@@ -151,16 +150,8 @@ export const AssignedClassrooms = () => {
                                                             {/* Gender & View Button */}
                                                             <div className="d-flex align-items-center">
                                                                 {/* View Student Button */}
-                                                                <Button
-                                                                    size="sm"
-                                                                    variant="outline-success"
-                                                                    onClick={() => {
-                                                                        console.log("View Student Clicked", id);
-                                                                        checkStudentResultCreationAvailaility(id, data[0].id);
-                                                                    }}
-                                                                    className="me-2"
-                                                                ><PlusCircleFill className="me-1" /> Add Result</Button>
-                                                                <ResultViewHandlerButton queryKeys={{ studentId: id, classroomId: data[0].id }} refetch={refetch} setSelectedStudent={setSelectedStudent} selectedStudent={selectedStudent} id={id} loading={{ isFetchingResult, isLoadingResult }} />
+                                                                <ResultCreationHandlerButton studentName={username} classroomID={classId} />
+                                                                <ResultViewHandlerButton queryKeys={{ studentId: id, classroomId: classId }} refetch={refetch} setSelectedStudent={setSelectedStudent} selectedStudent={selectedStudent} id={id} loading={{ isFetchingResult, isLoadingResult }} />
                                                             </div>
                                                         </ListGroup.Item>
                                                     ))
