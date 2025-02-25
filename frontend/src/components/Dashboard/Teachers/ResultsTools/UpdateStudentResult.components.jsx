@@ -7,7 +7,7 @@ import { ErrorAlert } from "../../../Alerts/ErrorAlert.components";
 import { SuccessAlert } from "../../../Alerts/SuccessAlert.components";
 import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import { useUser } from "../../../../contexts/User.contexts";
-import { FaCheckCircle, FaExclamationTriangle, FaUpload } from "react-icons/fa"; // 🎨 Import Icons
+import { FaCheckCircle, FaExclamationTriangle } from "react-icons/fa"; // 🎨 Import Icons
 
 const UpdateStudentResult = () => {
     const { currentUser } = useUser();
@@ -97,7 +97,9 @@ const UpdateStudentResult = () => {
                         </h2>
 
                         {/* ✅ Success / Error Alerts */}
-                        {isError && <ErrorAlert heading="Update Failed" message={ErrorMessageHandling(isError, error)} />}
+                        {isError && <ErrorAlert heading="Update Failed" message={ErrorMessageHandling(isError, error)} >
+                            {error.response?.data?.error}
+                        </ErrorAlert>}
                         {isSuccess && <SuccessAlert heading="Update Successful" message="Result updated successfully!" />}
 
                         <Form onSubmit={onSubmit} className="mt-3">
