@@ -9,7 +9,7 @@ import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import { CenteredSpinner } from "../../../Loading/CenteredSpinner.components"
 import axios from "axios";
 import { ResultTermModal } from "../ResultsTools/ResultTermsModal.components";
-import { ResultCreationHandlerButton, ResultViewHandlerButton } from "../ResultsTools/ResultHandlerButtons.components";
+import { ResultCreationHandlerButton, ResultViewHandlerButton } from "../ResultsTools/ResultHandlerTools.components";
 
 const fetchStudentResults = async (studentId, classroomId) => {
     const token = localStorage.getItem("token");

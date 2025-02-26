@@ -1,9 +1,10 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, Navigate } from "react-router-dom";
 import { useState } from "react";
+import { useUser } from "../../../../contexts/User.contexts";
 import { useQuery, useMutation } from "react-query";
 import { Form, Button, Spinner, Col, Row, Card } from "react-bootstrap";
-import { FaCheckCircle, FaCheckDouble, FaStickyNote, FaUpload } from "react-icons/fa";
-import { StarRating } from "./ResultHandlerButtons.components";
+import { FaCheckCircle, FaCheckDouble, FaStickyNote } from "react-icons/fa";
+import { ResultComments, ResultGeneralRemarks, ResultSubjectScoresDisplay, ResultUploadButton } from "./ResultHandlerTools.components";
 import CenteredSpinner from "../../../Loading/CenteredSpinner.components";
 import { ErrorAlert } from "../../../Alerts/ErrorAlert.components";
 import { SuccessAlert } from "../../../Alerts/SuccessAlert.components";
@@ -15,15 +16,12 @@ import axios from "axios";
 export const CreateStudentResult = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
+    const { currentUser } = useUser();
     const studentName = queryParams.get("student_name");
     const classroomId = queryParams.get("classroom_id");
+    const [student_Id, setStudent_Id] = useState(null);
     const token = localStorage.getItem("token");
-    const [isHovered, setIsHovered] = useState(false);
 
-
-    if (!token) {
-        throw new Error("Authentication token is missing!");
-    }
 
     const { data: student, isLoading: studentLoading, error: studentError } = useQuery({
         queryKey: ["student", studentName],
@@ -31,7 +29,9 @@ export const CreateStudentResult = () => {
             const response = await axios.get(`/api/users/?username=${studentName}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
+            setStudent_Id(response.data.results[0].id)
             return response.data.results[0];
+
         },
         enabled: !!studentName,
     });
@@ -52,8 +52,8 @@ export const CreateStudentResult = () => {
         session: "",
         term: "",
         uploaded: false,
-        assigned_student: student?.id,
-        classroom: classroom?.id,
+        assigned_student: student_Id,
+        classroom: classroomId,
         scores: {},
         general_remarks: {
             sports: 2,
@@ -128,227 +128,112 @@ export const CreateStudentResult = () => {
     if (studentError) return <ErrorAlert heading="Error while fetching Student Information" message={ErrorMessageHandling(studentError, studentError)} />;
     if (classroomError) return <ErrorAlert heading="Error while fetching Classroom Information" message={ErrorMessageHandling(classroomError, classroomError)} />;
 
-    return (
-        <div className="shadow-md border-0 p-4 mt-4">
-            <h2 className="text-center mb-3">
-                Create Result for {student?.username}
-            </h2>
-            {isSuccess && <SuccessAlert heading="Creation Successful" message="Result Created successfully!" />}
+    if (currentUser && !currentUser.is_student_or_teacher) {
 
-            <Form onSubmit={onSubmit} className="mt-3">
-                {/* ✅ Student Info Section */}
-                <Card className="p-4 mb-4 bg-white rounded">
-                    <Row className="mb-3">
-                        <Col><strong>Student:</strong> {student?.username}</Col>
-                        <Col><strong>Classroom:</strong> {classroom?.name}</Col>
-                    </Row>
-                    <Row className="gy-3">
-                        <Col md={6}>
-                            <Form.Group controlId="term">
-                                <Form.Label className="fw-semibold">Term</Form.Label>
-                                <Form.Select
-                                    name="term"
-                                    size="md"
-                                className="border-primary shadow-sm"
-                                    required
-                                    value={formData.term || ""}
-                                    onChange={(e) => setFormData((prev) => ({ ...prev, term: e.target.value }))}
-                                >
-                                    <option value="" disabled>Select Term</option>
-                                    {termOptions.map((term, index) => (
-                                        <option key={index} value={term}>{term}</option>
-                                    ))}
-                                </Form.Select>
-                            </Form.Group>
-                        </Col>
-                        <Col md={6}>
-                            <Form.Group controlId="session">
-                                <Form.Label className="fw-semibold">Session</Form.Label>
-                                <Form.Control
-                                    name="session"
-                                    type="text"
-                                    size="md"
-                                    className="border-primary shadow-sm"
-                                    required
-                                    placeholder={`e.g. ${new Date().getFullYear()}/${new Date().getFullYear() + 1}`}
-                                    value={formData.session || ""}
-                                    onChange={(e) => setFormData((prev) => ({ ...prev, session: e.target.value }))}
-                                />
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                </Card>
+        return (
+            <div className="shadow-md border-0 p-4 mt-4">
+                <h2 className="text-center mb-3">
+                    Create Result for {student?.username}
+                </h2>
+                {isSuccess && <SuccessAlert heading="Creation Successful" message="Result Created successfully!" />}
 
-
-
-                {/* ✅ Scores Section */}
-                <h4 className="mt-4 d-flex align-items-center gap-2 text-dark">
-                    <FaCheckCircle className="text-success" />
-                    Subjects & Scores  TEST (40) / EXAM (60)
-                </h4>
-                <hr />
-
-                {student?.subjects.map((subject) => (
-                    <Row key={subject.id} className="mb-3 p-3 rounded border bg-light shadow-sm">
-                        <Col md={4} className="d-flex align-items-center">
-                            <Form.Label className="fw-semibold">{subject.name.split("_")[1]}</Form.Label>
-                        </Col>
-                        <Col md={4}>
-                            <Form.Control
-                                type="number"
-                                className="border-primary shadow-sm"
-                                value={formData.scores[subject.name.split("_")[1]]?.test || ""}
-                                min={0}
-                                max={40}
-                                required
-                                onChange={(e) =>
-                                    handleNestedChange("scores", subject.name.split("_")[1], {
-                                        ...formData.scores[subject.name.split("_")[1]],
-                                        test: parseInt(e.target.value) || 0,
-                                    })
-                                }
-                                placeholder="Test (Max 40)"
-                            />
-                        </Col>
-                        <Col md={4}>
-                            <Form.Control
-                                type="number"
-                                className="border-primary shadow-sm"
-                                value={formData.scores[subject.name.split("_")[1]]?.exam || ""}
-                                min={0}
-                                max={60}
-                                required
-                                onChange={(e) =>
-                                    handleNestedChange("scores", subject.name.split("_")[1], {
-                                        ...formData.scores[subject.name.split("_")[1]],
-                                        exam: parseInt(e.target.value) || 0,
-                                    })
-                                }
-                                placeholder="Exam (Max 60)"
-                            />
-                        </Col>
-                    </Row>
-                ))}
-
-                {/* ✅ General Remarks */}
-                <h4 className="mt-4 d-flex align-items-center gap-2 text-dark">
-                    <FaCheckDouble className="text-primary" />
-                    General Remarks
-                </h4>
-                <hr />
-                {Object.keys(formData?.general_remarks || {}).map((remark, index) => (
-                    <Row key={index} className="mb-3 p-3 rounded border bg-light shadow-sm">
-                        <Col md={12} className=" align-items-center">
-                            <Row className="p-3 rounded border bg-light shadow-sm align-items-center">
-                                <Col xs={6} className="d-flex align-items-center">
-                                    <span className="fw-semibold text-secondary">
-                                        {remark.charAt(0).toUpperCase() + remark.slice(1)}
-                                    </span>
-                                </Col>
-                                <Col md={6} >
-                                    <StarRating
-                                        value={formData.general_remarks[remark] || 0}
-                                        onChange={(value) => handleNestedChange("general_remarks", remark, value)}
-                                    />
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                ))}
-
-                {/* ✅ Comments Section */}
-                <h4 className="mt-4 d-flex align-items-center gap-2 text-dark">
-                    <FaStickyNote className="text-info" />
-                    Comments
-                </h4>
-                <hr />
-
-                {Object.keys(formData?.comments || {}).map((comment, index) => {
-                    if (comment === "Next_Term_Begins_ON") {
-                        return (
-                            <Row key={index} className="mb-3 p-3 rounded border bg-light shadow-sm">
-                                <Col md={4} className="d-flex align-items-center">
-                                    <Form.Label className="fw-semibold text-secondary">
-                                        {comment.replace("_", " ")}
-                                    </Form.Label>
-                                </Col>
-                                <Col md={6}>
-                                    <Form.Control
-                                        type="date"
-                                        className="border-primary shadow-sm p-3 rounded"
+                <Form onSubmit={onSubmit} className="mt-3">
+                    {/* ✅ Student Info Section */}
+                    <Card className="p-4 mb-4 bg-white rounded">
+                        <Row className="mb-3">
+                            <Col><strong>Student:</strong> {student?.username}</Col>
+                            <Col><strong>Classroom:</strong> {classroom?.name}</Col>
+                        </Row>
+                        <Row className="gy-3">
+                            <Col md={6}>
+                                <Form.Group controlId="term">
+                                    <Form.Label className="fw-semibold">Term</Form.Label>
+                                    <Form.Select
+                                        name="term"
+                                        size="md"
+                                        className="border-primary shadow-sm"
                                         required
-                                        value={formData.comments[comment] || ""}
-                                        onChange={(e) => handleNestedChange("comments", comment, e.target.value)}
-                                        placeholder={`Enter ${comment.replace("_", " ")}`}
-                                    />
-                                </Col>
-                            </Row>
-                        )
-                    }
-                    return (
-                        <Row key={index} className="mb-3 p-3 rounded border bg-light shadow-sm">
-                            <Col md={4} className="d-flex align-items-center">
-                                <Form.Label className="fw-semibold text-secondary">
-                                    {comment.charAt().toUpperCase() + comment.slice(1)}
-                                </Form.Label>
+                                        value={formData.term || ""}
+                                        onChange={(e) => setFormData((prev) => ({ ...prev, term: e.target.value }))}
+                                    >
+                                        <option value="" disabled>Select Term</option>
+                                        {termOptions.map((term, index) => (
+                                            <option key={index} value={term}>{term}</option>
+                                        ))}
+                                    </Form.Select>
+                                </Form.Group>
                             </Col>
                             <Col md={6}>
-                                <Form.Group controlId="comments">
-                                    <Form.Label className="fw-semibold">Comments</Form.Label>
+                                <Form.Group controlId="session">
+                                    <Form.Label className="fw-semibold">Session</Form.Label>
                                     <Form.Control
-                                        as="textarea"
-                                        rows={3}
-                                        className="border-primary shadow-sm p-3 rounded"
+                                        name="session"
+                                        type="text"
+                                        size="md"
+                                        className="border-primary shadow-sm"
                                         required
-                                        value={formData.comments[comment] || ""}
-                                        onChange={(e) => handleNestedChange("comments", comment, e.target.value)}
-                                        placeholder={`Enter ${comment.replace("_", " ")}`}
+                                        placeholder={`e.g. ${new Date().getFullYear()}/${new Date().getFullYear() + 1}`}
+                                        value={formData.session || ""}
+                                        onChange={(e) => setFormData((prev) => ({ ...prev, session: e.target.value }))}
                                     />
                                 </Form.Group>
                             </Col>
                         </Row>
-                    )
-                })}
+                    </Card>
 
 
-                {/* Uploaded Toggle Button */}
-                <div className="text-center mt-4">
-                    <Button
-                        variant={formData.uploaded ? "success" : "primary"}
-                        onClick={() => handleInputChange("uploaded", !formData.uploaded)}
-                        className="px-5 py-3 fw-bold shadow-lg rounded-pill d-flex align-items-center gap-2"
-                        size="lg"
-                        onMouseEnter={() => setIsHovered(true)}
-                        onMouseLeave={() => setIsHovered(false)}
-                        style={{
-                            transform: isHovered ? "scale(1.05)" : "scale(1)",
-                            transition: "transform 0.2s ease-in-out",
-                        }}
-                    >
-                        {formData.uploaded ? (
-                            <>
-                                <FaCheckCircle className="text-white" /> Uploaded
-                            </>
-                        ) : (
-                            <>
-                                <FaUpload className="text-white" /> Upload Result
-                            </>
-                        )}
-                    </Button>
-                </div>
 
-                {/* ✅ Submit Button */}
-                <div className="text-center mt-4">
-                    <Button type="submit" variant="primary" className="px-4 py-2 fw-semibold shadow-sm" disabled={posting}>
-                        {posting ? <Spinner animation="border" size="sm" className="me-2" /> : "Create Result"}
-                    </Button>
-                </div>
-                <hr />
-                {postError && <ErrorAlert heading="Error while Posting Result" message={ErrorMessageHandling(postError, postError)} >
-                    {postError.response?.data?.error}
-                </ErrorAlert>}
+                    {/* ✅ Scores Section */}
+                    <h4 className="mt-4 d-flex align-items-center gap-2 text-dark">
+                        <FaCheckCircle className="text-success" />
+                        Subjects & Scores  TEST (40) / EXAM (60)
+                    </h4>
+                    <hr />
 
-            </Form>
-        </div >
-    );
+                    {student?.subjects.map((subject) => (
+                        <ResultSubjectScoresDisplay subject={subject} handleNestedChange={handleNestedChange} scores={formData.scores} />
+                    ))}
+
+                    {/* ✅ General Remarks */}
+                    <h4 className="mt-4 d-flex align-items-center gap-2 text-dark">
+                        <FaCheckDouble className="text-primary" />
+                        General Remarks
+                    </h4>
+                    <hr />
+                    {Object.keys(formData?.general_remarks || {}).map((remark, index) => (
+                        <ResultGeneralRemarks remark={remark} index={index} general_remarks={formData?.general_remarks} handleNestedChange={handleNestedChange} />
+                    ))}
+
+                    {/* ✅ Comments Section */}
+                    <h4 className="mt-4 d-flex align-items-center gap-2 text-dark">
+                        <FaStickyNote className="text-info" />
+                        Comments
+                    </h4>
+                    <hr />
+
+                    {Object.keys(formData?.comments || {}).map((comment, index) => (
+                        <ResultComments comment={comment} index={index} comments={formData?.comments} handleNestedChange={handleNestedChange} />
+                    ))}
+
+
+                    {/* Uploaded Toggle Button */}
+                    <ResultUploadButton uploaded={formData?.uploaded} handleInputChange={handleInputChange} />
+
+                    {/* ✅ Submit Button */}
+                    <div className="text-center mt-4">
+                        <Button type="submit" variant="primary" className="px-4 py-2 fw-semibold shadow-sm" disabled={posting}>
+                            {posting ? <Spinner animation="border" size="sm" className="me-2" /> : "Create Result"}
+                        </Button>
+                    </div>
+                    <hr />
+                    {postError && <ErrorAlert heading="Error while Posting Result" message={ErrorMessageHandling(postError, postError)} >
+                        {postError.response?.data?.error}
+                    </ErrorAlert>}
+
+                </Form>
+            </div >
+        );
+    } else {
+        return <Navigate to="/dashboard/home" />;
+    }
 };

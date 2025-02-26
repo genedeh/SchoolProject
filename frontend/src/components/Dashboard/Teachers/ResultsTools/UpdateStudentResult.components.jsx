@@ -8,6 +8,7 @@ import { SuccessAlert } from "../../../Alerts/SuccessAlert.components";
 import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import { useUser } from "../../../../contexts/User.contexts";
 import { FaCheckCircle, FaExclamationTriangle } from "react-icons/fa"; // 🎨 Import Icons
+import { ResultComments, ResultGeneralRemarks, ResultSubjectScoresDisplay, ResultUploadButton } from "./ResultHandlerTools.components";
 
 const UpdateStudentResult = () => {
     const { currentUser } = useUser();
@@ -121,45 +122,7 @@ const UpdateStudentResult = () => {
                             <hr />
 
                             {Object.keys(formData?.scores || {}).map((subject, index) => (
-                                <Row key={index} className="mb-3 p-3 rounded border bg-light shadow-sm">
-                                    <Col md={4} className="d-flex align-items-center">
-                                        <Form.Label className="fw-semibold">{subject}</Form.Label>
-                                    </Col>
-                                    <Col md={4}>
-                                        <Form.Control
-                                            type="number"
-                                            className="border-secondary"
-                                            value={formData.scores[subject]?.test || ""}
-                                            min={0}
-                                            max={40}
-                                            required
-                                            onChange={(e) =>
-                                                handleNestedChange("scores", subject, {
-                                                    ...formData.scores[subject],
-                                                    test: parseInt(e.target.value) || 0,
-                                                })
-                                            }
-                                            placeholder="Test (Max 40)"
-                                        />
-                                    </Col>
-                                    <Col md={4}>
-                                        <Form.Control
-                                            type="number"
-                                            className="border-secondary"
-                                            value={formData.scores[subject]?.exam || ""}
-                                            min={0}
-                                            max={60}
-                                            required
-                                            onChange={(e) =>
-                                                handleNestedChange("scores", subject, {
-                                                    ...formData.scores[subject],
-                                                    exam: parseInt(e.target.value) || 0,
-                                                })
-                                            }
-                                            placeholder="Exam (Max 60)"
-                                        />
-                                    </Col>
-                                </Row>
+                                <ResultSubjectScoresDisplay subject={{ name: `${initialResult?.classroom?.name}_${subject}`, id: index }} scores={formData?.scores} handleNestedChange={handleNestedChange} />
                             ))}
 
                             {/* ✅ General Remarks */}
@@ -170,27 +133,7 @@ const UpdateStudentResult = () => {
                             <hr />
 
                             {Object.keys(formData?.general_remarks || {}).map((remark, index) => (
-                                <Row key={index} className="mb-3 p-3 rounded border bg-light shadow-sm">
-                                    <Col md={6} className="d-flex align-items-center">
-                                        <Form.Label className="fw-semibold text-secondary">
-                                            {remark.charAt(0).toUpperCase() + remark.slice(1)}
-                                        </Form.Label>
-                                    </Col>
-                                    <Col md={6}>
-                                        <Form.Control
-                                            type="number"
-                                            className="border-secondary"
-                                            value={formData.general_remarks[remark] || ""}
-                                            min={0}
-                                            max={5}
-                                            required
-                                            onChange={(e) =>
-                                                handleNestedChange("general_remarks", remark, parseInt(e.target.value) || 0)
-                                            }
-                                            placeholder="Rating (Max 5)"
-                                        />
-                                    </Col>
-                                </Row>
+                                <ResultGeneralRemarks remark={remark} index={index} general_remarks={formData?.general_remarks} handleNestedChange={handleNestedChange} />
                             ))}
 
                             {/* ✅ Comments Section */}
@@ -198,39 +141,12 @@ const UpdateStudentResult = () => {
                             <hr />
 
                             {Object.keys(formData?.comments || {}).map((comment, index) => (
-                                <Row key={index} className="mb-3 p-3 rounded border bg-light shadow-sm">
-                                    <Col md={12}>
-                                        <Form.Control
-                                            as="textarea"
-                                            rows={2}
-                                            className="border-secondary"
-                                            required
-                                            value={formData.comments[comment] || ""}
-                                            onChange={(e) => handleNestedChange("comments", comment, e.target.value)}
-                                            placeholder={`Enter ${comment.replace("_", " ")}`}
-                                        />
-                                    </Col>
-                                </Row>
+                                <ResultComments comment={comment} index={index} comments={formData?.comments} handleNestedChange={handleNestedChange} />
                             ))}
 
 
                             {/* Uploaded Toggle Button */}
-                            <div className="text-center mt-4">
-                                <Button
-                                    variant={formData.uploaded ? "success" : "outline-secondary"}
-                                    onClick={() => handleInputChange("uploaded", !formData.uploaded)}
-                                    className="px-4 py-2 fw-semibold shadow-sm"
-                                >
-                                    {formData.uploaded ? (
-                                        <>
-                                            <FaCheckCircle className="me-2" /> Uploaded
-                                        </>
-                                    ) : (
-                                        "Upload Result"
-                                    )}
-                                </Button>
-                            </div>
-
+                            <ResultUploadButton uploaded={formData?.uploaded} handleInputChange={handleInputChange} />
                             {/* ✅ Submit Button */}
                             <div className="text-center mt-4">
                                 <Button type="submit" variant="primary" className="px-4 py-2 fw-semibold shadow-sm" disabled={isLoading}>
