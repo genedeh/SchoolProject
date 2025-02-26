@@ -2,12 +2,15 @@ import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useQuery, useMutation } from "react-query";
 import { Form, Button, Spinner, Col, Row, Card } from "react-bootstrap";
-import { FaCheckCircle, FaCheckDouble, FaStickyNote } from "react-icons/fa";
+import { FaCheckCircle, FaCheckDouble, FaStickyNote, FaUpload } from "react-icons/fa";
+import { StarRating } from "./ResultHandlerButtons.components";
 import CenteredSpinner from "../../../Loading/CenteredSpinner.components";
 import { ErrorAlert } from "../../../Alerts/ErrorAlert.components";
 import { SuccessAlert } from "../../../Alerts/SuccessAlert.components";
 import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import axios from "axios";
+
+
 
 export const CreateStudentResult = () => {
     const location = useLocation();
@@ -15,6 +18,8 @@ export const CreateStudentResult = () => {
     const studentName = queryParams.get("student_name");
     const classroomId = queryParams.get("classroom_id");
     const token = localStorage.getItem("token");
+    const [isHovered, setIsHovered] = useState(false);
+
 
     if (!token) {
         throw new Error("Authentication token is missing!");
@@ -95,7 +100,6 @@ export const CreateStudentResult = () => {
                 [key]: value
             }
         }));
-        console.log(formData)
     };
 
     const handleInputChange = (field, value) => {
@@ -125,7 +129,7 @@ export const CreateStudentResult = () => {
     if (classroomError) return <ErrorAlert heading="Error while fetching Classroom Information" message={ErrorMessageHandling(classroomError, classroomError)} />;
 
     return (
-        <div className="shadow-lg border-0 p-4 mt-4">
+        <div className="shadow-md border-0 p-4 mt-4">
             <h2 className="text-center mb-3">
                 Create Result for {student?.username}
             </h2>
@@ -133,39 +137,45 @@ export const CreateStudentResult = () => {
 
             <Form onSubmit={onSubmit} className="mt-3">
                 {/* ✅ Student Info Section */}
-                <Card className="p-3 mb-4 bg-light">
-                    <Row>
+                <Card className="p-4 mb-4 bg-white rounded">
+                    <Row className="mb-3">
                         <Col><strong>Student:</strong> {student?.username}</Col>
                         <Col><strong>Classroom:</strong> {classroom?.name}</Col>
-                        <Form.Group controlId="term">
-                            <Form.Label><strong>Term:</strong></Form.Label>
-                            <Form.Select
-                                name="term"
-                                size="md"
-                                required
-                                value={formData.term || ""}
-                                onChange={(e) => setFormData((prev) => ({ ...prev, term: e.target.value }))}
-                            >
-                                <option value="" disabled>Select Term</option>
-                                {termOptions.map((term, index) => (
-                                    <option key={index} value={term}>
-                                        {term}
-                                    </option>
-                                ))}
-                            </Form.Select>
-                        </Form.Group>
-                        <Form.Group controlId="session">
-                            <Form.Label><strong>Session:</strong></Form.Label>
-                            <Form.Control
-                                name="session"
-                                type="text"
-                                size="md"
-                                required
-                                placeholder={`e.g. ${new Date().getFullYear()}/${new Date().getFullYear() + 1}`}
-                                value={formData.session || ""}
-                                onChange={(e) => setFormData((prev) => ({ ...prev, session: e.target.value }))}
-                            />
-                        </Form.Group>
+                    </Row>
+                    <Row className="gy-3">
+                        <Col md={6}>
+                            <Form.Group controlId="term">
+                                <Form.Label className="fw-semibold">Term</Form.Label>
+                                <Form.Select
+                                    name="term"
+                                    size="md"
+                                className="border-primary shadow-sm"
+                                    required
+                                    value={formData.term || ""}
+                                    onChange={(e) => setFormData((prev) => ({ ...prev, term: e.target.value }))}
+                                >
+                                    <option value="" disabled>Select Term</option>
+                                    {termOptions.map((term, index) => (
+                                        <option key={index} value={term}>{term}</option>
+                                    ))}
+                                </Form.Select>
+                            </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                            <Form.Group controlId="session">
+                                <Form.Label className="fw-semibold">Session</Form.Label>
+                                <Form.Control
+                                    name="session"
+                                    type="text"
+                                    size="md"
+                                    className="border-primary shadow-sm"
+                                    required
+                                    placeholder={`e.g. ${new Date().getFullYear()}/${new Date().getFullYear() + 1}`}
+                                    value={formData.session || ""}
+                                    onChange={(e) => setFormData((prev) => ({ ...prev, session: e.target.value }))}
+                                />
+                            </Form.Group>
+                        </Col>
                     </Row>
                 </Card>
 
@@ -186,7 +196,7 @@ export const CreateStudentResult = () => {
                         <Col md={4}>
                             <Form.Control
                                 type="number"
-                                className="border-secondary"
+                                className="border-primary shadow-sm"
                                 value={formData.scores[subject.name.split("_")[1]]?.test || ""}
                                 min={0}
                                 max={40}
@@ -203,7 +213,7 @@ export const CreateStudentResult = () => {
                         <Col md={4}>
                             <Form.Control
                                 type="number"
-                                className="border-secondary"
+                                className="border-primary shadow-sm"
                                 value={formData.scores[subject.name.split("_")[1]]?.exam || ""}
                                 min={0}
                                 max={60}
@@ -226,27 +236,22 @@ export const CreateStudentResult = () => {
                     General Remarks
                 </h4>
                 <hr />
-
                 {Object.keys(formData?.general_remarks || {}).map((remark, index) => (
                     <Row key={index} className="mb-3 p-3 rounded border bg-light shadow-sm">
-                        <Col md={6} className="d-flex align-items-center">
-                            <Form.Label className="fw-semibold text-secondary">
-                                {remark.charAt(0).toUpperCase() + remark.slice(1)}
-                            </Form.Label>
-                        </Col>
-                        <Col md={6}>
-                            <Form.Control
-                                type="number"
-                                className="border-secondary"
-                                value={formData.general_remarks[remark] || ""}
-                                min={0}
-                                max={5}
-                                required
-                                onChange={(e) =>
-                                    handleNestedChange("general_remarks", remark, parseInt(e.target.value) || 0)
-                                }
-                                placeholder="Rating (Max 5)"
-                            />
+                        <Col md={12} className=" align-items-center">
+                            <Row className="p-3 rounded border bg-light shadow-sm align-items-center">
+                                <Col xs={6} className="d-flex align-items-center">
+                                    <span className="fw-semibold text-secondary">
+                                        {remark.charAt(0).toUpperCase() + remark.slice(1)}
+                                    </span>
+                                </Col>
+                                <Col md={6} >
+                                    <StarRating
+                                        value={formData.general_remarks[remark] || 0}
+                                        onChange={(value) => handleNestedChange("general_remarks", remark, value)}
+                                    />
+                                </Col>
+                            </Row>
                         </Col>
                     </Row>
                 ))}
@@ -270,7 +275,7 @@ export const CreateStudentResult = () => {
                                 <Col md={6}>
                                     <Form.Control
                                         type="date"
-                                        className="border-secondary"
+                                        className="border-primary shadow-sm p-3 rounded"
                                         required
                                         value={formData.comments[comment] || ""}
                                         onChange={(e) => handleNestedChange("comments", comment, e.target.value)}
@@ -288,15 +293,18 @@ export const CreateStudentResult = () => {
                                 </Form.Label>
                             </Col>
                             <Col md={6}>
-                                <Form.Control
-                                    as="textarea"
-                                    rows={2}
-                                    className="border-secondary"
-                                    required
-                                    value={formData.comments[comment] || ""}
-                                    onChange={(e) => handleNestedChange("comments", comment, e.target.value)}
-                                    placeholder={`Enter ${comment.replace("_", " ")}`}
-                                />
+                                <Form.Group controlId="comments">
+                                    <Form.Label className="fw-semibold">Comments</Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        rows={3}
+                                        className="border-primary shadow-sm p-3 rounded"
+                                        required
+                                        value={formData.comments[comment] || ""}
+                                        onChange={(e) => handleNestedChange("comments", comment, e.target.value)}
+                                        placeholder={`Enter ${comment.replace("_", " ")}`}
+                                    />
+                                </Form.Group>
                             </Col>
                         </Row>
                     )
@@ -306,16 +314,25 @@ export const CreateStudentResult = () => {
                 {/* Uploaded Toggle Button */}
                 <div className="text-center mt-4">
                     <Button
-                        variant={formData.uploaded ? "success" : "outline-secondary"}
+                        variant={formData.uploaded ? "success" : "primary"}
                         onClick={() => handleInputChange("uploaded", !formData.uploaded)}
-                        className="px-4 py-2 fw-semibold shadow-sm"
+                        className="px-5 py-3 fw-bold shadow-lg rounded-pill d-flex align-items-center gap-2"
+                        size="lg"
+                        onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}
+                        style={{
+                            transform: isHovered ? "scale(1.05)" : "scale(1)",
+                            transition: "transform 0.2s ease-in-out",
+                        }}
                     >
                         {formData.uploaded ? (
                             <>
-                                <FaCheckCircle className="me-2" /> Uploaded
+                                <FaCheckCircle className="text-white" /> Uploaded
                             </>
                         ) : (
-                            "Upload Result"
+                            <>
+                                <FaUpload className="text-white" /> Upload Result
+                            </>
                         )}
                     </Button>
                 </div>
@@ -332,6 +349,6 @@ export const CreateStudentResult = () => {
                 </ErrorAlert>}
 
             </Form>
-        </div>
+        </div >
     );
 };
