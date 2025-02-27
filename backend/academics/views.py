@@ -433,14 +433,10 @@ def get_classroom_performance(request):
     logger.info("===== STARTING CLASSROOM PERFORMANCE API REQUEST =====")
 
     classroom_id = request.GET.get("classroom_id")
-    session = request.GET.get("session")
 
     if not classroom_id:
         logger.error("Missing classroom_id parameter")
         return Response({"error": "Missing classroom_id parameter"}, status=status.HTTP_400_BAD_REQUEST)
-    if not session:
-        logger.error("Missing session parameter")
-        return Response({"error": "Missing session parameter"}, status=status.HTTP_400_BAD_REQUEST)
 
     students = get_students_in_classroom(classroom_id)
 
@@ -451,7 +447,7 @@ def get_classroom_performance(request):
     students_performance = []
 
     for student in students:
-        performance = calculate_student_performance(student, classroom_id, session)
+        performance = calculate_student_performance(student, classroom_id)
         if performance:
             students_performance.append(performance)
 

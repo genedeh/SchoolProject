@@ -21,9 +21,9 @@ def get_students_in_classroom(classroom_id):
         return None
 
 
-def calculate_student_performance(student, classroom_id, session):
+def calculate_student_performance(student, classroom_id):
     results = StudentResult.objects.filter(
-        assigned_student=student.id, classroom=classroom_id, session=session)
+        assigned_student=student.id, classroom=classroom_id)
 
     logger.info(
         f"Calculating performance for {student.username} (ID: {student.id})...")
