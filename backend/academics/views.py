@@ -66,7 +66,7 @@ class ClassRoomRetrieveView(generics.RetrieveUpdateDestroyAPIView):
 
 class ClassRoomListView(generics.ListCreateAPIView):
     serializer_class = serializers.ClassRoomListSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         name = self.request.query_params.get('name', None)
@@ -236,7 +236,7 @@ def is_valid_session_format(session):
 
 
 class StudentResultView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         student_id = request.GET.get("student_id")
@@ -428,39 +428,40 @@ class UpdateStudentResultView(generics.RetrieveUpdateDestroyAPIView):
         return Response({"message": "Student result updated successfully!", "result": serializer.data}, status=status.HTTP_200_OK)
 
 
-@api_view(["GET"])
-def get_classroom_performance(request):
-    logger.info("===== STARTING CLASSROOM PERFORMANCE API REQUEST =====")
+class ClassroomPerformanceAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        logger.info("===== STARTING CLASSROOM PERFORMANCE API REQUEST =====")
 
-    classroom_id = request.GET.get("classroom_id")
+        classroom_id = request.GET.get("classroom_id")
 
-    if not classroom_id:
-        logger.error("Missing classroom_id parameter")
-        return Response({"error": "Missing classroom_id parameter"}, status=status.HTTP_400_BAD_REQUEST)
+        if not classroom_id:
+            logger.error("Missing classroom_id parameter")
+            return Response({"error": "Missing classroom_id parameter"}, status=status.HTTP_400_BAD_REQUEST)
 
-    students = get_students_in_classroom(classroom_id)
+        students = get_students_in_classroom(classroom_id)
 
-    if students is None:
-        logger.error("Classroom not found")
-        return Response({"error": "Classroom not found"}, status=status.HTTP_404_NOT_FOUND)
+        if students is None:
+            logger.error("Classroom not found")
+            return Response({"error": "Classroom not found"}, status=status.HTTP_404_NOT_FOUND)
 
-    students_performance = []
+        students_performance = []
 
-    for student in students:
-        performance = calculate_student_performance(student, classroom_id)
-        if performance:
-            students_performance.append(performance)
+        for student in students:
+            performance = calculate_student_performance(student, classroom_id)
+            if performance:
+                students_performance.append(performance)
 
-    if not students_performance:
-        logger.error("No student results found")
-        return Response({"error": "No student results found"}, status=status.HTTP_404_NOT_FOUND)
+        if not students_performance:
+            logger.error("No student results found")
+            return Response({"error": "No student results found"}, status=status.HTTP_404_NOT_FOUND)
 
-    ranked_students = rank_students(students_performance)
-    best_per_subject = get_best_students_per_subject(students_performance)
+        ranked_students = rank_students(students_performance)
+        best_per_subject = get_best_students_per_subject(students_performance)
 
-    logger.info("===== END OF CLASSROOM PERFORMANCE API REQUEST =====")
+        logger.info("===== END OF CLASSROOM PERFORMANCE API REQUEST =====")
 
-    return Response({
-        "students_performance": ranked_students,
-        "best_per_subject": best_per_subject
-    }, status=status.HTTP_200_OK)
+        return Response({
+            "students_performance": ranked_students,
+            "best_per_subject": best_per_subject
+        }, status=status.HTTP_200_OK)
