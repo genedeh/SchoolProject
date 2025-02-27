@@ -13,4 +13,7 @@ urlpatterns = [
          name="create-student-result"),
     path("update-student-result/<int:pk>/", views.UpdateStudentResultView.as_view(),
          name="update-student-result"),
+    path("classroom-performance/",views.get_classroom_performance,
+         name="classroom-performance"),
+
 ]

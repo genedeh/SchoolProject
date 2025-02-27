@@ -1,6 +1,9 @@
-import json
 import logging
 import re
+from rest_framework.decorators import api_view
+from .utils.student_result_utils import get_students_in_classroom, calculate_student_performance, rank_students, get_best_students_per_subject
+from rest_framework.response import Response
+from rest_framework import status
 from django.db.models import Max
 from rest_framework import generics, status
 from rest_framework.views import APIView
@@ -233,7 +236,7 @@ def is_valid_session_format(session):
 
 
 class StudentResultView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         student_id = request.GET.get("student_id")
@@ -423,3 +426,45 @@ class UpdateStudentResultView(generics.RetrieveUpdateDestroyAPIView):
             serializer.save()  # Save the updated result
 
         return Response({"message": "Student result updated successfully!", "result": serializer.data}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def get_classroom_performance(request):
+    logger.info("===== STARTING CLASSROOM PERFORMANCE API REQUEST =====")
+
+    classroom_id = request.GET.get("classroom_id")
+    session = request.GET.get("session")
+
+    if not classroom_id:
+        logger.error("Missing classroom_id parameter")
+        return Response({"error": "Missing classroom_id parameter"}, status=status.HTTP_400_BAD_REQUEST)
+    if not session:
+        logger.error("Missing session parameter")
+        return Response({"error": "Missing session parameter"}, status=status.HTTP_400_BAD_REQUEST)
+
+    students = get_students_in_classroom(classroom_id)
+
+    if students is None:
+        logger.error("Classroom not found")
+        return Response({"error": "Classroom not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    students_performance = []
+
+    for student in students:
+        performance = calculate_student_performance(student, classroom_id, session)
+        if performance:
+            students_performance.append(performance)
+
+    if not students_performance:
+        logger.error("No student results found")
+        return Response({"error": "No student results found"}, status=status.HTTP_404_NOT_FOUND)
+
+    ranked_students = rank_students(students_performance)
+    best_per_subject = get_best_students_per_subject(students_performance)
+
+    logger.info("===== END OF CLASSROOM PERFORMANCE API REQUEST =====")
+
+    return Response({
+        "students_performance": ranked_students,
+        "best_per_subject": best_per_subject
+    }, status=status.HTTP_200_OK)
