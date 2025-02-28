@@ -1,14 +1,14 @@
 import { Card, Button, Col, Image, Badge } from 'react-bootstrap';
 import { BsThreeDots, BsArrowReturnRight } from "react-icons/bs";
-import { useState, useContext } from 'react';
-import { UserContext } from '../../../contexts/User.contexts';
+import { useState } from 'react';
+import { useUser } from '../../../contexts/User.contexts';
 import { ProfileModal } from './UserProfileModal.components';
 
 
 const SearchedProfileCard = ({ user }) => {
     const { username, is_student_or_teacher, profile_picture_url, classes, classrooms, is_superuser } = user;
     const [show, setShow] = useState(false);
-    const { currentUser } = useContext(UserContext);
+    const { currentUser } = useUser();
     let className = "None"
     let classroomName = "None"
     const handleClose = () => setShow(false);

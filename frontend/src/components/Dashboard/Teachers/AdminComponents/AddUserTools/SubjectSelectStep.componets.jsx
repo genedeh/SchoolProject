@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button, Row, Col, Card, Badge, Alert } from "react-bootstrap";
-import { useSubjects } from "../../../../../contexts/Subjects.contexts";
+import useSubjects from "../../../../../contexts/Subjects.contexts";
 import { CenteredSpinner } from "../../../../Loading/CenteredSpinner.components"
 import { ErrorAlert } from "../../../../Alerts/ErrorAlert.components";
 import axios from "axios";

@@ -1,12 +1,12 @@
-import { useContext, useEffect, useState } from 'react';
+import {  useEffect, useState } from 'react';
 import { Card, Image, Button, Container, Row, Col, Badge, ListGroup } from 'react-bootstrap';
 import { GenderFemale, GenderMale, GeoAlt, Telephone } from 'react-bootstrap-icons';
-import { UserContext } from '../../../contexts/User.contexts';
+import { useUser } from '../../../contexts/User.contexts';
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 
 const StudentProfile = () => {
-    const { currentUser } = useContext(UserContext);
+    const { currentUser } = useUser();
     const [offeringSubjects, setOfferingSubjects] = useState([]);
     const { first_name, last_name, username, address, phone_number, email, profile_picture, birth_date, gender, user_class, offering_subjects } = currentUser;
     const fetchSubjects = async () => {

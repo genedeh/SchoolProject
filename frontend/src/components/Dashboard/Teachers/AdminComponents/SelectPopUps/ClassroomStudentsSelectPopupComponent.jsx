@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { Search } from 'react-bootstrap-icons';
 import axios from "axios";
-import { LoadingOverlay } from '../../../../Loading/LoadingOverlay.components'
 import { ErrorAlert } from '../../../../Alerts/ErrorAlert.components';
 import { ErrorMessageHandling } from '../../../../../utils/ErrorHandler.utils'
 import { UserCardItemComponent } from './UserCardItem.components';
@@ -16,7 +15,7 @@ const fetchData = async (page, query) => {
         throw new Error("Authentication token is missing!");
     }
 
-    const response = await axios.get(`/api/quick_users_view/?S=&page=${page}&username=${query.replace(/ /g, "")}`,
+    const response = await axios.get(`/api/quick_users_view/?N&S=&page=${page}&username=${query.replace(/ /g, "")}`,
         {
             headers: { Authorization: `Bearer ${token}` },
         });
@@ -81,7 +80,8 @@ export const ClassroomStudentsSelectPopUp = ({ show, handleClose, selectedStuden
 
                 {isError && <ErrorAlert heading="Error While trying to fetch classrooms" message={ErrorMessageHandling(isError, error)} removable={true} />}
                 <ListGroup className="mb-3 ">
-                    {!isLoading ?
+                    {!isError &&
+                        !isLoading ?
                         (data.results?.map((student) => (
                             <UserCardItemComponent key={student.id} user={student} clickHandler={() => {
                                 if (!selectedOptions.includes(student.id)) {
@@ -96,9 +96,10 @@ export const ClassroomStudentsSelectPopUp = ({ show, handleClose, selectedStuden
                             }} selectedDisplay={selectedOptions.includes(student.id) ? 'border-info' : ''} />
                         ))) : (
                             <>
-                                <CenteredSpinner caption="Fetching Students..."/>
+                                <CenteredSpinner caption="Fetching Students..." />
                             </>
-                        )}
+                        )
+                    }
 
                 </ListGroup>
                 {/* Pagination */}

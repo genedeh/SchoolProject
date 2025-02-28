@@ -1,6 +1,6 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
-import { useSubjects } from "../../../../../contexts/Subjects.contexts";
+import useSubjects from "../../../../../contexts/Subjects.contexts";
 import { TeacherSelectPopUp } from "../SelectPopUps/SubjectTeacherSelectPopupComponent";
 import { StudentsSelectPopUp } from "../SelectPopUps/SubjectStudentsSelectPopupComponent";
 import axios from 'axios';

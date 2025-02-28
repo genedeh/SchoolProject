@@ -1,37 +1,28 @@
-import React, { createContext, useContext, useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "react-query";
 import axios from "axios";
 
-const SubjectsContext = createContext();
+const fetchSubjects = async (page, term) => {
+    const token = localStorage.getItem("token");
 
-export const useSubjects = () => useContext(SubjectsContext);
+    if (!token) {
+        throw new Error("Authentication token is missing!");
+    }
 
-export const SubjectsProvider = ({ children }) => {
-    const [currentPage, setCurrentPage] = useState(1); // Current page
+    const response = await axios.get(`/api/subjects/?page=${page}&name=${term || ""}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+
+    return response.data;
+};
+
+const useSubjects = () => {
+    const [currentPage, setCurrentPage] = useState(1);
     const [term, setTerm] = useState("");
 
-    // Function to fetch subjects
-    const fetchSubjects = async () => {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
-            throw new Error("Authentication token is missing!");
-        }
-
-        const response = await axios.get(
-            `/api/subjects/?page=${currentPage}&name=${term}`,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            }
-        );
-        return response.data;
-    };
-
-
-    // Using React Query for data fetching
     const { data, error, isError, isLoading, isFetching, refetch } = useQuery(
-        ["subjects", currentPage, term], // Query key
-        fetchSubjects,
+        ["subjects", currentPage, term],
+        () => fetchSubjects(currentPage, term),
         {
             keepPreviousData: true,
             retry: 3,
@@ -39,6 +30,8 @@ export const SubjectsProvider = ({ children }) => {
             cacheTime: 1000 * 60 * 10,
         }
     );
+
+   
 
     // Pagination handlers
     const goToNextPage = () => {
@@ -54,17 +47,17 @@ export const SubjectsProvider = ({ children }) => {
     };
 
     const handleSearch = () => {
-        setCurrentPage(1); // Reset to the first page on search
-        refetch(); // Refetch data based on the new term
+        setCurrentPage(1);
+        refetch();
     };
 
     const refetchNewData = () => {
-        setCurrentPage(1); // Reset to the first page on search
-        setTerm("")
-        refetch(); // Refetch data based on the new term
+        setCurrentPage(1);
+        setTerm("");
+        refetch();
     };
 
-    const value = {
+    return useMemo(() => ({
         subjects: data?.results || [],
         totalSubjects: data?.count || 0,
         currentPage,
@@ -79,6 +72,7 @@ export const SubjectsProvider = ({ children }) => {
         handleSearch,
         setCurrentPage,
         refetchNewData,
-    };
-    return <SubjectsContext.Provider value={value}>{children}</SubjectsContext.Provider>
-}
+    }), [data, currentPage, isLoading, isFetching, isError]);
+};
+
+export default useSubjects;

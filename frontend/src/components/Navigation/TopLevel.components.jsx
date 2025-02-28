@@ -1,12 +1,12 @@
 import { Stack, Form, Image, Button, InputGroup } from 'react-bootstrap'
-import { UserContext } from '../../contexts/User.contexts';
-import { useContext, useState } from 'react';
+import { useUser } from '../../contexts/User.contexts';
+import { useState } from 'react';
 import { Search } from 'react-bootstrap-icons';
 
 const TopLevel = ({ searchHandler, term }) => {
-    const { currentUser, setCurrentUser } = useContext(UserContext);
-    const { profile_picture } = currentUser;
+    const { currentUser, setCurrentUser } = useUser();
     const [searchTerm, setSearchTerm] = useState(term);
+    const { profile_picture } = currentUser;
 
     const changeSearchTerm = (e) => {
         setSearchTerm(e.target.value.replace(/ /g, ""))

@@ -1,6 +1,6 @@
-import { UserContext } from "../../../../contexts/User.contexts";
-import { useClassrooms } from "../../../../contexts/Classrooms.contexts";
-import { useContext, useState } from "react";
+import { useUser } from "../../../../contexts/User.contexts";
+import useClassrooms from "../../../../contexts/Classrooms.contexts";
+import {  useState } from "react";
 import { Navigate } from "react-router-dom";
 import { Button, Accordion, Card, ListGroup, InputGroup, Form } from "react-bootstrap";
 import { Search } from "react-bootstrap-icons";
@@ -13,7 +13,7 @@ import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import { CenteredSpinner } from "../../../Loading/CenteredSpinner.components";
 
 export const Classrooms = () => {
-    const { currentUser } = useContext(UserContext);
+    const { currentUser } = useUser();
     const {
         classrooms,
         currentPage,
@@ -98,12 +98,12 @@ export const Classrooms = () => {
                                     <Accordion.Body>
                                         <hr /><h5>Students</h5><hr />
                                         <ListGroup>
-                                            {students.length !== 0 ? (students.map(({ id, username, gender, profile_picture }) => (
+                                            {students.length !== 0 ? (students.map(({ id, username, gender, profile_picture_url }) => (
                                                 <ListGroup.Item key={id} className="container">
                                                     <div className="d-flex align-items-center">
                                                         <div className="me-3">
                                                             <img
-                                                                src={profile_picture == null ? ("https://via.placeholder.com/40") : (profile_picture)}
+                                                                src={profile_picture_url == null ? ("https://via.placeholder.com/40") : (profile_picture_url)}
                                                                 className="rounded-circle"
                                                                 style={{ width: '40px', height: '40px' }}
                                                             />

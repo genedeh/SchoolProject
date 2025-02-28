@@ -1,37 +1,28 @@
-import React, { createContext, useContext, useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "react-query";
 import axios from "axios";
 
-const ClassroomsContext = createContext();
+const fetchClassrooms = async (page, term) => {
+    const token = localStorage.getItem("token");
 
-// Custom hook for accessing the context
-export const useClassrooms = () => useContext(ClassroomsContext);
+    if (!token) {
+        throw new Error("Authentication token is missing!");
+    }
 
-export const ClassroomsProvider = ({ children }) => {
-    const [currentPage, setCurrentPage] = useState(1); // Current page
-    const [term, setTerm] = useState(""); // Search term
+    const response = await axios.get(`/api/classrooms/?page=${page}&name=${term}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
 
-    // Function to fetch classrooms
-    const fetchClassrooms = async () => {
-        const token = localStorage.getItem("token");
+    return response.data;
+};
 
-        if (!token) {
-            throw new Error("Authentication token is missing!");
-        }
+const useClassrooms = () => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [term, setTerm] = useState("");
 
-        const response = await axios.get(
-            `/api/classrooms/?page=${currentPage}&name=${term}`,
-            {
-                headers: { Authorization: `Bearer ${token}` },
-            }
-        );
-        return response.data;
-    };
-
-    // Using React Query for data fetching
     const { data, error, isError, isLoading, isFetching, refetch } = useQuery(
-        ["classrooms", currentPage, term], // Query key
-        fetchClassrooms,
+        ["classrooms", currentPage, term],
+        () => fetchClassrooms(currentPage, term),
         {
             keepPreviousData: true,
             retry: 3,
@@ -39,6 +30,7 @@ export const ClassroomsProvider = ({ children }) => {
             cacheTime: 1000 * 60 * 10,
         }
     );
+
 
     // Pagination handlers
     const goToNextPage = () => {
@@ -54,17 +46,17 @@ export const ClassroomsProvider = ({ children }) => {
     };
 
     const handleSearch = () => {
-        setCurrentPage(1); // Reset to the first page on search
-        refetch(); // Refetch data based on the new term
+        setCurrentPage(1); // Reset to first page on search
+        refetch();
     };
 
     const refetchNewData = () => {
-        setCurrentPage(1); // Reset to the first page on search
-        setTerm("")
-        refetch(); // Refetch data based on the new term
+        setCurrentPage(1);
+        setTerm("");
+        refetch();
     };
 
-    const value = {
+    return useMemo(() => ({
         classrooms: data?.results || [],
         totalClassrooms: data?.count || 0,
         currentPage,
@@ -78,11 +70,8 @@ export const ClassroomsProvider = ({ children }) => {
         setTerm,
         handleSearch,
         refetchNewData,
-    };
-
-    return (
-        <ClassroomsContext.Provider value={value}>
-            {children}
-        </ClassroomsContext.Provider>
-    );
+    }), [data, currentPage, isLoading, isFetching, isError]);
 };
+
+export default useClassrooms;
+

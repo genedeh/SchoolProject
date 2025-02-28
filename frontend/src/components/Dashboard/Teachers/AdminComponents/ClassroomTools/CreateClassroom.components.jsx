@@ -1,4 +1,4 @@
-import { useClassrooms } from "../../../../../contexts/Classrooms.contexts";
+import useClassrooms from "../../../../../contexts/Classrooms.contexts";
 import { useState } from "react";
 import axios from "axios";
 import { Modal, Button, Alert, Form } from 'react-bootstrap'
@@ -62,7 +62,7 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
                                 )
                             })
                         }
-                        axios.post('api/classrooms/', data, 
+                        axios.post('api/classrooms/', data,
                             {
                                 headers: { Authorization: `Bearer ${token}` },
                             }

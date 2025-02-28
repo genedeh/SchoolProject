@@ -1,13 +1,15 @@
-import json
 import logging
 import re
-from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view
+from .utils.student_result_utils import get_students_in_classroom, calculate_student_performance, rank_students, get_best_students_per_subject
+from rest_framework.response import Response
+from rest_framework import status
+from django.db.models import Max
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from collections import defaultdict
 
-from yaml import serialize
 from . import serializers
 from .models import ClassRoom, StudentResult, Subject
 from rest_framework.permissions import IsAuthenticated
@@ -233,50 +235,78 @@ def is_valid_session_format(session):
 # ✅ Django API View
 
 
-class GetStudentResultView(generics.ListAPIView):
-    serializer_class = serializers.StudentResultSerializer
-    # authentication_classes = [IsAuthenticated]
-    pagination_class = CustomPagination
+class StudentResultView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    def get_queryset(self):
-        student_id = self.request.query_params.get("student_id", None)
+    def get(self, request, *args, **kwargs):
+        student_id = request.GET.get("student_id")
+        session_year = request.GET.get("session")
+        classroom_id = request.GET.get("classroom_id")
 
-        # ✅ Validate student_id
         if not student_id:
             return Response({"error": "student_id is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            student_id = int(student_id)  # Ensure it's a number
-        except ValueError:
-            return Response({"error": "Invalid student_id format. Must be an integer."}, status=status.HTTP_400_BAD_REQUEST)
+        if classroom_id:
+            return self.get_results_by_classroom(student_id, classroom_id)
 
-        # ✅ Get Student Results
-        results = StudentResult.objects.filter(assigned_student_id=student_id)
-        if not results.exists():
+        if session_year:
+            return self.get_results_by_session(student_id, session_year)
+
+        return self.get_latest_session_results(student_id)
+
+    def get_latest_session_results(self, student_id):
+        latest_session = StudentResult.objects.filter(
+            assigned_student_id=student_id).aggregate(Max("session"))["session__max"]
+
+        if not latest_session:
             return Response({"error": "No results found for this student."}, status=status.HTTP_404_NOT_FOUND)
 
-        return results
+        results = StudentResult.objects.filter(
+            assigned_student_id=student_id, session=latest_session)
+        return self.format_results(results, latest_session)
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
+    def get_results_by_session(self, student_id, session_year):
+        results = StudentResult.objects.filter(
+            assigned_student_id=student_id, session=session_year)
 
-        # ✅ If queryset is a Response (error case), return it
-        if isinstance(queryset, Response):
-            return queryset
+        if not results.exists():
+            return Response({"error": "No results found for this session."}, status=status.HTTP_404_NOT_FOUND)
 
-        grouped_results = group_results(queryset)
+        return self.format_results(results, session_year)
 
-        # ✅ Apply Pagination
-        page = self.paginate_queryset(grouped_results)
-        if page is not None:
-            return self.get_paginated_response(page)
+    def get_results_by_classroom(self, student_id, classroom_id):
+        results = StudentResult.objects.filter(
+            assigned_student_id=student_id, classroom_id=classroom_id)
 
-        return Response(grouped_results, status=status.HTTP_200_OK)
+        if not results.exists():
+            return Response({"error": "No results found for this student in the given classroom."}, status=status.HTTP_404_NOT_FOUND)
+
+        return self.format_results(results, results.first().session)
+
+    def format_results(self, results, session_year):
+        terms = {}
+        available_sessions = StudentResult.objects.filter(assigned_student_id=results.first(
+        ).assigned_student_id).values_list("session", flat=True).distinct()
+
+        for result in results:
+            term_name = result.term
+            if term_name not in terms:
+                terms[term_name] = []
+
+            terms[term_name].append(
+                serializers.StudentResultSerializer(result).data)
+
+        return Response({
+            "session": session_year,
+            "terms": terms,
+            "available_sessions": sorted(available_sessions, reverse=True),
+        }, status=status.HTTP_200_OK)
 
 
 # ✅ Student Result Creation API View
 class CreateStudentResultView(generics.CreateAPIView):
-    serializer_class = serializers.StudentResultSerializer
+    serializer_class = serializers.StudentCreateResultSerializer
+    permissions_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         data = request.data
@@ -296,7 +326,6 @@ class CreateStudentResultView(generics.CreateAPIView):
         session = data["session"]
         term = data["term"]
         scores = data["scores"]
-        comments = data["comments"]
 
         # ✅ Validate Session Format
         if not is_valid_session_format(session):
@@ -317,108 +346,12 @@ class CreateStudentResultView(generics.CreateAPIView):
         for subject, score_data in scores.items():
             exam_score = score_data.get("exam", 0)
             test_score = score_data.get("test", 0)
-            if not (0 <= exam_score <= 100 and 0 <= test_score <= 100):
-                return Response(
-                    {"error": f"Invalid scores for {subject}. Exam and test scores must be between 0 and 100."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-        # ✅ Validate Comments Field
-        required_comment_keys = {"principal_comment",
-                                 "teacher_comment", "resumption_date"}
-        if not isinstance(comments, dict):
-            return Response({"error": "Comments must be a dictionary containing 'principal_comment', 'teacher_comment', and 'resumption_date'."}, status=status.HTTP_400_BAD_REQUEST)
-
-        missing_comment_keys = required_comment_keys - comments.keys()
-        if missing_comment_keys:
-            return Response(
-                {"error": f"Missing required comment fields: {', '.join(missing_comment_keys)}"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # ✅ Validate General Remarks (Flexible Fields)
-        general_remarks = data.get("general_remarks", {})
-        if not isinstance(general_remarks, dict):
-            return Response({"error": "General remarks must be a dictionary of remark categories."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # ✅ Create the Student Result Record
-        serializer = self.get_serializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Student result created successfully!", "result": serializer.data}, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# ✅ Student Result Creation API View
-class CreateStudentResultView(generics.CreateAPIView):
-    serializer_class = serializers.StudentCreateResultSerializer
-
-    def create(self, request, *args, **kwargs):
-        data = request.data
-
-        # ✅ Validate Required Fields
-        required_fields = ["assigned_student",
-                           "session", "term", "scores", "comments"]
-        missing_fields = [
-            field for field in required_fields if field not in data]
-        if missing_fields:
-            return Response(
-                {"error": f"Missing required fields: {', '.join(missing_fields)}"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        student_id = data["assigned_student"]
-        session = data["session"]
-        term = data["term"]
-        scores = data["scores"]
-        comments = data["comments"]
-
-        # ✅ Validate Session Format
-        if not is_valid_session_format(session):
-            return Response({"error": "Invalid session format. Expected format: YYYY/YYYY"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # ✅ Ensure Term is Only "1st Term", "2nd Term", or "3rd Term"
-        valid_terms = {"1st Term", "2nd Term", "3rd Term"}
-        if term not in valid_terms:
-            return Response({"error": "Invalid term. Must be '1st Term', '2nd Term', or '3rd Term'"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # ✅ Prevent Duplicate Term Entries in a Session
-        existing_result = StudentResult.objects.filter(
-            assigned_student_id=student_id, session=session, term=term).exists()
-        if existing_result:
-            return Response({"error": f"Result for {term} in session {session} already exists."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # ✅ Ensure All Scores are ≤ 100
-        json_scores = json.loads(scores)
-        for subject, score_data in json_scores.items():
-            exam_score = score_data.get("exam", 0)
-            test_score = score_data.get("test", 0)
             if not (0 <= exam_score <= 60 and 0 <= test_score <= 40):
                 return Response(
                     {"error": f"Invalid scores for {subject}. Exam and test scores must be between 0 and 100."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
-        # ✅ Validate Comments Field
-        json_comments = json.loads(comments)
-        required_comment_keys = {"principals_comment",
-                                 "teachers_comment", "resumption_date"}
-        if not isinstance(json_comments, dict):
-            return Response({"error": "Comments must be a dictionary containing 'principals_comment', 'teachers_comment', and 'resumption_date'."}, status=status.HTTP_400_BAD_REQUEST)
-
-        missing_comment_keys = required_comment_keys - json_comments.keys()
-        if missing_comment_keys:
-            return Response(
-                {"error": f"Missing required comment fields: {', '.join(missing_comment_keys)}"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # ✅ Validate General Remarks (Flexible Fields)
-        general_remarks = data.get("general_remarks", {})
-        print(type(general_remarks))
-        if not isinstance(json.loads(general_remarks), dict):
-            return Response({"error": "General remarks must be a dictionary of remark categories."}, status=status.HTTP_400_BAD_REQUEST)
 
         # ✅ Create the Student Result Record
         serializer = self.get_serializer(data=data)
@@ -433,11 +366,11 @@ class UpdateStudentResultView(generics.RetrieveUpdateDestroyAPIView):
     queryset = StudentResult.objects.all()
     serializer_class = serializers.StudentUpdateResultSerializer
     lookup_field = 'pk'
+    permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
         # Retrieve the result or return 404
         result = self.get_object()
-        print(result)
 
         data = request.data
         allowed_fields = {"uploaded", "scores", "comments",
@@ -472,11 +405,10 @@ class UpdateStudentResultView(generics.RetrieveUpdateDestroyAPIView):
         # ✅ Validate scores (must be between 0 and 100)
         if "scores" in data:
             scores = data["scores"]
-            json_scores = json.loads(scores)
-            if not isinstance(json_scores, dict):
+            if not isinstance(scores, dict):
                 return Response({"error": "Scores must be a dictionary of subjects and their marks."}, status=status.HTTP_400_BAD_REQUEST)
 
-            for subject, score_data in json_scores.items():
+            for subject, score_data in scores.items():
                 exam_score = score_data.get("exam", 0)
                 test_score = score_data.get("test", 0)
                 if not (0 <= exam_score <= 60 and 0 <= test_score <= 40):
@@ -485,39 +417,51 @@ class UpdateStudentResultView(generics.RetrieveUpdateDestroyAPIView):
                         status=status.HTTP_400_BAD_REQUEST
                     )
 
-        # ✅ Validate comments structure
-        if "comments" in data:
-            comments = data["comments"]
-            json_comments = json.loads(comments)
-            required_comment_keys = {"principals_comment",
-                                     "teachers_comment", "resumption_date"}
-
-            if not isinstance(json_comments, dict):
-                return Response(
-                    {"error": "Comments must be a dictionary containing 'principal_comment', 'teacher_comment', and 'resumption_date'."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-            missing_comment_keys = required_comment_keys - json_comments.keys()
-            if missing_comment_keys:
-                return Response(
-                    {"error": f"Missing required comment fields: {', '.join(missing_comment_keys)}"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-
-        # ✅ Validate general remarks (optional but must be a dictionary)
-        if "general_remarks" in data:
-            general_remarks = data["general_remarks"]
-            json_general_remarks = json.loads(general_remarks)
-            if not isinstance(json_general_remarks, dict):
-                return Response({"error": "General remarks must be a dictionary of remark categories."}, status=status.HTTP_400_BAD_REQUEST)
-
         # ✅ Apply the updates to the result instance
         for field in allowed_fields:
             if field in data:
                 setattr(result, field, data[field])
         serializer = self.get_serializer(result, data=data, partial=True)
         if serializer.is_valid():
-            serializer.save() # Save the updated result
+            serializer.save()  # Save the updated result
 
         return Response({"message": "Student result updated successfully!", "result": serializer.data}, status=status.HTTP_200_OK)
+
+
+class ClassroomPerformanceAPIView(APIView):
+    # permission_classes = [IsAuthenticated]
+    def get(self, request):
+        logger.info("===== STARTING CLASSROOM PERFORMANCE API REQUEST =====")
+
+        classroom_id = request.GET.get("classroom_id")
+
+        if not classroom_id:
+            logger.error("Missing classroom_id parameter")
+            return Response({"error": "Missing classroom_id parameter"}, status=status.HTTP_400_BAD_REQUEST)
+
+        students = get_students_in_classroom(classroom_id)
+
+        if students is None:
+            logger.error("Classroom not found")
+            return Response({"error": "Classroom not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        students_performance = []
+
+        for student in students:
+            performance = calculate_student_performance(student, classroom_id)
+            if performance:
+                students_performance.append(performance)
+
+        if not students_performance:
+            logger.error("No student results found")
+            return Response({"error": "No student results found"}, status=status.HTTP_404_NOT_FOUND)
+
+        ranked_students = rank_students(students_performance)
+        best_per_subject = get_best_students_per_subject(students_performance)
+
+        logger.info("===== END OF CLASSROOM PERFORMANCE API REQUEST =====")
+
+        return Response({
+            "students_performance": ranked_students,
+            "best_per_subject": best_per_subject
+        }, status=status.HTTP_200_OK)

@@ -1,10 +1,10 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { UserContext } from "../../contexts/User.contexts";
+import { useUser } from "../../contexts/User.contexts";
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import TopLevel from "./TopLevel.components";
 import { StudentSidebar, TeacherSidebar } from "./Side_Navigation_Bar/SideBar.components";
-import { useUsers } from "../../contexts/UsersList.contexts";
+import useUsers from "../../contexts/UsersList.contexts";
 import SearchedProfileCard from "../Dashboard/UsersProfileCards/SearchedProfileCard.components";
 import { ErrorAlert } from "../Alerts/ErrorAlert.components";
 import { WarningAlert } from "../Alerts/WarningAlert.components";
@@ -14,7 +14,6 @@ import { CenteredSpinner } from "../Loading/CenteredSpinner.components";
 
 
 const MainContent = ({ searchTerm, users, totalUsers, currentPage, prevPage, nextPage, goToPrevPage, goToNextPage, loading, usersError, usersIsError }) => {
-    console.log(users);
     if (searchTerm.length === 0) {
         return <Outlet />;
     }
@@ -30,7 +29,7 @@ const MainContent = ({ searchTerm, users, totalUsers, currentPage, prevPage, nex
                 {!loading && !usersIsError && users.length > 0 && (
                     users.map((user) => (<SearchedProfileCard key={user.id} user={user} />))
                 )}
-                
+
                 <div className="d-flex justify-content-between align-items-center my-4">
                     <Button onClick={goToPrevPage} disabled={!prevPage || loading}>
                         Previous
@@ -40,7 +39,7 @@ const MainContent = ({ searchTerm, users, totalUsers, currentPage, prevPage, nex
                         Next
                     </Button>
                 </div>
-                    <p>Total Users: {totalUsers}</p>
+                <p>Total Users: {totalUsers}</p>
             </Row>
         </Container>
     );
@@ -93,7 +92,7 @@ const ErrorDisplay = ({ error }) => {
 };
 
 const Navigation = () => {
-    const { currentUser, error } = useContext(UserContext);
+    const { currentUser, error, fetching } = useUser();
     const [searchTerm, setSearchTerm] = useState('');
     const {
         users,
@@ -111,11 +110,15 @@ const Navigation = () => {
     } = useUsers();
 
     const SearchHandler = (v) => {
+        handleSearch();
         setSearchTerm(v);
         setTerm(v);
-        // handleSearch();
     }
 
+    if (error == "NO TOKEN FOUND") {
+        return <LoadingOverlay loading={true} message="Fetching User Information
+        ..." />;
+    }
     if (!currentUser) {
         return error ? <ErrorDisplay error={error} /> : <LoadingOverlay loading={true} message="Fetching Necessary Information..." />;
     }

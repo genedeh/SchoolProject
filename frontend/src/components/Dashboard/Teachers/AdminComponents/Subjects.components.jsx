@@ -1,6 +1,6 @@
-import { useContext, useState } from "react";
-import { UserContext } from "../../../../contexts/User.contexts";
-import { useSubjects } from "../../../../contexts/Subjects.contexts";
+import {  useState } from "react";
+import { useUser } from "../../../../contexts/User.contexts";
+import useSubjects from "../../../../contexts/Subjects.contexts";
 import { Navigate } from "react-router-dom";
 import { Accordion, Card, Button, ListGroup, Form, InputGroup } from 'react-bootstrap';
 import { Trash, Pencil, PlusCircleFill, GenderFemale, GenderMale } from 'react-bootstrap-icons';
@@ -13,7 +13,7 @@ import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import CenteredSpinner from "../../../Loading/CenteredSpinner.components";
 
 export const Subjects = () => {
-    const { currentUser } = useContext(UserContext);
+    const { currentUser } = useUser();
     const {
         subjects,
         currentPage,
@@ -99,12 +99,12 @@ export const Subjects = () => {
                                     <Accordion.Body>
                                         <hr /><h5>Students</h5><hr />
                                         <ListGroup>
-                                            {students_offering.length !== 0 ? (students_offering.map(({ id, username, gender, profile_picture }) => (
+                                            {students_offering.length !== 0 ? (students_offering.map(({ id, username, gender, profile_picture_url }) => (
                                                 <ListGroup.Item key={id} className="container">
                                                     <div className="d-flex align-items-center">
                                                         <div className="me-3">
                                                             <img
-                                                                src={profile_picture == null ? ("https://via.placeholder.com/40") : (profile_picture)}
+                                                                src={profile_picture_url == null ? ("https://via.placeholder.com/40") : (profile_picture_url)}
                                                                 className="rounded-circle"
                                                                 style={{ width: '40px', height: '40px' }}
                                                             />

@@ -1,6 +1,6 @@
 import { Modal, Button, Alert } from 'react-bootstrap';
 import { useState } from 'react';
-import { useClassrooms } from '../../../../../contexts/Classrooms.contexts';
+import  useClassrooms  from '../../../../../contexts/Classrooms.contexts';
 import axios from 'axios';
 
 export const DeleteClassroomModal = ({ show, handleClose, classroomId }) => {

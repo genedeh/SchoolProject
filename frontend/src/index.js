@@ -5,9 +5,6 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { UserProvider } from './contexts/User.contexts';
-import { UsersProvider } from './contexts/UsersList.contexts';
-import { SubjectsProvider } from './contexts/Subjects.contexts';
-import { ClassroomsProvider } from './contexts/Classrooms.contexts';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 const queryClient = new QueryClient();
@@ -18,13 +15,7 @@ root.render(
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <UserProvider>
-          <UsersProvider>
-            <SubjectsProvider>
-              <ClassroomsProvider>
-                <App />
-              </ClassroomsProvider>
-            </SubjectsProvider>
-          </UsersProvider>
+          <App />
         </UserProvider>
       </QueryClientProvider>
     </BrowserRouter>

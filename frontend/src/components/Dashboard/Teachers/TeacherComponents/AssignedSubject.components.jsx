@@ -1,5 +1,4 @@
-import { UserContext } from "../../../../contexts/User.contexts";
-import { useContext } from "react";
+import { useUser } from "../../../../contexts/User.contexts";
 import { useQuery } from "react-query";
 import { Navigate } from "react-router-dom";
 import { Card, Button, ListGroup, Accordion } from 'react-bootstrap';
@@ -12,7 +11,7 @@ import axios from "axios";
 
 
 export const AssignedSubjects = () => {
-    const { currentUser } = useContext(UserContext);
+    const { currentUser } = useUser();
 
     const fetchSubjects = async () => {
         const token = localStorage.getItem("token");
@@ -70,12 +69,12 @@ export const AssignedSubjects = () => {
                                     <Accordion.Body>
                                         <hr /><h5>Students</h5><hr />
                                         <ListGroup>
-                                            {students_offering.length !== 0 ? (students_offering.map(({ id, username, gender, profile_picture }) => (
+                                            {students_offering.length !== 0 ? (students_offering.map(({ id, username, gender, profile_picture_url }) => (
                                                 <ListGroup.Item key={id} className="container">
                                                     <div className="d-flex align-items-center">
                                                         <div className="me-3">
                                                             <img
-                                                                src={profile_picture == null ? ("https://via.placeholder.com/40") : (profile_picture)}
+                                                                src={profile_picture_url == null ? ("https://via.placeholder.com/40") : (profile_picture_url)}
                                                                 className="rounded-circle"
                                                                 style={{ width: '40px', height: '40px' }}
                                                             />

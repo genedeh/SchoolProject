@@ -1,8 +1,7 @@
 import { Nav, Navbar, Badge } from 'react-bootstrap';
 import { House, Book, Envelope, BarChart, Award, PersonAdd, Calendar2Event, BookHalf, PersonCircle, SuitClub } from 'react-bootstrap-icons';
 import './SideBar.styles.css'
-import { useContext } from 'react';
-import { UserContext } from '../../../contexts/User.contexts';
+import { useUser } from '../../../contexts/User.contexts';
 
 export const StudentSidebar = () => {
     return (
@@ -27,7 +26,7 @@ export const StudentSidebar = () => {
                         <Nav.Link href="#achivements"><Award className="me-1" /> Achievements <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link href="#results"><BarChart className="me-2" /> Results <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
+                        <Nav.Link href="/dashboard/student-result"><BarChart className="me-2" /> Results <Badge bg="secondary" className='visually-hidden'>{0}</Badge></Nav.Link>
                     </Nav.Item>
                 </Nav>
             </Navbar.Collapse>
@@ -36,7 +35,7 @@ export const StudentSidebar = () => {
 };
 
 export const TeacherSidebar = () => {
-    const { currentUser } = useContext(UserContext);
+    const { currentUser } = useUser();
     const { is_admin } = currentUser;
     if (is_admin) {
         return (

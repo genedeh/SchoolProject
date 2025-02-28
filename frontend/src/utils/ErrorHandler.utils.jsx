@@ -14,7 +14,7 @@ export const ErrorMessageHandling = (isError, error) => {
                     errorMessage = "Unauthorized (401). Please Login.";
                     break;
                 default:
-                    errorMessage = `Unexpected error: ${error.response.status}`;
+                    errorMessage = `Unexpected error: (${error.response.status})`;
             }
         } else if (error.request) {
             // Request was made but no response was received

@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { Search } from 'react-bootstrap-icons';
 import axios from "axios";
-import { LoadingOverlay } from '../../../../Loading/LoadingOverlay.components'
 import { ErrorAlert } from '../../../../Alerts/ErrorAlert.components';
 import { ErrorMessageHandling } from '../../../../../utils/ErrorHandler.utils'
 import { UserCardItemComponent } from './UserCardItem.components';

@@ -1,54 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { Container, Form, Row, Col, Button, Spinner } from 'react-bootstrap'
 import '../Authentication/Login.styles.css'
 import { ErrorAlert } from '../Alerts/ErrorAlert.components';
 import { WarningAlert } from '../Alerts/WarningAlert.components';
 import logo512 from '../../assets/logo512.png'
 import { LoadingOverlay } from '../Loading/LoadingOverlay.components';
+import useLogin from '../../utils/LoginHandler.utils';
 
 const LoginForm = () => {
     const [username, setUsername] = useState('');
     const [firstname, setFirstname] = useState('');
     const [lastname, setLastname] = useState('');
     const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    let navigate = useNavigate();
+
+    const { mutate, isLoading, error } = useLogin();
 
     useEffect(() => setUsername(`${firstname.replace(/ /g, "")}_${lastname.replace(/ /g, "")}`)
         , [firstname, lastname])
     const handleLogin = async (event) => {
         event.preventDefault();
-        setLoading(true);
-        try {
-            await axios.post('api/login/', { username, password })
-                .then(response => {
-                    localStorage.setItem('token', response.data.access);
-                    setTimeout(() => {
-                        setLoading(false)
-                        setError(null);
-                        return navigate("/dashboard/home")
-                    }, 5000)
-                });
-        } catch (err) {
-            if (err.message === "Network Error") {
-                setError("Network")
-            } else {
-                setError("401")
-            }
-            setLoading(false)
-            setTimeout(() => {
-                setError(null)
-            }, 5000)
-        }
+        mutate({ username, password });
     };
     return (
         <>
             <Container fluid="true" className="login-container" >
                 <Row className="justify-content-center align-items-center min-vh-100">
-                    {error == "Network" ? (
+                    {error?.status == 500 ? (
                         <WarningAlert
                             heading={"Network Error"}
                             message={"We are unable to connect to the server. Please check your internet connection and try again."}
@@ -56,15 +33,17 @@ const LoginForm = () => {
                             <a href="/">Try Again!</a>
                         </WarningAlert>) : ("")
                     }
-                    {error == "401" ? (
+                    {error?.status == 401 ? (
                         <ErrorAlert
                             heading={"Authentication Problem 401"}
-                            message={"Access denied. You do not have permission to view this page. Please contact support if you believe this is a mistake."} >
+                            message={"Access denied. You do not have permission to view this page. Please contact support if you believe this is a mistake."}
+                            removable={true}
+                        >
                             <a href="/">Try Again!</a>
                         </ErrorAlert>) : ("")
                     }
                     <Col md={4} className="login-box text-center">
-                        <LoadingOverlay loading={loading} message='Authenticating user...' />
+                        <LoadingOverlay loading={isLoading} message='Authenticating user...' />
                         <div>
                             <div className="login-header">
                                 <img src={logo512} alt="logo" className="img-fluid" width={50} height={50} />
