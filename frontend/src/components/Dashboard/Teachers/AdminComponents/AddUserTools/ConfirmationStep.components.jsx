@@ -280,7 +280,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                 <Button variant="primary" onClick={() => {
                     setAlert({ "fail": null, "success": null })
                     handleSubmit(formData);
-                }} disabled={isLoading || !currentClassroom || !offeringSubjects.length === 0}>
+                }} disabled={isLoading}>
                     Submit
                 </Button>
             </div>
