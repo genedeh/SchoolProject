@@ -66,7 +66,7 @@ class ClassRoomRetrieveView(generics.RetrieveUpdateDestroyAPIView):
 
 class ClassRoomListView(generics.ListCreateAPIView):
     serializer_class = serializers.ClassRoomListSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         name = self.request.query_params.get('name', None)
@@ -429,7 +429,7 @@ class UpdateStudentResultView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ClassroomPerformanceAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     def get(self, request):
         logger.info("===== STARTING CLASSROOM PERFORMANCE API REQUEST =====")
 
