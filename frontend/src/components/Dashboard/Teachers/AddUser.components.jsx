@@ -110,7 +110,6 @@ export const AddUser = () => {
                         />
                     );
                 }
-                break; // Prevent fall-through
             case 7:
                 if (formData.is_student_or_teacher) {
                     return (
@@ -122,7 +121,6 @@ export const AddUser = () => {
                         />
                     );
                 }
-                break; // Prevent fall-through
             case 8:
                 return (
                     <ConfirmationStep
