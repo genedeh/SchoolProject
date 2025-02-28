@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Spinner, Row, Col, Form } from "react-bootstrap";
+import { Button, Spinner, Row, Col, Form, Card, Container, ListGroup, Table, Image, ProgressBar, Badge } from "react-bootstrap";
 import { EyeFill, PlusCircleFill } from "react-bootstrap-icons";
 import { FaStar, FaCheckCircle, FaUpload } from "react-icons/fa";
 
@@ -210,5 +210,67 @@ export const ResultUploadButton = ({ uploaded, handleInputChange }) => {
                 )}
             </Button>
         </div>
+    );
+};
+
+export const ClassroomPerformance = ({ performanceData }) => {
+    return (
+        <Container className="mt-5">
+            <Row className="mb-4">
+                {/* Student Performance Table */}
+                <Col md={8}>
+                    <Card className="shadow-sm rounded-3 border-0">
+                        <Card.Header className="bg-dark text-white text-center">
+                            <h4>📊 Student Performance</h4>
+                        </Card.Header>
+                        <Card.Body className="p-4">
+                            <Table striped bordered hover responsive className="text-center align-middle">
+                                <thead className="table-secondary">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Profile</th>
+                                        <th>Student Name</th>
+                                        <th>Overall %</th>
+                                        <th>Position</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {performanceData.students_performance.map((student, index) => (
+                                        <tr key={student.student_id}>
+                                            <td>{index + 1}</td>
+                                            <td>
+                                                <Image src={student.profile_picture_url} roundedCircle width={45} height={45} className="shadow-sm" />
+                                            </td>
+                                            <td className="fw-bold">{student.username}</td>
+                                            <td className="text-primary fw-semibold">{student.overall_percentage.toFixed(2)}%</td>
+                                            <td className="fw-bold"><Badge>{student.position}</Badge></td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        </Card.Body>
+                    </Card>
+                </Col>
+
+                {/* Best Per Subject */}
+                <Col md={4}>
+                    <Card className="shadow-sm rounded-3 border-0">
+                        <Card.Header className="bg-primary text-white text-center">
+                            <h4>🏆 Best Per Subject</h4>
+                        </Card.Header>
+                        <Card.Body className="p-3">
+                            <ListGroup variant="flush">
+                                {Object.entries(performanceData.best_per_subject).map(([subject, { student, score }]) => (
+                                    <ListGroup.Item key={subject} className="d-flex justify-content-between">
+                                        <span className="fw-bold">{subject}:</span>
+                                        <span className="text-success">{student} ({score})</span>
+                                    </ListGroup.Item>
+                                ))}
+                            </ListGroup>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+        </Container>
     );
 };

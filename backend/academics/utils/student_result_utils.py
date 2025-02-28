@@ -101,6 +101,6 @@ def get_best_students_per_subject(students_performance):
         for subject, total_score in student["subject_totals"].items():
             if total_score > subject_best[subject]["score"]:
                 subject_best[subject] = {
-                    "student": student["username"], "score": total_score }
+                    "student": student["username"], "score": total_score}
 
     return dict(subject_best)

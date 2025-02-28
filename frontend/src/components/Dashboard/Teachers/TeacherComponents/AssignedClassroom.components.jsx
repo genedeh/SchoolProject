@@ -1,15 +1,15 @@
 import { useUser } from "../../../../contexts/User.contexts";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { Navigate } from "react-router-dom";
-import { Button, Card, ListGroup } from "react-bootstrap";
-import { PersonFillAdd } from "react-bootstrap-icons";
+import { Button, Card, ListGroup, Spinner } from "react-bootstrap";
+import { BookmarkDashFill, PersonFillAdd } from "react-bootstrap-icons";
 import { ErrorAlert } from "../../../Alerts/ErrorAlert.components";
 import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import { CenteredSpinner } from "../../../Loading/CenteredSpinner.components"
 import axios from "axios";
 import { ResultTermModal } from "../ResultsTools/ResultTermsModal.components";
-import { ResultCreationHandlerButton, ResultViewHandlerButton } from "../ResultsTools/ResultHandlerTools.components";
+import { ClassroomPerformance, ResultCreationHandlerButton, ResultViewHandlerButton } from "../ResultsTools/ResultHandlerTools.components";
 
 const fetchStudentResults = async (studentId, classroomId) => {
     const token = localStorage.getItem("token");
@@ -41,15 +41,31 @@ const fetchClassrooms = async ({ queryKey }) => {
             headers: { Authorization: `Bearer ${token}` },
         }
     );
-    console.log(response.data.results[0].id)
     return response.data.results;
 };
+
+// Function to fetch classroom performance
+const fetchClassroomPerformance = async (classroomId) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        throw new Error("Authentication token is missing!");
+    }
+    const response = await axios.get(`/api/classroom-performance/?classroom_id=${classroomId}`,
+        {
+            headers: { Authorization: `Bearer ${token}` },
+        }
+    );
+    return response.data; // Assume this returns performance stats
+};
+
 
 
 export const AssignedClassrooms = () => {
     const { currentUser } = useUser();
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [showOverlay, setShowOverlay] = useState(false);
+    const [classroomId, setClassroomId] = useState(null);
 
 
     // Using React Query for data fetching
@@ -66,6 +82,8 @@ export const AssignedClassrooms = () => {
         }
     );
 
+
+
     const { data: studentResult, isLoading: isLoadingResult, isFetching: isFetchingResult, isError: isResultError, error: resultError, refetch } =
         useQuery(["studentResult", selectedStudent],
             () => fetchStudentResults(selectedStudent?.studentId, selectedStudent?.classroomId),
@@ -75,6 +93,27 @@ export const AssignedClassrooms = () => {
                 retry: 3,
             }
         );
+    // **Second Query**: Fetch classroom performance (Runs only if classroomId exists)
+    const {
+        data: performanceData,
+        isLoading: isPerfLoading,
+        isFetching: isPerfFetching,
+        isError: isPerfError,
+        error: perfError,
+    } = useQuery(
+        ["classroom-performance", classroomId],
+        () => fetchClassroomPerformance(classroomId), // Fetch function
+        {
+            enabled: !!classroomId, // Only fetch if classroomId is available
+            retry: 3,
+            staleTime: 1000 * 60 * 5,
+            cacheTime: 1000 * 60 * 10,
+            onSuccess: () => {
+                console.log("Classroom Performance Fetched Successfully!")
+            },
+        }
+    );
+
 
 
     if (!currentUser.is_student_or_teacher && currentUser && !currentUser.is_admin) {
@@ -99,12 +138,24 @@ export const AssignedClassrooms = () => {
                     <p className="text-center text-muted">No Assigned Classrooms found!</p>
                 )}
 
+                {isPerfError && <ErrorAlert heading="Error fetching classroom performance" message={ErrorMessageHandling(isPerfError, perfError)} removable />}
+
                 {!isLoading && !isError && data.length > 0 && (
                     <>
                         {/* Add User Button */}
                         <div className="d-grid gap-2 m-4">
                             <Button size="lg" variant="outline-primary" href="/dashboard/add-user">
                                 <PersonFillAdd className="me-2" /> Add New Student (Ensure To only Select Your Class)
+                            </Button>
+                        </div>
+
+                        {performanceData && <ClassroomPerformance performanceData={performanceData} />}
+                        <div className="m-4">
+                            <Button size="lg" variant="outline-success" onClick={() => {
+                                setClassroomId(data[0].id)
+                                console.log(data[0].id)
+                            }} disabled={isPerfFetching || isPerfLoading}>
+                                <BookmarkDashFill className="me-2" /> View Classroom Performance {isPerfFetching || isPerfLoading ? <Spinner animation="border" size="sm" className="ml-2" /> : ""}
                             </Button>
                         </div>
 
