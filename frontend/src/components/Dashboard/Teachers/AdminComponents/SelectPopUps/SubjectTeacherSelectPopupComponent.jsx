@@ -63,7 +63,7 @@ export const TeacherSelectPopUp = ({ show, handleClose, selectedTeacher, setSele
 
                 {isError && <ErrorAlert heading="Error While trying to fetch classrooms" message={ErrorMessageHandling(isError, error)} removable={true} />}
                 <ListGroup className="mb-3 ">
-                    {!isLoading ?
+                    {!isLoading && !isError ?
                         (data.results?.map((teacher) => (
                             <UserCardItemComponent key={teacher.id} user={teacher} clickHandler={setSelectedTeacher} selectedDisplay={selectedTeacher ? (selectedTeacher.id === teacher.id ? 'border-info' : '') : ("")} />
                         ))) : (
