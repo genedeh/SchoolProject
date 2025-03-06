@@ -429,7 +429,7 @@ class UpdateStudentResultView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ClassroomPerformanceAPIView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         logger.info("===== STARTING CLASSROOM PERFORMANCE API REQUEST =====")
 

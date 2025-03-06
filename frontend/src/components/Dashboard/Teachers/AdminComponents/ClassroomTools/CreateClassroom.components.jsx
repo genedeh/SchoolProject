@@ -39,7 +39,7 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
             throw new Error("Authentication token is missing!");
         }
 
-        if (name.length < 100 && name.length !== 0) {
+        if (name.length < 1000 && name.length !== 0) {
             axios.get(`api/classrooms/?name=${name}`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
@@ -74,6 +74,7 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
                             })
                             .catch(error => {
                                 setError("Failed to create classroom.");
+                                console.log(error)
                                 setLoading(false);
                             });
                     }
@@ -84,6 +85,7 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
                         setError('Select a teacher to be assigned to the classroom.');
                     } else {
                         setError('Failed to create classroom.');
+                        console.log(error)
                     }
                 });
         } else {

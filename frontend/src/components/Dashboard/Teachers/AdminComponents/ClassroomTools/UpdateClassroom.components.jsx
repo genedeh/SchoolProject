@@ -46,7 +46,7 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
         if (!token) {
             throw new Error("Authentication token is missing!");
         }
-        if (name.length < 100 && name.length !== 0) {
+        if (name.length < 1000 && name.length !== 0) {
             try {
                 const data = {
                     name,

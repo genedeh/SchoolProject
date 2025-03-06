@@ -39,7 +39,7 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
             throw new Error("Authentication token is missing!");
         }
         // Check if the subject name already exists
-        if (name.length < 100 && name.length !== 0) {
+        if (name.length < 1000 && name.length !== 0) {
             axios.get(`api/subjects/?name=${name}`,
                 {
                     headers: { Authorization: `Bearer ${token}` },

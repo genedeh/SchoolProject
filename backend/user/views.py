@@ -168,12 +168,12 @@ class QuickUserViewList(generics.ListAPIView):
             # Assuming True means teacher
             filters['is_student_or_teacher'] = False
             if no_classroom is not None:
-                filters['classrooms'] = None  # Students without classrooms
+                filters['classrooms'] = None  # Teachers without a classroom
         elif student is not None:
             # Assuming True means student
             filters['is_student_or_teacher'] = True
             if no_classroom is not None:
-                filters['classes'] = None  # Teachers without classrooms
+                filters['classes'] = None  # Students without a classroom
 
         if username:
             # Case-insensitive username search
