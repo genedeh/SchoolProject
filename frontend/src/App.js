@@ -18,6 +18,8 @@ import UpdateStudentResult from './components/Dashboard/Teachers/ResultsTools/Up
 import { CreateStudentResult } from './components/Dashboard/Teachers/ResultsTools/CreateStudentResult.components';
 import StudentViewResult from './components/Dashboard/Students/Results/StudentViewResult.components';
 import { AdminViewResult } from './components/Dashboard/Teachers/AdminComponents/AdminViewResult.components';
+import NotFound from './components/Routes/PageNotFound.components';
+
 // axios.defaults.baseURL = 'https://schoolproject-6io4.onrender.com';
 axios.defaults.baseURL = 'http://127.0.0.1:8000/';
 
@@ -25,6 +27,7 @@ function App() {
   return (
     <Routes>
       <Route index Component={LoginForm} />
+      <Route path="*" element={<NotFound />} /> {/* 404 Route */}
       <Route path='/dashboard' element={<Navigation />}>
         <Route path='home' element={<PrivateRoute Component={StudentHome} AltComponent={TeacherHome} />} />
         <Route path='student-profile' element={<StudentProfile />} />
