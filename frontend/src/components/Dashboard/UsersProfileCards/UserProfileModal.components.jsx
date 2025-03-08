@@ -19,6 +19,7 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
     const [error, setError] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [displayProfilePicture, setDisplayProfilePicture] = useState(null);
+    console.log(user)
 
 
     if (!token) {

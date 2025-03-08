@@ -42,7 +42,7 @@ export const AdminViewResult = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [sessionModalShow, setSessionModalShow] = useState(false);
-    const usersPerPage = 2;
+    const usersPerPage = 10;
 
     const { data: students, isLoading: studentsLoading, isError: studentsError } =
         useQuery(['students-result', currentPage, searchTerm], () => fetchStudents(currentPage, searchTerm), {

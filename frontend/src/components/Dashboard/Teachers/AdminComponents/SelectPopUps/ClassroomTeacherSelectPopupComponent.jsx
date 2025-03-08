@@ -24,7 +24,7 @@ const fetchData = async (page, query) => {
 
 export const ClassRoomTeacherSelectPopUp = ({ show, handleClose, selectedTeacher, setSelectedTeacher }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const usersPerPage = 2;
+    const usersPerPage = 10;
     const [searchTerm, setSearchTerm] = useState("");
     const [tempSearchTerm, setTempSearchTerm] = useState("");
 
