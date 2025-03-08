@@ -15,5 +15,7 @@ urlpatterns = [
          name="update-student-result"),
     path("classroom-performance/",views.ClassroomPerformanceAPIView.as_view(),
          name="classroom-performance"),
+    path("migrate-students/", views.migrate_students_api, name="migrate_students"),
+    path("migration-progress/", views.get_migration_progress, name="migration_progress"),
 
 ]

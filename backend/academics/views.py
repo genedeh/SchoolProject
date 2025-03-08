@@ -1,5 +1,9 @@
 import logging
 import re
+import json
+from datetime import datetime
+from django.core.cache import cache
+from academics.utils.new_session_begins_utils import migrate_students
 from rest_framework.decorators import api_view
 from .utils.student_result_utils import get_students_in_classroom, calculate_student_performance, rank_students, get_best_students_per_subject
 from rest_framework.response import Response
@@ -465,3 +469,25 @@ class ClassroomPerformanceAPIView(APIView):
             "students_performance": ranked_students,
             "best_per_subject": best_per_subject
         }, status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+def migrate_students_api(request):
+    """Migrate students for a session"""
+    try:
+        data = json.loads(request.body)
+        # Default to current year
+        session = data.get("session", str(datetime.now().year))
+
+        result = migrate_students(session)
+        return Response(result, status=200)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+
+@api_view(["GET"])
+def get_migration_progress(request):
+    """Fetch migration progress"""
+    progress = cache.get("migration_progress", 0)
+    return Response({"progress": progress})
