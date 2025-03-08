@@ -46,7 +46,7 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
                 }
             )
                 .then(response => {
-                    if (response.data.results.length > 0) {
+                    if (response.data.results.length > 0 && response.data.results[0].name === name) {
                         setError('Subject name already exists.');
                         setLoading(false);
                     } else {
