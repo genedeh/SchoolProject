@@ -11,8 +11,8 @@ class User(AbstractUser, models.Model):
         ('female', 'Female'),
     ]
 
-    first_name = models.CharField(max_length=20, blank=True)
-    last_name = models.CharField(max_length=30, blank=True)
+    first_name = models.CharField(max_length=50, blank=True)
+    last_name = models.CharField(max_length=50, blank=True)
     username = models.CharField(max_length=100, unique=True, blank=True)
     profile_picture = CloudinaryField('image', null=True, blank=True)
     is_student_or_teacher = models.BooleanField(default=False)

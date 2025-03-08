@@ -6,7 +6,7 @@ from user.models import User
 
 
 class ClassRoom(models.Model):
-    name = models.CharField(max_length=8, unique=True)
+    name = models.CharField(max_length=100, unique=True)
     assigned_teacher = models.OneToOneField(
         User, on_delete=models.SET_NULL, null=True, related_name="classrooms")
     students = models.ManyToManyField(User, related_name='classes', blank=True)
@@ -16,7 +16,7 @@ class ClassRoom(models.Model):
 
 
 class Subject(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=200)
     assigned_teacher = models.ForeignKey(
         User, related_name='subject', on_delete=models.PROTECT, null=True)
     students_offering = models.ManyToManyField(
