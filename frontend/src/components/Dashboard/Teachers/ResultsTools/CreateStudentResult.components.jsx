@@ -164,7 +164,7 @@ export const CreateStudentResult = () => {
         }
     }, [student]);
 
-    if (studentLoading || classroomLoading) return <CenteredSpinner caption="Loading..." />;
+    if (studentLoading || classroomLoading) return <CenteredSpinner caption={student_Id ? "Loading Student Information...": "Reloading Student Id"} />;
     if (studentError) return <ErrorAlert heading="Error while fetching Student Information" message={ErrorMessageHandling(studentError, studentError)} />;
     if (classroomError) return <ErrorAlert heading="Error while fetching Classroom Information" message={ErrorMessageHandling(classroomError, classroomError)} />;
 
@@ -185,60 +185,64 @@ export const CreateStudentResult = () => {
                             {classroomId && <Col><strong>Classroom:</strong> {classroom?.name}</Col>}
                         </Row>
                         <Row className="gy-3">
-                            <Col md={6}>
-                                <Form.Group controlId="classroom">
-                                    <Form.Label className="fw-semibold">Classroom</Form.Label>
-                                    {isError && (
-                                        <ErrorAlert heading="Error Loading Classrooms" message={error.message} />
-                                    )}
+                            {currentUser?.is_admin && (
+                                <>
+                                    <Col md={6}>
+                                        <Form.Group controlId="classroom">
+                                            <Form.Label className="fw-semibold">Classroom</Form.Label>
+                                            {isError && (
+                                                <ErrorAlert heading="Error Loading Classrooms" message={error.message} />
+                                            )}
 
-                                    <Form.Select
-                                        name="classroom"
-                                        size="md"
-                                        className="border-primary shadow-sm"
-                                        required
-                                        disabled={isLoading}
-                                        value={formData.classroom || ""}
-                                        onChange={(e) =>
-                                            setFormData((prev) => ({ ...prev, classroom: e.target.value }))
-                                        }
-                                    >
-                                        <option value="" disabled>
-                                            {isLoading ? "Loading classrooms..." : "Select Classroom"}
-                                        </option>
-                                        {classroomsData?.results?.map((classroom) => (
-                                            <option key={classroom.id} value={classroom.id}>
-                                                {classroom.name}
-                                            </option>
-                                        ))}
-                                    </Form.Select>
-
-                                    {/* Pagination Controls */}
-                                    <Row className="mt-2">
-                                        <Col className="d-flex justify-content-between">
-                                            <Button
-                                                variant="outline-primary"
-                                                size="sm"
-                                                disabled={!classroomsData?.previous}
-                                                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                                            <Form.Select
+                                                name="classroom"
+                                                size="md"
+                                                className="border-primary shadow-sm"
+                                                required
+                                                disabled={isLoading}
+                                                value={formData.classroom || ""}
+                                                onChange={(e) =>
+                                                    setFormData((prev) => ({ ...prev, classroom: e.target.value }))
+                                                }
                                             >
-                                                Previous
-                                            </Button>
-                                            <span>Page {page}</span>
-                                            <Button
-                                                variant="outline-primary"
-                                                size="sm"
-                                                disabled={!classroomsData?.next}
-                                                onClick={() => setPage((prev) => prev + 1)}
-                                            >
-                                                Next
-                                            </Button>
-                                        </Col>
-                                    </Row>
+                                                <option value="" disabled>
+                                                    {isLoading ? "Loading classrooms..." : "Select Classroom"}
+                                                </option>
+                                                {classroomsData?.results?.map((classroom) => (
+                                                    <option key={classroom.id} value={classroom.id}>
+                                                        {classroom.name}
+                                                    </option>
+                                                ))}
+                                            </Form.Select>
 
-                                    {isLoading && <CenteredSpinner caption="Fetching Classrooms..." />}
-                                </Form.Group>
-                            </Col>
+                                            {/* Pagination Controls */}
+                                            <Row className="mt-2">
+                                                <Col className="d-flex justify-content-between">
+                                                    <Button
+                                                        variant="outline-primary"
+                                                        size="sm"
+                                                        disabled={!classroomsData?.previous}
+                                                        onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                                                    >
+                                                        Previous
+                                                    </Button>
+                                                    <span>Page {page}</span>
+                                                    <Button
+                                                        variant="outline-primary"
+                                                        size="sm"
+                                                        disabled={!classroomsData?.next}
+                                                        onClick={() => setPage((prev) => prev + 1)}
+                                                    >
+                                                        Next
+                                                    </Button>
+                                                </Col>
+                                            </Row>
+
+                                            {isLoading && <CenteredSpinner caption="Fetching Classrooms..." />}
+                                        </Form.Group>
+                                    </Col>
+                                </>
+                            )}
                             <Col md={6}>
                                 <Form.Group controlId="term">
                                     <Form.Label className="fw-semibold">Term</Form.Label>
