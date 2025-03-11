@@ -1,3 +1,4 @@
+from cloudinary.exceptions import Error as CloudinaryError
 from rest_framework import generics, status
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import NotFound
@@ -17,6 +18,7 @@ import logging
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
+MAX_FILE_SIZE = 100 * 1024 * 1024  # 100MB
 
 class LoginView(generics.GenericAPIView):
     serializer_class = serializers.UserLoginSerializer
@@ -89,19 +91,13 @@ class CreateAndSearchUserView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         username = self.request.query_params.get('username', None)
-        # Initialize filters
         filters = {}
 
         if username:
-            # Case-insensitive username search
             filters['username__icontains'] = username
 
         queryset = User.objects.filter(**filters)
-
-        if not queryset.exists():
-            return []
-
-        return queryset
+        return queryset if queryset.exists() else []
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -112,29 +108,26 @@ class CreateAndSearchUserView(generics.ListCreateAPIView):
     def post(self, request, *args, **kwargs):
         try:
             # Get list values properly
-            # ✅ Correct way to get multiple values
             classes = request.POST.getlist("classes[]")
             subjects = request.POST.getlist("subjects[]")
 
-            # Convert to integers if needed
             classes = [int(cls) for cls in classes if cls.isdigit()]
             subjects = [int(subj) for subj in subjects if subj.isdigit()]
 
             logger.info(f"Received classes: {classes}, subjects: {subjects}")
 
-            # Include other request data in user creation
-
             user_data = request.data.copy()
             user_data.setlist("classes", classes)
             user_data.setlist("subjects", subjects)
+
             if "classes[]" in user_data:
                 del user_data["classes[]"]
             if "subjects[]" in user_data:
                 del user_data["subjects[]"]
 
-
-            # ✅ Get profile picture
+            # Get profile picture
             profile_picture = request.FILES.get("profile_picture")
+
             if profile_picture:
                 user_data["profile_picture"] = profile_picture
 
@@ -145,9 +138,19 @@ class CreateAndSearchUserView(generics.ListCreateAPIView):
 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except CloudinaryError as ce:
+            logger.error(f"Cloudinary Error: {ce}")
+            readable_size = round(
+                # Convert to MB
+                profile_picture.size / (1024 * 1024), 2)
+            return Response({"detail": f"Invalid file type. Only images are allowed or File too large. Uploaded size: {readable_size}MB. Maximum allowed size is {MAX_FILE_SIZE / (1024 * 1024)}MB ."}, status=status.HTTP_400_BAD_REQUEST)
 
+        except Exception as e:
+            logger.exception("Unexpected error occurred.")
+            return Response(
+                {"detail": f"An unexpected error occurred: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class QuickUserViewList(generics.ListAPIView):
     serializer_class = serializers.QuickUserViewSerializer

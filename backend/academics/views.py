@@ -471,23 +471,27 @@ class ClassroomPerformanceAPIView(APIView):
         }, status=status.HTTP_200_OK)
 
 
-@api_view(["POST"])
-def migrate_students_api(request):
-    """Migrate students for a session"""
-    try:
-        data = json.loads(request.body)
-        # Default to current year
-        session = data.get("session", str(datetime.now().year))
+class MigrateStudentsAPIView(APIView):
+    """Handles student migration process"""
 
-        result = migrate_students(session)
-        return Response(result, status=200)
+    def post(self, request):
+        """Migrate students for a session"""
+        try:
+            data = json.loads(request.body)
+            # Default to current year
+            session = data.get("session", str(datetime.now().year))
 
-    except Exception as e:
-        return Response({"error": str(e)}, status=500)
+            result = migrate_students(session)  # Call migration function
+            return Response(result, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(["GET"])
-def get_migration_progress(request):
+class MigrationProgressAPIView(APIView):
     """Fetch migration progress"""
-    progress = cache.get("migration_progress", 0)
-    return Response({"progress": progress})
+
+    def get(self, request):
+        """Return migration progress percentage"""
+        progress = cache.get("migration_progress", 0)
+        return Response({"progress": progress})
