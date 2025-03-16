@@ -1,3 +1,4 @@
+from ast import Is
 import logging
 import re
 import json
@@ -472,26 +473,24 @@ class ClassroomPerformanceAPIView(APIView):
 
 
 class MigrateStudentsAPIView(APIView):
-    """Handles student migration process"""
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        """Migrate students for a session"""
         try:
             data = json.loads(request.body)
-            # Default to current year
             session = data.get("session", str(datetime.now().year))
-
-            result = migrate_students(session)  # Call migration function
-            return Response(result, status=status.HTTP_200_OK)
-
+            logger.info(
+                f"API request received for migration session: {session}")
+            result = migrate_students(session)
+            return Response(result, status=200)
         except Exception as e:
-            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+            logger.exception(f"Error in MigrateStudentsAPI: {e}")
+            return Response({"error": str(e)}, status=500)
 
 class MigrationProgressAPIView(APIView):
-    """Fetch migration progress"""
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        """Return migration progress percentage"""
         progress = cache.get("migration_progress", 0)
+        logger.info(f"Migration progress requested: {progress}%")
         return Response({"progress": progress})
