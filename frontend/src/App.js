@@ -17,6 +17,7 @@ import { AssignedClassrooms } from './components/Dashboard/Teachers/TeacherCompo
 import UpdateStudentResult from './components/Dashboard/Teachers/ResultsTools/UpdateStudentResult.components';
 import { CreateStudentResult } from './components/Dashboard/Teachers/ResultsTools/CreateStudentResult.components';
 import StudentViewResult from './components/Dashboard/Students/Results/StudentViewResult.components';
+import MigrateStudents from './components/Dashboard/Teachers/AdminComponents/MigrateStudents.components';
 import { AdminViewResult } from './components/Dashboard/Teachers/AdminComponents/AdminViewResult.components';
 import NotFound from './components/Routes/PageNotFound.components';
 
@@ -38,6 +39,7 @@ function App() {
         <Route path='student-results' element={<PrivateRoute Component={StudentViewResult} AltComponent={AdminViewResult}/>} />
         <Route path="update-student-result/:reuslt_name" element={<UpdateStudentResult />} />
         <Route path="create-student-result" element={<CreateStudentResult />} />
+        <Route path="migrate-students" element={<MigrateStudents />} />
       </Route>
     </Routes>
   );

@@ -80,7 +80,15 @@ def migrate_students(session):
                 if not current_classes:
                     logger.error(
                         f"Student {student.id} - {student.username} has no assigned classes.")
-                    failed_students.append(student)
+
+                    failed_students.append({
+                        "id": student.id,
+                        "username": student.username,
+                        "profile_picture_url": student.profile_picture.url if student.profile_picture else None,
+                        "classes": [cls.name for cls in student.classes.all()],
+                        # Example reason
+                        "issue": f"Student {student.id} - {student.username} has no assigned classes."
+                    })
                     continue
 
                 new_classes = []
@@ -100,6 +108,14 @@ def migrate_students(session):
                         logger.warning(
                             f"Student {student.id} - {student.username} cannot be migrated from {classroom.name} (No progression).")
                         failed_students.append(student)
+                        failed_students.append({
+                            "id": student.id,
+                            "username": student.username,
+                            "profile_picture_url": student.profile_picture.url if student.profile_picture else None,
+                            "classes": [cls.name for cls in student.classes.all()],
+                            # Example reason
+                            "issue": f"Student {student.id} - {student.username} cannot be migrated from {classroom.name} (No progression)."
+                        })
                         continue  # Skip this iteration
 
                     # Get or create the next class
@@ -136,7 +152,7 @@ def migrate_students(session):
 
     return {
         "migrated": migrated_count,
-        "failed_students": FailedStudentSerializer(failed_students, many=True).data,
+        "failed_students": failed_students,
         "failed_transfers": failed_transfers,
         "session": session
     }
