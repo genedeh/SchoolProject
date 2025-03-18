@@ -35,7 +35,7 @@ const StudentProfile = () => {
                                     <div className="d-flex align-items-center">
                                         <div className="me-3">
                                             <Image
-                                                src={profile_picture ? (`http://127.0.0.1:8000/media/${profile_picture}`) : ("http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg")}
+                                                src={profile_picture}
                                                 roundedCircle
                                                 style={{ width: '100px', height: '100px', 'objectFit': 'cover' }}
                                             />

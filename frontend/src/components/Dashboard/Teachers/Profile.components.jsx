@@ -1,83 +1,38 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "../../../contexts/User.contexts";
-import { Container, Card, Row, Col, Image, Button, Badge } from 'react-bootstrap';
+import { Container, Card, Row, Col, Button, Badge } from 'react-bootstrap';
 import { GenderFemale, GenderMale, Telephone, GeoAlt } from "react-bootstrap-icons";
+import { ProfileHeader, ScheduleTable, InfoCard, DocumentsSection, ColleaguesList } from "../ProfileTools/ProfileTools.components";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
+import ProfilePicture from "../../../images/ProfilePictureImage.images";
 
 const TeacherProfile = () => {
     const { currentUser } = useUser();
-    const [teachingSubjects, setTeachingSubjects] = useState([]);
-    const { first_name, last_name, username, address, phone_number, email, profile_picture, birth_date, gender, user_class, teaching_subjects } = currentUser;
-    const fetchSubjects = async () => {
-        await axios.post("api/get-subjects/", { "subject_ids": teaching_subjects })
-            .then((response) => {
-                setTeachingSubjects(response.data)
-            })
-            .catch(error => {
-                console.error("Failed to fetch subjects.");
-            });
-    }
-    useEffect(() => {
-        if (teaching_subjects.length !== 0) {
-            fetchSubjects()
-        }
-    }, [currentUser])
+    const { first_name, last_name, username, address, profile_picture, user_class, teaching_subjects,
+        admission_number,
+        birth_date, blood_group, boarding_status, disability_status, email, gender, genotype, home_town, local_government_area, migrated_sessions,
+        nationality, parent_guardian_name, parent_guardian_email, parent_guardian_phone, phone_number, religion, is_student_or_teacher, is_superuser
+    } = currentUser;
+
 
     if (!currentUser.is_student_or_teacher && currentUser) {
         return (
             <>
-                <Container className="m-2">
+                <Container fluid className="p-4">
                     <Row>
-                        <Col >
-                            <Card className="m-2">
-                                <Card.Header className="bg-gradient">
-                                    <div className="d-flex align-items-center">
-                                        <div className="me-3">
-                                            <Image
-                                                src={profile_picture}
-                                                roundedCircle
-                                                style={{ width: '100px', height: '100px', 'objectFit': 'cover' }}
-                                            />
-                                        </div>
-                                        <div>
-                                            <Card.Title className="mb-0 fw-bold">{first_name} {last_name}</Card.Title>
-                                            <br />
-                                            <Card.Subtitle className="text-muted"><GeoAlt className="me-2" /> {address}</Card.Subtitle>
-                                            <div className="d-flex align-items-center mt-2">
-                                                @   {username}
-                                            </div>
-                                            <div className="d-flex align-items-center mt-2">
-                                                <Telephone className='me-2' />{phone_number}
-                                            </div>
-                                            <div className="d-flex align-items-center mt-2">
-                                                {gender === 'male' ?
-                                                    (<Button className="m-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
-                                                        <GenderMale />
-                                                    </Button>) :
-                                                    (<Button className="m-2" size="sm" style={{ 'backgroundColor': 'pink', 'borderColor': 'white' }}>
-                                                        <GenderFemale />
-                                                    </Button>)}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Card.Header>
-                                <Card.Body className="d-flex justify-content-between">
-                                    <Button variant="outline-primary">{email}</Button>
-                                    <Button variant="outline-danger">{birth_date}</Button>
-                                    <Button variant="outline-success">Assigned Class • {user_class}</Button>
-                                </Card.Body>
-                            </Card>
-                            <Card className="mb-4">
-                                <Card.Body>
-                                    <Card.Title>Teaching Subjects</Card.Title>
-                                    {teachingSubjects.map(({ id, name }) => (
-                                        <Badge pill bg="primary" className="me-2 mb-2" key={id} >
-                                            {name.replace(`'`, '').replace(`'`, '')}
-                                        </Badge>
-                                    ))}
-                                </Card.Body>
-                            </Card>
+                        <Col md={8}>
+                            <ProfileHeader profile_picture={profile_picture} first_name={first_name} last_name={last_name} address={address} user_class={user_class} />
+                            <hr />
+                            <InfoCard admission_number={admission_number} birth_date={birth_date} blood_group={blood_group} boarding_status={boarding_status} disability_status={disability_status} email={email}
+                                gender={gender} genotype={genotype} home_town={home_town} local_government_area={local_government_area} nationality={nationality} parent_guardian_email={parent_guardian_email}
+                                parent_guardian_name={parent_guardian_name} parent_guardian_phone={parent_guardian_phone} phone_number={phone_number} religion={religion} is_student_or_teacher={is_student_or_teacher} is_superuser={is_superuser}
+                            />
+                        </Col>
+                        <Col md={4}>
+                            <ScheduleTable className="mt-3" />
+                            <DocumentsSection className="mt-3" />
+                            <ColleaguesList className="mt-3" />
                         </Col>
                     </Row>
                 </Container>
