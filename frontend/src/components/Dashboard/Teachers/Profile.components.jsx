@@ -1,15 +1,11 @@
-import { useEffect, useState } from "react";
 import { useUser } from "../../../contexts/User.contexts";
-import { Container, Card, Row, Col, Button, Badge } from 'react-bootstrap';
-import { GenderFemale, GenderMale, Telephone, GeoAlt } from "react-bootstrap-icons";
-import { ProfileHeader, ScheduleTable, InfoCard, DocumentsSection, ColleaguesList } from "../ProfileTools/ProfileTools.components";
-import axios from "axios";
+import { Container, Row, Col } from 'react-bootstrap';
+import { ProfileHeader, InfoCard, DocumentsSection } from "../ProfileTools/ProfileTools.components";
 import { Navigate } from "react-router-dom";
-import ProfilePicture from "../../../images/ProfilePictureImage.images";
 
 const TeacherProfile = () => {
     const { currentUser } = useUser();
-    const { first_name, last_name, username, address, profile_picture, user_class, teaching_subjects,
+    const { first_name, last_name, address, profile_picture, user_class, teaching_subjects, offering_subjects,
         admission_number,
         birth_date, blood_group, boarding_status, disability_status, email, gender, genotype, home_town, local_government_area, migrated_sessions,
         nationality, parent_guardian_name, parent_guardian_email, parent_guardian_phone, phone_number, religion, is_student_or_teacher, is_superuser
@@ -28,11 +24,10 @@ const TeacherProfile = () => {
                                 gender={gender} genotype={genotype} home_town={home_town} local_government_area={local_government_area} nationality={nationality} parent_guardian_email={parent_guardian_email}
                                 parent_guardian_name={parent_guardian_name} parent_guardian_phone={parent_guardian_phone} phone_number={phone_number} religion={religion} is_student_or_teacher={is_student_or_teacher} is_superuser={is_superuser}
                             />
+                            <hr />
                         </Col>
                         <Col md={4}>
-                            <ScheduleTable className="mt-3" />
-                            <DocumentsSection className="mt-3" />
-                            <ColleaguesList className="mt-3" />
+                            <DocumentsSection className="mt-3" is_student_or_teacher={is_student_or_teacher} migrated_sessions={migrated_sessions} offering_subjects={offering_subjects} teaching_subjects={teaching_subjects} />
                         </Col>
                     </Row>
                 </Container>

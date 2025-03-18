@@ -58,69 +58,72 @@ export const InfoCard = ({ admission_number, birth_date, blood_group, boarding_s
     );
 };
 
-// Schedule Table Component
-export const ScheduleTable = () => {
+
+
+const SessionCard = ({ session }) => {
     return (
-        <Card className="p-3">
-            <h6>Schedule</h6>
-            <Table striped bordered hover>
-                <thead>
-                    <tr>
-                        <th>Time</th>
-                        <th>Monday</th>
-                        <th>Tuesday</th>
-                        <th>Wednesday</th>
-                        <th>Thursday</th>
-                        <th>Friday</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>09:00</td>
-                        <td>Room A100</td>
-                        <td>Room A101</td>
-                        <td>Room A102</td>
-                        <td>Room A103</td>
-                        <td>Room A104</td>
-                    </tr>
-                    <tr>
-                        <td>10:00</td>
-                        <td>Room B200</td>
-                        <td>Room B201</td>
-                        <td>Room B202</td>
-                        <td>Room B203</td>
-                        <td>Room B204</td>
-                    </tr>
-                </tbody>
-            </Table>
+        <Card className="mb-3 shadow-sm rounded border-1">
+            <Card.Body>
+                <Card.Title className="text-primary">{session} Session</Card.Title>
+            </Card.Body>
         </Card>
     );
 };
 
+const SubjectCard = ({ subject }) => {
+    return (
+        <Card className="mb-3 shadow-sm rounded border-1">
+            <Card.Body>
+                <Card.Title className="d-flex justify-content-between align-items-center">
+                    <Badge bg="success">{subject}</Badge>
+                </Card.Title>
+            </Card.Body>
+        </Card>
+    );
+};
 
 // Documents Section
-export const DocumentsSection = () => {
+export const DocumentsSection = ({ is_student_or_teacher, migrated_sessions, offering_subjects, teaching_subjects }) => {
     return (
         <Card className="p-3">
-            <h6>Documents</h6>
-            <div className="d-flex flex-wrap gap-2">
-                <Badge pill bg="secondary">Birth Certificate</Badge>
-                <Badge pill bg="primary">Form 100</Badge>
-                <Badge pill bg="warning">Contract</Badge>
-            </div>
-        </Card>
-    );
-};
+            <div className="py-4">
+                {is_student_or_teacher ? (
+                    <>
+                        <h3 className="text-center text-primary mb-4">Sessions & Subjects</h3>
 
-// Colleagues List Component
-export const ColleaguesList = () => {
-    return (
-        <Card className="p-3">
-            <h6>Colleagues</h6>
-            <div className="d-flex gap-2">
-                <Image src="https://via.placeholder.com/40" roundedCircle />
-                <Image src="https://via.placeholder.com/40" roundedCircle />
-                <Image src="https://via.placeholder.com/40" roundedCircle />
+                        {/* Sessions Section */}
+                        <h4 className="text-secondary">Migrated Sessions</h4>
+                        <Row>
+                            {migrated_sessions.map((session) => (
+                                <Col key={session}>
+                                    <SessionCard session={session} />
+                                </Col>
+                            ))}
+                        </Row>
+
+                        {/* Subjects Section */}
+                        <h4 className="text-secondary mt-4">Offering Subjects</h4>
+                        <Row>
+                            {offering_subjects.map((subject) => (
+                                <Col key={subject}>
+                                    <SubjectCard subject={subject} />
+                                </Col>
+                            ))}
+                        </Row>
+                    </>
+                ) : (
+                    <>
+                        <h4 className="text-secondary mt-4">Teaching Subjects</h4>
+                        <br />
+                        <Row>
+                            {teaching_subjects.map((subject) => (
+                                <Col key={subject}>
+                                    <SubjectCard subject={subject} />
+                                </Col>
+                            ))}
+                        </Row>
+                    </>
+                )}
             </div>
         </Card>
     );
