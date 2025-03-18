@@ -64,7 +64,7 @@ const SessionCard = ({ session }) => {
     return (
         <Card className="mb-3 shadow-sm rounded border-1">
             <Card.Body>
-                <Card.Title className="text-primary">{session} Session</Card.Title>
+                <Card.Title className="text-dark">{session} Session</Card.Title>
             </Card.Body>
         </Card>
     );
