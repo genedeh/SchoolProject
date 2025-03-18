@@ -27,7 +27,6 @@ export const UserProvider = ({ children }) => {
                         headers: { Authorization: `Bearer ${token}` },
                     });
                     setError(null);
-                    console.log(response.data)
                     setCurrentUser(response.data);
                 } catch (err) {
                     setError("FAILED TO FETCH USER PROFILE");

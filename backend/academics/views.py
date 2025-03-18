@@ -77,7 +77,7 @@ class ClassRoomListView(generics.ListCreateAPIView):
         name = self.request.query_params.get('name', None)
         filters = {}
         if name:
-            filters["name__icontains"] = name
+            filters["name"] = name
 
         queryset = ClassRoom.objects.filter(**filters)
         if not queryset.exists():

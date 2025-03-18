@@ -129,13 +129,15 @@ class UserProfileSerializer(serializers.ModelSerializer):
     profile_picture = serializers.SerializerMethodField()
     offering_subjects = serializers.SerializerMethodField()
     teaching_subjects = serializers.SerializerMethodField()
+    teaching_subjects_id = serializers.SerializerMethodField()
+
 
     class Meta:
         model = User
         fields = [
             "id", "first_name", "last_name", "address", "phone_number", "username",
             "profile_picture", "email", "birth_date", "gender", "is_student_or_teacher",
-            "is_superuser", "user_class", "offering_subjects", "teaching_subjects",
+            "is_superuser", "user_class", "offering_subjects", "teaching_subjects", "teaching_subjects_id",
             "admission_number", "migrated_sessions", "parent_guardian_name",
             "parent_guardian_phone", "parent_guardian_email", "home_town",
             "local_government_area", "nationality", "religion", "blood_group",
@@ -180,5 +182,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
             return list(obj.subject.all().values_list("name", flat=True))
         return None
     
-    def get_offering_subjects(self, obj):
-        return list(obj.subjects.all().values_list("id", flat=True))
+    def get_teaching_subjects_id(self, obj):
+        """
+        Returns the subjects a teacher is teaching.
+        """
+        if not obj.is_student_or_teacher:  # If the user is a teacher
+            # Use "name"
+            return list(obj.subject.all().values_list("id", flat=True))
+        return None
