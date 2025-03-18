@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useUser } from "../../../../contexts/User.contexts";
+import { useMutation } from "react-query";
+import { CenteredSpinner } from "../../../Loading/CenteredSpinner.components"
+import { ErrorAlert } from "../../../Alerts/ErrorAlert.components"
+import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils"
 import { Modal, Table, Card, Image, Alert, Row, Col, Button, Spinner } from "react-bootstrap";
 import { FaUser, FaCalendarAlt, FaBook, FaComments, FaStar, FaChartPie, FaFileDownload } from "react-icons/fa";
 import { PieChart, Pie, Tooltip, BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import axios from "axios";
 
 // Colors for different grades
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#FF4560"];
@@ -39,10 +44,34 @@ export const ResultModal = ({ show, handleClose, result }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const { currentUser } = useUser();
+
+    const { mutate, isLoading, isError, error: resultDeleteError, isSuccess } = useMutation(
+        async () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                throw new Error("Authentication token is missing!");
+            }
+
+            return await axios.delete(
+                `/api/update-student-result/${result[0]?.id}/`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+        }
+    );
+    useEffect(() => {
+        if (isSuccess) {
+            alert("Result Deleted Successfully");
+            handleClose();
+        }
+    }, [isSuccess]);
     if (!result) return null;
 
-
-
+    const { assigned_student, session, term, created_at, updated_at, scores, general_remarks, comments, classroom } = result[0];
     const saveAsPDF = async (name, term, session) => {
         setLoading(true);
         setError(null);
@@ -82,7 +111,6 @@ export const ResultModal = ({ show, handleClose, result }) => {
     };
 
 
-    const { assigned_student, session, term, created_at, updated_at, scores, general_remarks, comments, classroom } = result[0];
 
     // Process scores
     let totalScore = 0;
@@ -102,6 +130,9 @@ export const ResultModal = ({ show, handleClose, result }) => {
     // Calculate overall percentage
     const overallPercentage = totalSubjects > 0 ? (totalScore / (totalSubjects * 100)) * 100 : 0;
     const overallGrade = calculateGrade(overallPercentage);
+
+
+
 
     return (
         <Modal show={show} onHide={handleClose} fullscreen={true} scrollable={true}>
@@ -125,6 +156,22 @@ export const ResultModal = ({ show, handleClose, result }) => {
                     </Button>
                     <hr />
                 </div>}
+                {currentUser.is_admin && <div>
+                    <Button
+                        size="sm"
+                        variant="outline-danger"
+                        onClick={() => {
+                            if (window.confirm("Are you sure you want to delete this result?")) {
+                                mutate();
+
+                            }
+                        }}
+                        disabled={!result[0]} // Disable button if result is not available
+                    >
+                        ❌ Delete Result
+                    </Button>
+                    <hr />
+                </div>}
                 <div id="result-content" className="position-relative">
                     {loading && (
                         <div className="loading-overlay">
@@ -132,6 +179,9 @@ export const ResultModal = ({ show, handleClose, result }) => {
                             <p className="text-white mt-2">Generating PDF...</p>
                         </div>
                     )}
+                    {isLoading && <CenteredSpinner caption={`Deleting ${assigned_student?.username} ${term} of session ${session} classroom: ${classroom?.name} Result`} />}
+                    {isError && <ErrorAlert heading="Error while deleting Result" message={ErrorMessageHandling(isError, resultDeleteError)} />}
+
                     {/* Student Info */}
                     <Card className="mb-4 shadow-lg border-0 rounded-4 p-3" style={{ background: "#f8f9fa" }}>
                         <Card.Body className="d-flex align-items-center">

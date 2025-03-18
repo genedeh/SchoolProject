@@ -26,13 +26,18 @@ export const ResultViewHandlerButton = ({ queryKeys, refetch, setSelectedStudent
     );
 }
 
-export const ResultCreationHandlerButton = ({ studentName, classroomID }) => {
+export const ResultCreationHandlerButton = ({ studentName, classroomID = null, admin = false }) => {
     return (
         <>
             < Button
                 size="sm"
                 variant="outline-success"
                 onClick={() => {
+                    if (admin) {
+                        const url = `/dashboard/create-student-result/?student_name=${studentName}`; // Admin can create result for any student
+                        window.open(url, "_blank"); // Open in new tab
+                        return;
+                    }
                     const url = `/dashboard/create-student-result/?student_name=${studentName}&classroom_id=${classroomID}`;
                     window.open(url, "_blank"); // Open in new tab
                 }}

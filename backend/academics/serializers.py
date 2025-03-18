@@ -131,3 +131,23 @@ class StudentUpdateResultSerializer(serializers.ModelSerializer):
     class Meta:
         model = StudentResult
         fields = "__all__"
+
+
+class StudentSerializer(serializers.ModelSerializer):
+    classes = serializers.SlugRelatedField(
+        many=True, read_only=True, slug_field="name"
+    )
+
+    class Meta:
+        model = User
+        fields = ["id", "username", "profile_picture_url", "classes"]
+
+
+class FailedStudentSerializer(serializers.ModelSerializer):
+    classes = serializers.SlugRelatedField(
+        many=True, read_only=True, slug_field="name"
+    )
+
+    class Meta:
+        model = User
+        fields = ["id", "username", "profile_picture_url", "classes"]

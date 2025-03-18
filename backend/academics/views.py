@@ -1,5 +1,10 @@
+from ast import Is
 import logging
 import re
+import json
+from datetime import datetime
+from django.core.cache import cache
+from academics.utils.new_session_begins_utils import migrate_students
 from rest_framework.decorators import api_view
 from .utils.student_result_utils import get_students_in_classroom, calculate_student_performance, rank_students, get_best_students_per_subject
 from rest_framework.response import Response
@@ -72,7 +77,7 @@ class ClassRoomListView(generics.ListCreateAPIView):
         name = self.request.query_params.get('name', None)
         filters = {}
         if name:
-            filters["name__icontains"] = name
+            filters["name"] = name
 
         queryset = ClassRoom.objects.filter(**filters)
         if not queryset.exists():
@@ -179,7 +184,7 @@ class GetSubjectsById(APIView):
 
         # Ensure the list is provided and not empty
         if not subject_ids:
-            return Response({"error": "subject_ids is required and cannot be empty."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "subject_ids is required and cannot be empty."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Find subjects matching the provided IDs
         subjects = Subject.objects.filter(id__in=subject_ids)
@@ -244,7 +249,7 @@ class StudentResultView(APIView):
         classroom_id = request.GET.get("classroom_id")
 
         if not student_id:
-            return Response({"error": "student_id is required"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "student_id is required"}, status=status.HTTP_400_BAD_REQUEST)
 
         if classroom_id:
             return self.get_results_by_classroom(student_id, classroom_id)
@@ -259,7 +264,7 @@ class StudentResultView(APIView):
             assigned_student_id=student_id).aggregate(Max("session"))["session__max"]
 
         if not latest_session:
-            return Response({"error": "No results found for this student."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "No results found for this student."}, status=status.HTTP_404_NOT_FOUND)
 
         results = StudentResult.objects.filter(
             assigned_student_id=student_id, session=latest_session)
@@ -270,7 +275,7 @@ class StudentResultView(APIView):
             assigned_student_id=student_id, session=session_year)
 
         if not results.exists():
-            return Response({"error": "No results found for this session."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "No results found for this session."}, status=status.HTTP_404_NOT_FOUND)
 
         return self.format_results(results, session_year)
 
@@ -279,7 +284,7 @@ class StudentResultView(APIView):
             assigned_student_id=student_id, classroom_id=classroom_id)
 
         if not results.exists():
-            return Response({"error": "No results found for this student in the given classroom."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "No results found for this student in the given classroom."}, status=status.HTTP_404_NOT_FOUND)
 
         return self.format_results(results, results.first().session)
 
@@ -329,18 +334,18 @@ class CreateStudentResultView(generics.CreateAPIView):
 
         # ✅ Validate Session Format
         if not is_valid_session_format(session):
-            return Response({"error": "Invalid session format. Expected format: YYYY/YYYY"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Invalid session format. Expected format: YYYY/YYYY"}, status=status.HTTP_400_BAD_REQUEST)
 
         # ✅ Ensure Term is Only "1st Term", "2nd Term", or "3rd Term"
         valid_terms = {"1st Term", "2nd Term", "3rd Term"}
         if term not in valid_terms:
-            return Response({"error": "Invalid term. Must be '1st Term', '2nd Term', or '3rd Term'"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Invalid term. Must be '1st Term', '2nd Term', or '3rd Term'"}, status=status.HTTP_400_BAD_REQUEST)
 
         # ✅ Prevent Duplicate Term Entries in a Session
         existing_result = StudentResult.objects.filter(
             assigned_student_id=student_id, session=session, term=term).exists()
         if existing_result:
-            return Response({"error": f"Result for {term} in session {session} already exists."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": f"Result for {term} in session {session} already exists."}, status=status.HTTP_400_BAD_REQUEST)
 
         # ✅ Ensure All Scores are ≤ 100
         for subject, score_data in scores.items():
@@ -348,7 +353,7 @@ class CreateStudentResultView(generics.CreateAPIView):
             test_score = score_data.get("test", 0)
             if not (0 <= exam_score <= 60 and 0 <= test_score <= 40):
                 return Response(
-                    {"error": f"Invalid scores for {subject}. Exam and test scores must be between 0 and 100."},
+                    {"detail": f"Invalid scores for {subject}. Exam and test scores must be between 0 and 100."},
                     status=status.HTTP_400_BAD_REQUEST
                 )
 
@@ -377,14 +382,14 @@ class UpdateStudentResultView(generics.RetrieveUpdateDestroyAPIView):
                           "general_remarks", "term", "session"}
         # ✅ Validate session format (YYYY/YYYY)
         if not is_valid_session_format(data["session"]):
-            return Response({"error": "Invalid session format. Expected format: YYYY/YYYY"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Invalid session format. Expected format: YYYY/YYYY"}, status=status.HTTP_400_BAD_REQUEST)
 
         # ✅ Validate term selection
         valid_terms = {"1st Term", "2nd Term", "3rd Term"}
         if "term" in data:
             term = data["term"]
             if term not in valid_terms:
-                return Response({"error": "Invalid term. Must be '1st Term', '2nd Term', or '3rd Term'."}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"detail": "Invalid term. Must be '1st Term', '2nd Term', or '3rd Term'."}, status=status.HTTP_400_BAD_REQUEST)
 
             # 🔄 Prevent duplicate term-session assignment
             if "session" in data:
@@ -413,7 +418,7 @@ class UpdateStudentResultView(generics.RetrieveUpdateDestroyAPIView):
                 test_score = score_data.get("test", 0)
                 if not (0 <= exam_score <= 60 and 0 <= test_score <= 40):
                     return Response(
-                        {"error": f"Invalid scores for {subject}. Exam and test scores must be between 0 and 100."},
+                        {"detail": f"Invalid scores for {subject}. Exam and test scores must be between 0 and 100."},
                         status=status.HTTP_400_BAD_REQUEST
                     )
 
@@ -429,7 +434,7 @@ class UpdateStudentResultView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ClassroomPerformanceAPIView(APIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         logger.info("===== STARTING CLASSROOM PERFORMANCE API REQUEST =====")
 
@@ -437,13 +442,13 @@ class ClassroomPerformanceAPIView(APIView):
 
         if not classroom_id:
             logger.error("Missing classroom_id parameter")
-            return Response({"error": "Missing classroom_id parameter"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Missing classroom_id parameter"}, status=status.HTTP_400_BAD_REQUEST)
 
         students = get_students_in_classroom(classroom_id)
 
         if students is None:
             logger.error("Classroom not found")
-            return Response({"error": "Classroom not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "Classroom not found"}, status=status.HTTP_404_NOT_FOUND)
 
         students_performance = []
 
@@ -454,7 +459,7 @@ class ClassroomPerformanceAPIView(APIView):
 
         if not students_performance:
             logger.error("No student results found")
-            return Response({"error": "No student results found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"detail": "No student results found"}, status=status.HTTP_404_NOT_FOUND)
 
         ranked_students = rank_students(students_performance)
         best_per_subject = get_best_students_per_subject(students_performance)
@@ -465,3 +470,27 @@ class ClassroomPerformanceAPIView(APIView):
             "students_performance": ranked_students,
             "best_per_subject": best_per_subject
         }, status=status.HTTP_200_OK)
+
+
+class MigrateStudentsAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            session = data.get("session", str(datetime.now().year))
+            logger.info(
+                f"API request received for migration session: {session}")
+            result = migrate_students(session)
+            return Response(result, status=200)
+        except Exception as e:
+            logger.exception(f"Error in MigrateStudentsAPI: {e}")
+            return Response({"error": str(e)}, status=500)
+
+class MigrationProgressAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        progress = cache.get("migration_progress", 0)
+        logger.info(f"Migration progress requested: {progress}%")
+        return Response({"progress": progress})

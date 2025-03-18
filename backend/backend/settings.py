@@ -103,7 +103,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 2  # Adjust as necessary
+    'PAGE_SIZE': 10  # Adjust as necessary
 }
 
 
@@ -173,6 +173,15 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Increase the maximum file upload size (default is 2.5MB)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600  # 100MB
+
+# Increase max upload size for FILES
+FILE_UPLOAD_MAX_MEMORY_SIZE = 104857600  # 100MB
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/

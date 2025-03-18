@@ -2,6 +2,7 @@ import { Card, ListGroup, Button, Table, Row, Col, Badge, Alert } from 'react-bo
 import { useState, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { ErrorAlert } from '../../../../Alerts/ErrorAlert.components';
+import { ErrorMessageHandling } from '../../../../../utils/ErrorHandler.utils'
 import { SuccessAlert } from '../../../../Alerts/SuccessAlert.components';
 import axios from 'axios';
 import './AddUser.styles.css'
@@ -47,10 +48,6 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
     const current_date = new Date();
     const [currentClassroom, setCurrentClassroom] = useState(null);
     const [offeringSubjects, setOfferingSubjects] = useState([]);
-    const [alert, setAlert] = useState({
-        "success": null,
-        "fail": null,
-    })
     const [displayProfilePicture, setDisplayProfilePicture] = useState(null)
     const [userType, setUserType] = useState('');
     const token = localStorage.getItem("token");
@@ -61,54 +58,10 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
 
 
     // const handleSubmit = async () => {
-    const { mutate: handleSubmit, isLoading } = useMutation(
-        useCreateUser,
-        {
-            onSuccess: () => {
-                setAlert({ "success": `User ${username} was added succesfully`, "fail": null })
-            },
-            onError: (err) => {
-                setAlert({ "fail": `Failed To Add User ${username}`, "success": null })
-            },
-        }
+    const { mutate: handleSubmit, isLoading, isError, error, isSuccess } = useMutation(
+        useCreateUser
     );
-    // setLoading(true)
-    // axios.post('api/users/', formData, {
-    //     headers: {
-    //         'Content-Type': 'multipart/form-data',
-    //         'Authorization': `Bearer ${token}`,
-    //     },
-    // })
-    //     .then(response => {
-    //         if (response.data['username'] === username) {
-    //             axios.patch(`api/users/${response.data["id"]}/`, { "classes": formData.classes, "subjects": formData.subjects },
-    //                 {
-    //                     headers: { Authorization: `Bearer ${token}` },
-    //                 }
-    //             )
-    //                 .then(response => {
-    //                     setLoading(false)
-    //                     setAlert({ "success": `User ${response.data["username"]} was added succesfully`, "fail": null })
 
-    //                 }).catch(e => {
-    //                     setLoading(false)
-    //                     axios.delete(`api/users/${response.data["id"]}/`, {
-    //                         headers: { Authorization: `Bearer ${token}` },
-    //                     }).catch(e => {
-    //                         setAlert({ "fail": `Failed To Add User ${formData["username"]}`, "success": null })
-    //                     })
-    //                     setAlert({ "fail": `Failed To Add User ${formData["username"]}`, "success": null })
-    //                 })
-    //             setLoading(false)
-    //         }
-    //     }).catch(e => {
-    //         setLoading(false)
-    //         setAlert({ "fail": `Failed To Add User ${formData["username"]}`, "success": null })
-    //     })
-    // setTimeout(() => {
-    //     setAlert({ "fail": null, "success": null })
-    // }, 5000)
-    // }
 
     const fetchClassSubjects = async (subjects) => {
         if (subjects.length !== 0) {
@@ -241,8 +194,8 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
 
                 </div>
             )}
-            {alert.success &&
-                <SuccessAlert heading="User Creation Status" message={alert.success}>
+            {isSuccess &&
+                <SuccessAlert heading="User Creation Status" message={`User ${username} was created successfully`}>
                     <Alert.Link onClick={() => {
                         setFormData({
                             "username": "",
@@ -264,21 +217,13 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                     }}>Go Back</Alert.Link>
                 </SuccessAlert>
             }
-            {alert.fail && <ErrorAlert heading="User creation failed" message={alert.fail} removable={true} />}
-            {/* {alert.fail &&
-                <ErrorAlert heading="User creation failed" message={alert.fail} >
-                    <Alert.Link onClick={() => setStep(1)}>Go Back</Alert.Link>
-                </ErrorAlert>}
-            {alert.success &&
-                <SuccessAlert heading="User creation was succesful" message={alert.success}>
-                    
-                </SuccessAlert>} */}
+            {isError && <ErrorAlert heading="User creation failed" message={ErrorMessageHandling(isError, error)} removable={true} />}
+
             <div className="d-flex justify-content-between mt-4">
                 <Button variant="secondary" onClick={prevStep}>
                     Back
                 </Button>
                 <Button variant="primary" onClick={() => {
-                    setAlert({ "fail": null, "success": null })
                     handleSubmit(formData);
                 }} disabled={isLoading}>
                     Submit

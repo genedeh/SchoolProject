@@ -1,14 +1,15 @@
-import { ListGroup } from "react-bootstrap";
+import { ListGroup, Spinner } from "react-bootstrap";
 
-export const UserCardItemComponent = ({ user, clickHandler, selectedDisplay }) => (
+export const UserCardItemComponent = ({ user, clickHandler, selectedDisplay, children }) => (
     <ListGroup.Item className={`d-flex justify-content-between align-items-center container 
                             ${selectedDisplay}`}
         onClick={() => {
             console.log(`clicked ${user.username}`)
             clickHandler(user);
         }}
-        >
+    >
         <div className="d-flex align-items-center">
+            {children}
             <div className="me-3">
                 <img
                     src={!user.profile_picture_url ? ("https://via.placeholder.com/40") : (user.profile_picture_url)}
@@ -21,6 +22,7 @@ export const UserCardItemComponent = ({ user, clickHandler, selectedDisplay }) =
                 <div>{user.username}</div>
                 <div className="text-muted">{user.gender}</div>
             </div>
+            
         </div>
     </ListGroup.Item>
 );

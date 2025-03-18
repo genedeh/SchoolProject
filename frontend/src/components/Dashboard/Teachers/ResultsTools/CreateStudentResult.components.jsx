@@ -1,5 +1,5 @@
 import { useLocation, Navigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "../../../../contexts/User.contexts";
 import { useQuery, useMutation } from "react-query";
 import { Form, Button, Spinner, Col, Row, Card } from "react-bootstrap";
@@ -10,7 +10,19 @@ import { ErrorAlert } from "../../../Alerts/ErrorAlert.components";
 import { SuccessAlert } from "../../../Alerts/SuccessAlert.components";
 import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import axios from "axios";
+import { use } from "react";
 
+
+const fetchClassrooms = async ({ queryKey }) => {
+    const [, page] = queryKey;
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Authentication token is missing!");
+
+    const response = await axios.get(`/api/classrooms/?page=${page}`, {
+        headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data; // Django default pagination format
+};
 
 
 export const CreateStudentResult = () => {
@@ -20,23 +32,27 @@ export const CreateStudentResult = () => {
     const studentName = queryParams.get("student_name");
     const classroomId = queryParams.get("classroom_id");
     const [student_Id, setStudent_Id] = useState(null);
+    const [page, setPage] = useState(1);
     const token = localStorage.getItem("token");
 
-
-    const { data: student, isLoading: studentLoading, error: studentError } = useQuery({
+    const { data: student, isLoading: studentLoading, error: studentError, refetch } = useQuery({
         queryKey: ["student", studentName],
         queryFn: async () => {
             const response = await axios.get(`/api/users/?username=${studentName}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            setStudent_Id(response.data.results[0].id)
-            return response.data.results[0];
 
+            if (response.data.results.length === 0) {
+                throw new Error("No student found.");
+            }
+
+            setStudent_Id(response.data.results[0].id);
+            return response.data.results[0];
         },
         enabled: !!studentName,
     });
 
-    const { data: classroom, isLoading: classroomLoading, error: classroomError } = useQuery({
+    const { data: classroom, isFetching: classroomLoading, error: classroomError } = useQuery({
         queryKey: ["classroom", classroomId],
         queryFn: async () => {
             const response = await axios.get(`/api/classrooms/${classroomId}/`, {
@@ -48,11 +64,21 @@ export const CreateStudentResult = () => {
         enabled: !!classroomId,
     });
 
+    const {
+        data: classroomsData,
+        isLoading,
+        isError,
+        error,
+    } = useQuery(["classrooms", page], fetchClassrooms, {
+        keepPreviousData: true, // Ensures smooth pagination experience
+        staleTime: 1000 * 60 * 5, // Caches data for 5 mins
+    });
+
     const [formData, setFormData] = useState({
         session: "",
         term: "",
         uploaded: false,
-        assigned_student: student_Id,
+        assigned_student: student?.id,
         classroom: classroomId,
         scores: {},
         general_remarks: {
@@ -111,7 +137,11 @@ export const CreateStudentResult = () => {
     };
     // Form submission
     const onSubmit = (e) => {
+        if (!student_Id) {
+            refetch();
+        }
         e.preventDefault();
+        console.log(formData);
         createResult();
     };
 
@@ -124,7 +154,17 @@ export const CreateStudentResult = () => {
         },
     });
 
-    if (studentLoading || classroomLoading) return <CenteredSpinner caption="Loading..." />;
+    useEffect(() => {
+        if (student) {
+            setStudent_Id(student.id);
+            setFormData((prev) => ({
+                ...prev,
+                assigned_student: student.id,
+            }));
+        }
+    }, [student]);
+
+    if (studentLoading || classroomLoading) return <CenteredSpinner caption={student_Id ? "Loading Student Information...": "Reloading Student Id"} />;
     if (studentError) return <ErrorAlert heading="Error while fetching Student Information" message={ErrorMessageHandling(studentError, studentError)} />;
     if (classroomError) return <ErrorAlert heading="Error while fetching Classroom Information" message={ErrorMessageHandling(classroomError, classroomError)} />;
 
@@ -142,9 +182,67 @@ export const CreateStudentResult = () => {
                     <Card className="p-4 mb-4 bg-white rounded">
                         <Row className="mb-3">
                             <Col><strong>Student:</strong> {student?.username}</Col>
-                            <Col><strong>Classroom:</strong> {classroom?.name}</Col>
+                            {classroomId && <Col><strong>Classroom:</strong> {classroom?.name}</Col>}
                         </Row>
                         <Row className="gy-3">
+                            {currentUser?.is_admin && (
+                                <>
+                                    <Col md={6}>
+                                        <Form.Group controlId="classroom">
+                                            <Form.Label className="fw-semibold">Classroom</Form.Label>
+                                            {isError && (
+                                                <ErrorAlert heading="Error Loading Classrooms" message={error.message} />
+                                            )}
+
+                                            <Form.Select
+                                                name="classroom"
+                                                size="md"
+                                                className="border-primary shadow-sm"
+                                                required
+                                                disabled={isLoading}
+                                                value={formData.classroom || ""}
+                                                onChange={(e) =>
+                                                    setFormData((prev) => ({ ...prev, classroom: e.target.value }))
+                                                }
+                                            >
+                                                <option value="" disabled>
+                                                    {isLoading ? "Loading classrooms..." : "Select Classroom"}
+                                                </option>
+                                                {classroomsData?.results?.map((classroom) => (
+                                                    <option key={classroom.id} value={classroom.id}>
+                                                        {classroom.name}
+                                                    </option>
+                                                ))}
+                                            </Form.Select>
+
+                                            {/* Pagination Controls */}
+                                            <Row className="mt-2">
+                                                <Col className="d-flex justify-content-between">
+                                                    <Button
+                                                        variant="outline-primary"
+                                                        size="sm"
+                                                        disabled={!classroomsData?.previous}
+                                                        onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                                                    >
+                                                        Previous
+                                                    </Button>
+                                                    <span>Page {page}</span>
+                                                    <Button
+                                                        variant="outline-primary"
+                                                        size="sm"
+                                                        disabled={!classroomsData?.next}
+                                                        onClick={() => setPage((prev) => prev + 1)}
+                                                    >
+                                                        Next
+                                                    </Button>
+                                                </Col>
+                                            </Row>
+
+                                            {isLoading && <CenteredSpinner caption="Fetching Classrooms..." />}
+                                        </Form.Group>
+                                    </Col>
+                                </>
+                            )}
                             <Col md={6}>
                                 <Form.Group controlId="term">
                                     <Form.Label className="fw-semibold">Term</Form.Label>
@@ -163,6 +261,7 @@ export const CreateStudentResult = () => {
                                     </Form.Select>
                                 </Form.Group>
                             </Col>
+
                             <Col md={6}>
                                 <Form.Group controlId="session">
                                     <Form.Label className="fw-semibold">Session</Form.Label>

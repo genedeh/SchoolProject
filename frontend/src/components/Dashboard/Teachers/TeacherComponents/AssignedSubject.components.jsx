@@ -15,14 +15,14 @@ export const AssignedSubjects = () => {
 
     const fetchSubjects = async () => {
         const token = localStorage.getItem("token");
-        // console.log({ "subject_ids": currentUser["teaching_subjects"] })
+        // console.log({ "subject_ids": currentUser["teaching_subjects_id"] })
 
         if (!token) {
             throw new Error("Authentication token is missing!");
         }
 
         const response = await axios.post(
-            "api/get-subjects/", { "subject_ids": currentUser["teaching_subjects"] },
+            "api/get-subjects/", { "subject_ids": currentUser["teaching_subjects_id"] },
             {
                 headers: { Authorization: `Bearer ${token}` },
             }
@@ -30,10 +30,10 @@ export const AssignedSubjects = () => {
         return response.data;
     };
     const { data, error, isError, isLoading } = useQuery(
-        ["assigned_subjects", currentUser.teaching_subjects], // Query key
+        ["assigned_subjects", currentUser.teaching_subjects_id], // Query key
         fetchSubjects,
         {
-            enabled: !!currentUser["teaching_subjects"],
+            enabled: !!currentUser["teaching_subjects_id"],
             keepPreviousData: true,
             refetchOnWindowFocus: true,
             retry: 3,

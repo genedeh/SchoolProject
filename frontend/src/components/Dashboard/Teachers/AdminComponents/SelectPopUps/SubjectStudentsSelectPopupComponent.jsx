@@ -24,7 +24,7 @@ const fetchData = async (page, query) => {
 
 export const StudentsSelectPopUp = ({ show, handleClose, selectedStudents, setSelectedStudents }) => {
     const [currentPage, setCurrentPage] = useState(1);
-    const usersPerPage = 2;
+    const usersPerPage = 10;
     const [selectedOptions, setSelectedOptions] = useState([]);
     const [tempSearchTerm, setTempSearchTerm] = useState("");
     const [searchTerm, setSearchTerm] = useState("")
@@ -79,7 +79,7 @@ export const StudentsSelectPopUp = ({ show, handleClose, selectedStudents, setSe
 
                 {isError && <ErrorAlert heading="Error While trying to fetch classrooms" message={ErrorMessageHandling(isError, error)} removable={true} />}
                 <ListGroup className="mb-3 ">
-                    {!isLoading ?
+                    {!isLoading && !isError ?
                         (data.results?.map((student) => (
                             <UserCardItemComponent key={student.id} user={student} clickHandler={() => {
                                 if (!selectedOptions.includes(student.id)) {
