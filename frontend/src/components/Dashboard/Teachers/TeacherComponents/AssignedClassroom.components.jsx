@@ -90,7 +90,7 @@ export const AssignedClassrooms = () => {
             {
                 enabled: !!selectedStudent, onSuccess: () => setShowOverlay(true),
                 refetchOnWindowFocus: false,
-                retry: 3,
+                retry: 1,
             }
         );
     // **Second Query**: Fetch classroom performance (Runs only if classroomId exists)
@@ -105,7 +105,7 @@ export const AssignedClassrooms = () => {
         () => fetchClassroomPerformance(classroomId), // Fetch function
         {
             enabled: !!classroomId, // Only fetch if classroomId is available
-            retry: 3,
+            retry: 1,
             staleTime: 1000 * 60 * 5,
             cacheTime: 1000 * 60 * 10,
             onSuccess: () => {
@@ -201,7 +201,7 @@ export const AssignedClassrooms = () => {
                                                             {/* Gender & View Button */}
                                                             <div className="d-flex align-items-center">
                                                                 {/* View Student Button */}
-                                                                <ResultCreationHandlerButton studentName={username} classroomID={classId} />
+                                                                <ResultCreationHandlerButton studentName={username} classroomID={classId} studentId={id} />
                                                                 <ResultViewHandlerButton queryKeys={{ studentId: id, classroomId: classId }} refetch={refetch} setSelectedStudent={setSelectedStudent} selectedStudent={selectedStudent} id={id} loading={{ isFetchingResult, isLoadingResult }} />
                                                             </div>
                                                         </ListGroup.Item>
