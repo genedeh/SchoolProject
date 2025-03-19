@@ -1,6 +1,6 @@
 env/
 media/
-# migrations/
+migrations/
 __pycache__/
 .env
 .vscode/

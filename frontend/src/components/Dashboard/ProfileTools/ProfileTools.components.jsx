@@ -1,20 +1,25 @@
 import React from "react";
-import { Card, Table, ProgressBar, Image, ListGroup, Badge, Container, Row, Col } from "react-bootstrap";
-import { Pencil, Link45deg } from "react-bootstrap-icons";
+import { Card, ListGroup, Badge, Row, Col } from "react-bootstrap";
 import ProfilePicture from "../../../images/ProfilePictureImage.images";
 
 // Profile Header Component
 export const ProfileHeader = ({ profile_picture, first_name, last_name, address, user_class }) => {
     return (
         <Card className="p-4 d-flex flex-row align-items-center">
-            <ProfilePicture profilePicture={profile_picture} />
-            <div>
-                <h4 className="mb-1">{first_name} {last_name}</h4>
-                <p className="text-muted mb-1">{address}</p>
-                <div className="d-flex gap-2">
-                    <button className="btn btn-light text-bold">{user_class}</button>
-                </div>
-            </div>
+            <Row>
+                <Col md={4}>
+                    <ProfilePicture profilePicture={profile_picture} />
+                </Col>
+                <Col md={8}>
+                    <div>
+                        <h4 className="mb-1">{first_name} {last_name}</h4>
+                        <p className="text-muted mb-1">{address}</p>
+                        <div className="d-flex gap-2">
+                            <button className="btn btn-light text-bold">{user_class}</button>
+                        </div>
+                    </div>
+                </Col>
+            </Row>
         </Card >
     );
 };
