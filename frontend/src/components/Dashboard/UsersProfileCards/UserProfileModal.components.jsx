@@ -316,7 +316,7 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
             <Modal.Footer>
                 {!currentUser.is_student_or_teacher ?
                     (
-                        currentUser.user_class === className || currentUser.is_admin ? (
+                        currentUser.user_class === className || currentUser.is_superuser ? (
                             <>
                                 {!isEditMode &&
                                     <Button onClick={toggleEditMode}>

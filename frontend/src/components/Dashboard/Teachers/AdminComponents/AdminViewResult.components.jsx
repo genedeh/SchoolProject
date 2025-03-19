@@ -36,7 +36,7 @@ const fetchStudentResults = async ({ queryKey }) => {
 
 export const AdminViewResult = () => {
     const { currentUser } = useUser();
-    const { is_admin } = currentUser;
+    const { is_superuser } = currentUser;
     const [searchTerm, setSearchTerm] = useState("");
     const [tempSearchTerm, setTempSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -68,7 +68,7 @@ export const AdminViewResult = () => {
         setSessionModalShow(true);
     };
 
-    if (!is_admin) return <Navigate to='/dashboard/home' />;
+    if (!is_superuser) return <Navigate to='/dashboard/home' />;
 
     return (
         <div>

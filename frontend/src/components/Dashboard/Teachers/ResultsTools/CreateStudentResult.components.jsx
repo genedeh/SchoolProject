@@ -185,7 +185,7 @@ export const CreateStudentResult = () => {
                             {classroomId && <Col><strong>Classroom:</strong> {classroom?.name}</Col>}
                         </Row>
                         <Row className="gy-3">
-                            {currentUser?.is_admin && (
+                            {currentUser?.is_superuser && (
                                 <>
                                     <Col md={6}>
                                         <Form.Group controlId="classroom">

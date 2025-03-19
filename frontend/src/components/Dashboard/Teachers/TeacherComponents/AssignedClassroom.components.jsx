@@ -116,7 +116,7 @@ export const AssignedClassrooms = () => {
 
 
 
-    if (!currentUser.is_student_or_teacher && currentUser && !currentUser.is_admin) {
+    if (!currentUser.is_student_or_teacher && currentUser && !currentUser.is_superuser) {
         return (
             <div>
                 <center>

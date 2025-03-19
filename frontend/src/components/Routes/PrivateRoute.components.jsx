@@ -9,5 +9,6 @@ export const PrivateRoute = ({ Component, AltComponent }) => {
 export const AdminPrivateRoute = ({ Component, AltComponent }) => {
 
     const { currentUser } = useUser();
-    return currentUser.is_admin ? <Component /> : <AltComponent />;
+    console.log(currentUser);
+    return currentUser.is_superuser ? <Component /> : <AltComponent />;
 };

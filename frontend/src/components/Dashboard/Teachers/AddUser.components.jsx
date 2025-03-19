@@ -40,19 +40,19 @@ export const AddUser = () => {
         }));
     };
 
-    if (!currentUser.is_admin && currentUser.is_student_or_teacher) {
+    if (!currentUser.is_superuser && currentUser.is_student_or_teacher) {
         return <Navigate to="/dashboard/home" />; // Redirect students to home
     }
 
-    if (currentUser.is_admin || !currentUser.is_student_or_teacher) {
+    if (currentUser.is_superuser || !currentUser.is_student_or_teacher) {
         // Check user type and restrict step 1 for teachers
-        if (!currentUser.is_admin && step === 1) {
+        if (!currentUser.is_superuser && step === 1) {
             setStep(2); // Automatically skip Step 1 for teachers
         }
 
         switch (step) {
             case 1:
-                if (currentUser.is_admin) {
+                if (currentUser.is_superuser) {
                     return (
                         <SelectUserTypeStep
                             nextStep={nextStep}

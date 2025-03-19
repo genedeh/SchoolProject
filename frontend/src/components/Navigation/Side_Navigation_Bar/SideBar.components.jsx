@@ -1,5 +1,5 @@
-import { Nav, Navbar, Badge } from 'react-bootstrap';
-import { House, Book, Envelope, BarChart, Award, PersonAdd, Calendar2Event, BookHalf, PersonCircle, SuitClub } from 'react-bootstrap-icons';
+import { Nav, Navbar } from 'react-bootstrap';
+import { House, BarChart, PersonAdd, Calendar2Event, BookHalf, PersonCircle, SuitClub } from 'react-bootstrap-icons';
 import './SideBar.styles.css'
 import { useUser } from '../../../contexts/User.contexts';
 
@@ -17,16 +17,7 @@ export const StudentSidebar = () => {
                         <Nav.Link href='/dashboard/student-profile'><PersonCircle className="me-2" /> Profile</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link href="#homework"><Book className="me-2" /> Homework  </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                        <Nav.Link href="#events"><Calendar2Event className="me-2" /> Events  </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                        <Nav.Link href="#achivements"><Award className="me-1" /> Achievements  </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                        <Nav.Link href="/dashboard/student-results"><BarChart className="me-2" /> Results  </Nav.Link>
+                        <Nav.Link href="/dashboard/student-results"><BarChart className="me-2" /> Results </Nav.Link>
                     </Nav.Item>
                 </Nav>
             </Navbar.Collapse>
@@ -36,8 +27,8 @@ export const StudentSidebar = () => {
 
 export const TeacherSidebar = () => {
     const { currentUser } = useUser();
-    const { is_admin } = currentUser;
-    if (is_admin) {
+    const { is_superuser } = currentUser;
+    if (is_superuser) {
         return (
             <Navbar collapseOnSelect expand="lg" fluid="true" className="d-flex flex-column  bg-light container" >
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />

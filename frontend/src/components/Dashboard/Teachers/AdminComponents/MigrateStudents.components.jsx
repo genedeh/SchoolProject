@@ -19,7 +19,7 @@ const MigrateStudents = () => {
     };
 
     // Redirect if user is not an admin
-    if (!currentUser.is_student_or_teacher && currentUser && currentUser.is_admin) {
+    if (!currentUser.is_student_or_teacher && currentUser && currentUser.is_superuser) {
         return (
             <Container>
                 <h4 className="mt-4">Migrate Students</h4>
