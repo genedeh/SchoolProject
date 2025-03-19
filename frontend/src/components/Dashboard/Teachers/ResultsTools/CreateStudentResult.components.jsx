@@ -10,7 +10,6 @@ import { ErrorAlert } from "../../../Alerts/ErrorAlert.components";
 import { SuccessAlert } from "../../../Alerts/SuccessAlert.components";
 import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import axios from "axios";
-import { use } from "react";
 
 
 const fetchClassrooms = async ({ queryKey }) => {
@@ -29,9 +28,9 @@ export const CreateStudentResult = () => {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const { currentUser } = useUser();
-    const studentName = queryParams.get("student_name");
+    const studentName = queryParams.get("studentName");
+    const studentId = queryParams.get("student_id");
     const classroomId = queryParams.get("classroom_id");
-    const [student_Id, setStudent_Id] = useState(null);
     const [page, setPage] = useState(1);
     const token = localStorage.getItem("token");
 
@@ -46,7 +45,6 @@ export const CreateStudentResult = () => {
                 throw new Error("No student found.");
             }
 
-            setStudent_Id(response.data.results[0].id);
             return response.data.results[0];
         },
         enabled: !!studentName,
@@ -78,7 +76,7 @@ export const CreateStudentResult = () => {
         session: "",
         term: "",
         uploaded: false,
-        assigned_student: student?.id,
+        assigned_student: studentId,
         classroom: classroomId,
         scores: {},
         general_remarks: {
@@ -137,9 +135,6 @@ export const CreateStudentResult = () => {
     };
     // Form submission
     const onSubmit = (e) => {
-        if (!student_Id) {
-            refetch();
-        }
         e.preventDefault();
         console.log(formData);
         createResult();
@@ -156,7 +151,6 @@ export const CreateStudentResult = () => {
 
     useEffect(() => {
         if (student) {
-            setStudent_Id(student.id);
             setFormData((prev) => ({
                 ...prev,
                 assigned_student: student.id,
@@ -164,7 +158,7 @@ export const CreateStudentResult = () => {
         }
     }, [student]);
 
-    if (studentLoading || classroomLoading) return <CenteredSpinner caption={student_Id ? "Loading Student Information...": "Reloading Student Id"} />;
+    if (studentLoading || classroomLoading) return <CenteredSpinner caption={studentId ? "Loading Student Information..." : "Reloading Student Id"} />;
     if (studentError) return <ErrorAlert heading="Error while fetching Student Information" message={ErrorMessageHandling(studentError, studentError)} />;
     if (classroomError) return <ErrorAlert heading="Error while fetching Classroom Information" message={ErrorMessageHandling(classroomError, classroomError)} />;
 
@@ -185,7 +179,7 @@ export const CreateStudentResult = () => {
                             {classroomId && <Col><strong>Classroom:</strong> {classroom?.name}</Col>}
                         </Row>
                         <Row className="gy-3">
-                            {currentUser?.is_admin && (
+                            {currentUser?.is_superuser && (
                                 <>
                                     <Col md={6}>
                                         <Form.Group controlId="classroom">
@@ -206,7 +200,7 @@ export const CreateStudentResult = () => {
                                                 }
                                             >
                                                 <option value="" disabled>
-                                                    {isLoading ? "Loading classrooms..." : "Select Classroom"}
+                                                    {classroomLoading ? "Loading classrooms..." : "Select Classroom"}
                                                 </option>
                                                 {classroomsData?.results?.map((classroom) => (
                                                     <option key={classroom.id} value={classroom.id}>

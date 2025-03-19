@@ -8,6 +8,7 @@ const StudentHome = () => {
     const { username } = currentUser;
     if (currentUser.is_student_or_teacher && currentUser) {
         return (
+            
             <Container fluid className="p-4 container">
                 <Row className="mb-4">
                     <Col md={12}>

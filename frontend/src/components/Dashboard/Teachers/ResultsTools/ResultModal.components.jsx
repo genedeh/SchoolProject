@@ -156,7 +156,7 @@ export const ResultModal = ({ show, handleClose, result }) => {
                     </Button>
                     <hr />
                 </div>}
-                {currentUser.is_admin && <div>
+                {currentUser.is_superuser && <div>
                     <Button
                         size="sm"
                         variant="outline-danger"

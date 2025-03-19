@@ -13,6 +13,7 @@ const StudentProfile = () => {
 
     if (currentUser.is_student_or_teacher && currentUser) {
         return (
+            
             <>
                 <Container fluid className="p-4">
                     <Row>

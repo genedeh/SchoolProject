@@ -131,7 +131,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
     teaching_subjects = serializers.SerializerMethodField()
     teaching_subjects_id = serializers.SerializerMethodField()
 
-
     class Meta:
         model = User
         fields = [
@@ -181,7 +180,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             # Use "name"
             return list(obj.subject.all().values_list("name", flat=True))
         return None
-    
+
     def get_teaching_subjects_id(self, obj):
         """
         Returns the subjects a teacher is teaching.

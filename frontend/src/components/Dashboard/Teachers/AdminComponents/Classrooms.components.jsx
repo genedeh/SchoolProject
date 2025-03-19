@@ -56,7 +56,7 @@ export const Classrooms = () => {
         setShowUpdateModal(true)
     }
 
-    if (!currentUser.is_student_or_teacher && currentUser && currentUser.is_admin) {
+    if (!currentUser.is_student_or_teacher && currentUser && currentUser.is_superuser) {
         return (
             <>
                 <br />

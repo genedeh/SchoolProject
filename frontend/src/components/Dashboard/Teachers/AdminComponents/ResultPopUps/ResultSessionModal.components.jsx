@@ -66,7 +66,7 @@ export const ResultSessionModal = ({ show, handleClose, result, student, isLoadi
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <ResultCreationHandlerButton studentName={student?.username} admin={true} />
+                <ResultCreationHandlerButton studentId={student?.id} admin={true} studentName={student?.username} />
                 {isError && <ErrorAlert heading="Error Fetching Results" message={ErrorMessageHandling(isError, error)} />}
 
                 {isFetchingResult && <CenteredSpinner caption="Loading Student Results..." />}

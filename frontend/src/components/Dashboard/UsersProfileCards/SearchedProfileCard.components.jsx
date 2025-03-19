@@ -47,7 +47,7 @@ const SearchedProfileCard = ({ user }) => {
                             <Button variant="outline-dark" className='me-4' onClick={handleShow}><BsThreeDots /></Button>
                             {!currentUser.is_student_or_teacher ?
                                 (
-                                    currentUser.user_class === className || currentUser.is_admin ? (<Button variant="outline-primary" ><BsArrowReturnRight /></Button>) : ('')
+                                    currentUser.user_class === className || currentUser.is_superuser ? (<Button variant="outline-primary" ><BsArrowReturnRight /></Button>) : ('')
                                 )
                                 : ('')}
                         </div>

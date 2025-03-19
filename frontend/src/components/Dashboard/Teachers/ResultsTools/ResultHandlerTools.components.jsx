@@ -26,7 +26,7 @@ export const ResultViewHandlerButton = ({ queryKeys, refetch, setSelectedStudent
     );
 }
 
-export const ResultCreationHandlerButton = ({ studentName, classroomID = null, admin = false }) => {
+export const ResultCreationHandlerButton = ({ studentName, classroomID = null, admin = false, studentId }) => {
     return (
         <>
             < Button
@@ -34,11 +34,13 @@ export const ResultCreationHandlerButton = ({ studentName, classroomID = null, a
                 variant="outline-success"
                 onClick={() => {
                     if (admin) {
-                        const url = `/dashboard/create-student-result/?student_name=${studentName}`; // Admin can create result for any student
+                        const url = `/dashboard/create-student-result/?student_id=${studentId}&studentName=${studentName}`; // Admin can create result for any student
                         window.open(url, "_blank"); // Open in new tab
+                        console.log("Admin")
                         return;
                     }
-                    const url = `/dashboard/create-student-result/?student_name=${studentName}&classroom_id=${classroomID}`;
+                    console.log("not admin")
+                    const url = `/dashboard/create-student-result/?student_id=${studentId}&studentName=${studentName}&classroom_id=${classroomID}`;
                     window.open(url, "_blank"); // Open in new tab
                 }}
                 className="me-2"
