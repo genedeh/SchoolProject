@@ -102,7 +102,7 @@ body {
 
 /* Right Side - Image Container */
 .login-image-container {
-    background: linear-gradient(135deg, #ffffff, #a4a3a3);
+    background: linear-gradient(135deg, #dddaff, #4f7bff);
     color: white;
     text-align: center;
     padding: 50px;
@@ -128,6 +128,6 @@ body {
 
 
 .login-image {
-    max-width: 80%;
+    max-width: 52%;
     height: auto;
 }

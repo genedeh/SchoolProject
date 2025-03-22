@@ -7,10 +7,10 @@ export const ProfileHeader = ({ profile_picture, first_name, last_name, address,
     return (
         <Card className="p-4 d-flex flex-row align-items-center">
             <Row>
-                <Col md={4}>
+                <Col md={6}>
                     <ProfilePicture profilePicture={profile_picture} />
                 </Col>
-                <Col md={8}>
+                <Col md={6}>
                     <div>
                         <h4 className="mb-1">{first_name} {last_name}</h4>
                         <p className="text-muted mb-1">{address}</p>
