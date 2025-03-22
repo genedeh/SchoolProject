@@ -1,5 +1,63 @@
-.sidebar {
-    height: 100vh;
+/* Floating Navbar */
+.floating-navbar {
     position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    max-width: 600px;
+    z-index: 1000;
 }
 
+/* Navigation Links */
+.nav-links {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.nav-item {
+    text-align: center;
+    flex: 1;
+    color: rgb(46, 53, 250);
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    transition: color 0.3s, background 0.3s;
+    border-radius: 10px;
+}
+
+/* Active Link */
+.nav-item.active {
+    color: #2863d9;
+    font-weight: bold;
+    /* Blue Color */
+    background: rgba(0, 26, 255, 0.16);
+}
+
+/* Hover Effect */
+.nav-item:hover {
+    color: #6D28D9;
+}
+
+/* Icons */
+.icon {
+    font-size: 20px;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .floating-navbar {
+        width: 95%;
+    }
+}

@@ -55,7 +55,7 @@ const ContentWrapper = ({ currentUser, searchTerm, users, totalUsers, currentPag
     <Container fluid>
         <Row>
             <Sidebar currentUser={currentUser} />
-            <Col md={10}>
+            <Col md={12}>
                 <TopLevel searchHandler={SearchHandler} term={searchTerm} />
                 <MainContent
                     searchTerm={searchTerm}
