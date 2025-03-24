@@ -1,45 +1,111 @@
-.day-btn {
-    text-decoration: none;
-    color: black;
-    font-weight: 500;
+/* /DAY SELECTOR/ */
+.day-selector-container {
     text-align: center;
+    margin-top: 20px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.nav-icon {
+    cursor: pointer;
+    font-size: 20px;
+    color: #555;
+}
+
+.nav-icon:hover {
+    color: black;
+}
+
+.days-row {
+    display: flex;
+    gap: 10px;
+}
+
+.day-btn {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-.day-text {
-    font-size: 14px;
-}
-
-.date-text {
-    font-size: 18px;
+    background: none;
+    border: none;
+    color: #555;
     font-weight: bold;
-    margin-top: 2px;
-    color: gray;
+    padding: 10px;
+    transition: all 0.3s ease-in-out;
 }
 
-.active-day .day-text {
-    color: #007bff;
-    /* Highlight active day */
-    font-weight: bold;
+.day-btn .date-text {
+    font-size: 16px;
+}
+
+.active-day {
+    background: #180dad;
+    color: white;
+    border-radius: 10px;
+    padding: 10px 20px;
 }
 
 .active-day .date-text {
-    color: #007bff;
-    position: relative;
+    font-size: 18px;
+    font-weight: bold;
+}
+/* / FORM/ */
+
+.task-form {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.active-day .date-text::after {
-    content: "•";
-    font-size: 20px;
-    color: #007bff;
-    position: absolute;
-    bottom: -8px;
-    left: 50%;
-    transform: translateX(-50%);
+.form-input {
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
+.form-input:focus {
+    outline: none;
+    border: 2px solid #2d0dad;
+    box-shadow: 0 0 5px rgba(13, 24, 173, 0.5);
+}
+
+.time-row {
+    display: flex;
+    gap: 10px;
+}
+
+.form-time {
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.submit-btn {
+    width: 100%;
+    background-color: #0d1aad;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    color: white;
+    transition: all 0.3s ease-in-out;
+}
+
+.submit-btn:hover {
+    background-color: #5a0099;
+}
+/* /TASK LIST AND ITEM / */
 .task-card {
     display: flex;
     align-items: center;

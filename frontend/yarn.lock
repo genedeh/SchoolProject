@@ -7038,6 +7038,16 @@ mkdirp@~0.5.1:
   dependencies:
     minimist "^1.2.6"
 
+moment@^2.30.1:
+  version "2.30.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.30.1.tgz#f8c91c07b7a786e30c59926df530b4eac96974ae"
+  integrity sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==
+
+momment@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/momment/-/momment-0.0.1.tgz#0970260ebbeb505ce9b6f3fe929862e9bed30711"
+  integrity sha512-AvXVohTAJGdvRX+audOcqcQLsezKf4hR+QJf4WY2+sHoW37sejk1hrr0qBffSkwgoSZAjkuQDOqC1FtKE7y8Kw==
+
 ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/ms/-/ms-2.0.0.tgz"

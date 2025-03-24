@@ -1,37 +1,56 @@
 import { useState, useEffect } from "react";
 import { useUser } from "../../../contexts/User.contexts";
 import { Form, Button, Card, Container, Col, Row } from "react-bootstrap";
+import { FaChevronLeft, FaChevronRight, FaTrash } from "react-icons/fa";
 import "./styles.css";
-import { FaTrash } from "react-icons/fa";
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 const getWeekDates = () => {
     const today = new Date();
-    const dayOfWeek = today.getDay(); // Get the current day index (0 = Sunday, 6 = Saturday)
-
     const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1)); // Adjust to Monday
+    startOfWeek.setDate(today.getDate() - today.getDay());
 
-    return days.map((_, index) => {
+    return [...Array(7)].map((_, index) => {
         const date = new Date(startOfWeek);
-        date.setDate(startOfWeek.getDate() + index); // Increment day
-        return date.getDate(); // Get only the day number
+        date.setDate(startOfWeek.getDate() + index);
+        return { day: date.toLocaleDateString("en-US", { weekday: "short" }), date: date.getDate() };
     });
 };
 
 const DaySelector = ({ selectedDay, setSelectedDay }) => {
-    const [dates, setDates] = useState([]);
+    const [weekDates, setWeekDates] = useState(getWeekDates());
 
-    useEffect(() => {
-        setDates(getWeekDates()); // Generate new week dates on load
-    }, []);
+    const handlePrevWeek = () => {
+        setWeekDates((prevDates) =>
+            prevDates.map(({ day, date }) => {
+                const newDate = new Date();
+                newDate.setDate(date - 7);
+                return { day: newDate.toLocaleDateString("en-US", { weekday: "short" }), date: newDate.getDate() };
+            })
+        );
+    };
+
+    const handleNextWeek = () => {
+        setWeekDates((prevDates) =>
+            prevDates.map(({ day, date }) => {
+                const newDate = new Date();
+                newDate.setDate(date + 7);
+                return { day: newDate.toLocaleDateString("en-US", { weekday: "short" }), date: newDate.getDate() };
+            })
+        );
+    };
 
     return (
-        <Container className="text-center mt-4">
-            <h5 className="fw-bold">Today</h5>
-            <Row className="justify-content-center mt-2">
-                {days.map((day, index) => (
+        <Container className="day-selector-container">
+            <div className="header">
+                <FaChevronLeft className="nav-icon" onClick={handlePrevWeek} />
+                <span className="month-year">{new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>
+                <FaChevronRight className="nav-icon" onClick={handleNextWeek} />
+            </div>
+
+            <Row className="days-row justify-content-center">
+                {weekDates.map(({ day, date }, index) => (
                     <Col key={index} xs="auto">
                         <Button
                             variant="link"
@@ -39,7 +58,7 @@ const DaySelector = ({ selectedDay, setSelectedDay }) => {
                             onClick={() => setSelectedDay(index)}
                         >
                             <div className="day-text">{day}</div>
-                            <div className="date-text">{dates[index]}</div>
+                            <div className="date-text">{date}</div>
                         </Button>
                     </Col>
                 ))}
@@ -47,6 +66,7 @@ const DaySelector = ({ selectedDay, setSelectedDay }) => {
         </Container>
     );
 };
+
 
 const TaskList = ({ tasks, deleteTask }) => {
     return (
@@ -56,7 +76,7 @@ const TaskList = ({ tasks, deleteTask }) => {
             {tasks.map((task, index) => (
                 <Card key={index} className="task-card mb-3 p-3 shadow-sm d-flex flex-row align-items-center justify-content-between">
                     <div>
-                        <h5>{task.title}</h5>
+                        <h4>{task.title}</h4>
                         <p className="text-muted">{task.description}</p>
                         <p className="text-sm text-muted">{task.startTime} - {task.endTime}</p>
                     </div>
@@ -93,43 +113,57 @@ const TaskForm = ({ addTask }) => {
     };
 
     return (
-        <Form onSubmit={handleSubmit} className="mt-4">
-            <Form.Group className="mb-2">
+        <Form onSubmit={handleSubmit} className="task-form">
+            <Form.Group className="mb-3">
                 <Form.Control
                     type="text"
                     placeholder="Task Title"
                     value={title}
                     required
+                    className="form-input"
                     onChange={(e) => setTitle(e.target.value)}
                 />
             </Form.Group>
-            <Form.Group className="mb-2">
+
+            <Form.Group className="mb-3">
                 <Form.Control
-                    type="text"
+                    as="textarea"
+                    rows={2}
                     placeholder="Description (Optional)"
                     value={description}
-                    required
+                    className="form-input"
                     onChange={(e) => setDescription(e.target.value)}
                 />
             </Form.Group>
-            <div className="flex space-x-2">
-                <Form.Control
-                    type="time"
-                    value={startTime}
-                    required
-                    onChange={(e) => setStartTime(e.target.value)}
-                />
-                <Form.Control
-                    type="time"
-                    value={endTime}
-                    required
-                    onChange={(e) => setEndTime(e.target.value)}
-                />
-            </div>
-            <Button type="submit" className="mt-3 w-full bg-blue-500">Add Task</Button>
+
+            <Row className="mb-3 time-row">
+                <Col>
+                    <Form.Control
+                        type="time"
+                        value={startTime}
+                        required
+                        className="form-time"
+                        onChange={(e) => setStartTime(e.target.value)}
+                    />
+                </Col>
+                <Col>
+                    <Form.Control
+                        type="time"
+                        value={endTime}
+                        required
+                        className="form-time"
+                        onChange={(e) => setEndTime(e.target.value)}
+                    />
+                </Col>
+            </Row>
+
+            <Button type="submit" className="submit-btn">
+                Add Task
+            </Button>
         </Form>
     );
 };
+
 
 export const Schedule = () => {
     const { currentUser } = useUser();
@@ -160,7 +194,7 @@ export const Schedule = () => {
     };
 
     return (
-        <div className="container">
+        <div className="">
             <DaySelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
             <TaskList tasks={tasks[selectedDay] || []} deleteTask={deleteTask} />
             <TaskForm addTask={addTask} />
