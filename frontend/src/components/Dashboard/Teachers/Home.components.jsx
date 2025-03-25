@@ -31,9 +31,6 @@ const TeacherHome = () => {
                         <h2 className='text-center'>Fun Facts</h2>
                         <hr />
                         <FunFactCarousel />
-
-                        <hr />
-
                     </Col>
 
                 </Row>

@@ -32,8 +32,6 @@ const StudentHome = () => {
                         <hr />
                         <FunFactCarousel />
 
-                        <hr />
-
                     </Col>
 
                 </Row>

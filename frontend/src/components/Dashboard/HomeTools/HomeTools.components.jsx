@@ -6,59 +6,63 @@ import "./styles.css";
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-const getWeekDates = () => {
-    const today = new Date();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay());
+const getWeekDates = (currentDate) => {
+    const startOfWeek = new Date(currentDate);
+    startOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); // Start from Sunday
 
     return [...Array(7)].map((_, index) => {
         const date = new Date(startOfWeek);
         date.setDate(startOfWeek.getDate() + index);
-        return { day: date.toLocaleDateString("en-US", { weekday: "short" }), date: date.getDate() };
+        return {
+            day: date.toLocaleDateString("en-US", { weekday: "short" }),
+            date: date.getDate(),
+            fullDate: date.toISOString().split("T")[0], // Keeps full date for task tracking
+        };
     });
 };
 
-const DaySelector = ({ selectedDay, setSelectedDay }) => {
-    const [weekDates, setWeekDates] = useState(getWeekDates());
+const DaySelector = ({ selectedDay, setSelectedDay, tasks }) => {
+    const [currentDate, setCurrentDate] = useState(new Date());
+    const [weekDates, setWeekDates] = useState(getWeekDates(currentDate));
+
+    useEffect(() => {
+        setWeekDates(getWeekDates(currentDate));
+    }, [currentDate]); // Recalculate when moving to a different week
 
     const handlePrevWeek = () => {
-        setWeekDates((prevDates) =>
-            prevDates.map(({ day, date }) => {
-                const newDate = new Date();
-                newDate.setDate(date - 7);
-                return { day: newDate.toLocaleDateString("en-US", { weekday: "short" }), date: newDate.getDate() };
-            })
-        );
+        const prevWeek = new Date(currentDate);
+        prevWeek.setDate(currentDate.getDate() - 7);
+        setCurrentDate(prevWeek);
     };
 
     const handleNextWeek = () => {
-        setWeekDates((prevDates) =>
-            prevDates.map(({ day, date }) => {
-                const newDate = new Date();
-                newDate.setDate(date + 7);
-                return { day: newDate.toLocaleDateString("en-US", { weekday: "short" }), date: newDate.getDate() };
-            })
-        );
+        const nextWeek = new Date(currentDate);
+        nextWeek.setDate(currentDate.getDate() + 7);
+        setCurrentDate(nextWeek);
     };
+
+    const monthYear = currentDate.toLocaleDateString("en-US", { month: "long", year: "numeric" });
 
     return (
         <Container className="day-selector-container">
             <div className="header">
                 <FaChevronLeft className="nav-icon" onClick={handlePrevWeek} />
-                <span className="month-year">{new Date().toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>
+                <span className="month-year">{monthYear}</span>
                 <FaChevronRight className="nav-icon" onClick={handleNextWeek} />
             </div>
 
             <Row className="days-row justify-content-center">
-                {weekDates.map(({ day, date }, index) => (
+                {weekDates.map(({ day, date, fullDate }, index) => (
                     <Col key={index} xs="auto">
                         <Button
-                            variant="link"
-                            className={`day-btn ${selectedDay === index ? "active-day" : ""}`}
-                            onClick={() => setSelectedDay(index)}
+                            // variant="link"
+                            className={`day-btn ${selectedDay === fullDate ? "active-day" : ""}`}
+                            onClick={() => setSelectedDay(fullDate)}
                         >
                             <div className="day-text">{day}</div>
                             <div className="date-text">{date}</div>
+                            {/* Show task indicator if tasks exist for that day */}
+                            {tasks[fullDate] && <div className="task-indicator"></div>}
                         </Button>
                     </Col>
                 ))}
@@ -195,7 +199,7 @@ export const Schedule = () => {
 
     return (
         <div className="">
-            <DaySelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} />
+            <DaySelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} tasks={tasks}/>
             <TaskList tasks={tasks[selectedDay] || []} deleteTask={deleteTask} />
             <TaskForm addTask={addTask} />
         </div>
