@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import { useUser } from "../../../contexts/User.contexts";
-import { Form, Button, Card, Container, Col, Row } from "react-bootstrap";
+import {
+    Form, Button, Card, Container, Col, Row, Modal
+} from "react-bootstrap";
 import { FaChevronLeft, FaChevronRight, FaTrash } from "react-icons/fa";
 import "./styles.css";
 
-const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+import reminder_icon from "../../../assets/reminder_icon.jpg"
+
 
 const getWeekDates = (currentDate) => {
     const startOfWeek = new Date(currentDate);
@@ -70,15 +73,13 @@ const DaySelector = ({ selectedDay, setSelectedDay, tasks }) => {
         </Container>
     );
 };
-
-
 const TaskList = ({ tasks, deleteTask }) => {
     return (
         <div className="mt-4">
             {tasks.length === 0 ? <p className="text-center">No tasks for today.</p> : null}
 
             {tasks.map((task, index) => (
-                <Card key={index} className="task-card mb-3 p-3 shadow-sm d-flex flex-row align-items-center justify-content-between">
+                <Card key={task.id || index} className="task-card mb-3 p-3 shadow-sm d-flex flex-row align-items-center justify-content-between">
                     <div>
                         <h4>{task.title}</h4>
                         <p className="text-muted">{task.description}</p>
@@ -90,7 +91,7 @@ const TaskList = ({ tasks, deleteTask }) => {
                         variant="danger"
                         size="sm"
                         className="delete-btn"
-                        onClick={() => deleteTask(task)}
+                        onClick={() => deleteTask(task.id)}
                     >
                         <FaTrash />
                     </Button>
@@ -99,6 +100,7 @@ const TaskList = ({ tasks, deleteTask }) => {
         </div>
     );
 };
+
 
 const TaskForm = ({ addTask }) => {
     const [title, setTitle] = useState("");
@@ -168,6 +170,146 @@ const TaskForm = ({ addTask }) => {
     );
 };
 
+const NotificationService = ({ tasks }) => {
+    const [missedTasks, setMissedTasks] = useState([]);
+    const [showModal, setShowModal] = useState(false);
+
+    useEffect(() => {
+        console.log("🔄 NotificationService mounted, checking notification support...");
+
+        if (!("Notification" in window)) {
+            console.warn("❌ Browser does NOT support notifications.");
+            return;
+        }
+
+        if (Notification.permission !== "granted") {
+            console.warn("⚠️ Notifications not granted. Requesting...");
+            Notification.requestPermission().then((permission) => {
+                if (permission === "granted") {
+                    console.log("✅ Notifications allowed!");
+                } else {
+                    console.warn("🚫 Notifications denied.");
+                }
+            });
+        }
+
+        const checkTaskNotifications = () => {
+            console.log("🔍 Checking for task notifications...");
+
+            if (Notification.permission !== "granted") {
+                console.warn("🚫 Notifications are blocked! Skipping check.");
+                return;
+            }
+
+            const now = new Date();
+            const currentTime = now.getHours() * 60 + now.getMinutes(); // Convert to minutes
+            const todayKey = now.toISOString().split("T")[0]; // YYYY-MM-DD format
+
+            console.log(`📅 Today’s Date: ${todayKey}`);
+            console.log("📋 Scheduled tasks:", tasks[todayKey] || []);
+
+            if (!tasks[todayKey] || tasks[todayKey].length === 0) {
+                console.log("✅ No tasks scheduled for today.");
+                return;
+            }
+
+            let missed = JSON.parse(localStorage.getItem("missedTasks")) || [];
+
+            tasks[todayKey].forEach((task) => {
+                const [startHour, startMinute] = task.startTime.split(":").map(Number);
+                const [endHour, endMinute] = task.endTime.split(":").map(Number);
+                const taskStartTime = startHour * 60 + startMinute;
+                const taskEndTime = endHour * 60 + endMinute;
+
+                console.log(`⏰ Checking task: ${task.title}`);
+                console.log(`🕒 Start: ${task.startTime} (${taskStartTime} mins)`);
+                console.log(`🕒 End: ${task.endTime} (${taskEndTime} mins)`);
+                console.log(`🕒 Now: ${currentTime} mins`);
+
+                if (taskStartTime === currentTime) {
+                    console.log(`🔔 Sending notification: ${task.title}`);
+
+                    const notification = new Notification("Task Reminder", {
+                        body: `${task.title} - ${task.description}`,
+                        icon: reminder_icon,
+                        requireInteraction: true,
+                    });
+
+                    notification.onclick = () => {
+                        console.log(`🖱️ User clicked notification: ${task.title}`);
+                        window.location.href = "/dashboard/home";
+                    };
+
+                }
+
+                // Track if task is missed
+                setTimeout(() => {
+                    if (currentTime > taskEndTime) {
+                        console.warn(`⚠️ Task MISSED: ${task.title}`);
+                        missed.push({ ...task, date: todayKey });
+                        localStorage.setItem("missedTasks", JSON.stringify(missed));
+                    }
+                }, 60000); // Check 1 minute after end time
+            });
+        };
+
+        const interval = setInterval(checkTaskNotifications, 60000);
+        return () => clearInterval(interval);
+    }, [tasks]);
+
+    useEffect(() => {
+        console.log("🚀 Checking missed tasks on site visit...");
+
+        let storedMissedTasks = JSON.parse(localStorage.getItem("missedTasks")) || [];
+        const todayKey = new Date().toISOString().split("T")[0];
+
+        console.log("📌 Stored Missed Tasks:", storedMissedTasks);
+
+        // Remove outdated missed tasks
+        const validMissedTasks = storedMissedTasks.filter(task => task.date === todayKey);
+        localStorage.setItem("missedTasks", JSON.stringify(validMissedTasks));
+
+        if (validMissedTasks.length > 0) {
+            console.warn("⚠️ Showing Missed Tasks Modal...");
+            setMissedTasks(validMissedTasks);
+            setShowModal(true);
+        } else {
+            console.log("✅ No missed tasks.");
+        }
+    }, []);
+
+    const handleClose = () => {
+        console.log("🛑 User dismissed missed tasks modal.");
+        setShowModal(false);
+        localStorage.removeItem("missedTasks");
+    };
+
+    return (
+        <>
+            {/* React Bootstrap Modal for Missed Tasks */}
+            <Modal show={showModal} onHide={handleClose} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>⚠️ Missed Tasks</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>You missed the following tasks:</p>
+                    <ul>
+                        {missedTasks.map((task, index) => (
+                            <li key={index}>
+                                <strong>{task.title}</strong> - {task.description} ({task.startTime} - {task.endTime})
+                            </li>
+                        ))}
+                    </ul>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    );
+};
 
 export const Schedule = () => {
     const { currentUser } = useUser();
@@ -181,28 +323,41 @@ export const Schedule = () => {
         localStorage.setItem(`${id}_scheduleTasks1`, JSON.stringify(tasks));
     }, [tasks]);
 
-    // Function to add a task
+    useEffect(() => {
+        if ("Notification" in window) {
+            Notification.requestPermission().then((permission) => {
+                console.log("Notification Permission:", permission);
+            });
+        }
+    }, []);
+
+    // Function to add a new task
     const addTask = (task) => {
+        const newTask = {
+            id: Date.now(), // Unique ID for each task
+            ...task,
+        };
+
         setTasks((prev) => ({
             ...prev,
-            [selectedDay]: [...(prev[selectedDay] || []), task],
+            [selectedDay]: [...(prev[selectedDay] || []), newTask],
         }));
     };
 
-    // Function to delete a task
-    const deleteTask = (taskToDelete) => {
+    // Function to delete a task by ID
+    const deleteTask = (taskId) => {
         setTasks((prev) => ({
             ...prev,
-            [selectedDay]: prev[selectedDay].filter((task) => task !== taskToDelete),
+            [selectedDay]: prev[selectedDay].filter((task) => task.id !== taskId),
         }));
     };
 
     return (
         <div className="">
-            <DaySelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} tasks={tasks}/>
+            <NotificationService tasks={tasks} />
+            <DaySelector selectedDay={selectedDay} setSelectedDay={setSelectedDay} tasks={tasks} />
             <TaskList tasks={tasks[selectedDay] || []} deleteTask={deleteTask} />
             <TaskForm addTask={addTask} />
         </div>
     );
 };
-
