@@ -20,14 +20,18 @@ const MainContent = ({ searchTerm, users, totalUsers, currentPage, prevPage, nex
 
     return (
         <Container fluid>
-            <Row className='m-2'>
+            <Row className="justify-content-center mt-3">
                 {loading && <CenteredSpinner caption="Fetching Users..." />}
                 {usersIsError && <ErrorAlert heading="Error while fetching users" message={ErrorMessageHandling(usersIsError, usersError)} removable={true} />}
                 {!loading && !usersIsError && users.length === 0 && (
                     <p>No users found!</p>
                 )}
                 {!loading && !usersIsError && users.length > 0 && (
-                    users.map((user) => (<SearchedProfileCard key={user.id} user={user} />))
+                    users.map((user) => (
+                        <Col md={4} sm={6} xs={12} key={user.id} className="mb-4">
+                            <SearchedProfileCard key={user.id} user={user} />
+                        </Col>
+                    ))
                 )}
 
                 <div className="d-flex justify-content-between align-items-center my-4">
@@ -92,7 +96,7 @@ const ErrorDisplay = ({ error }) => {
 };
 
 const Navigation = () => {
-    const { currentUser, error, fetching } = useUser();
+    const { currentUser, error } = useUser();
     const [searchTerm, setSearchTerm] = useState('');
     const {
         users,
@@ -115,7 +119,7 @@ const Navigation = () => {
         setTerm(v);
     }
 
-    if (error == "NO TOKEN FOUND") {
+    if (error === "NO TOKEN FOUND") {
         return <LoadingOverlay loading={true} message="Fetching User Information
         ..." />;
     }
