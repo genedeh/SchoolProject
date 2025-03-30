@@ -7,6 +7,8 @@ import { FaChevronLeft, FaChevronRight, FaTrash } from "react-icons/fa";
 import "./styles.css";
 
 import reminder_icon from "../../../assets/reminder_icon.jpg"
+import sunIcon from "../../../assets/sunIcon.jpg"; // Use appropriate sun icon
+import moonIcon from "../../../assets/moonIcon.jpg"; // Use appropriate moon icon
 
 
 const getWeekDates = (currentDate) => {
@@ -192,7 +194,6 @@ const NotificationService = ({ tasks }) => {
                 }
             });
         }
-
         const checkTaskNotifications = () => {
             console.log("🔍 Checking for task notifications...");
 
@@ -239,15 +240,20 @@ const NotificationService = ({ tasks }) => {
                         console.log(`🖱️ User clicked notification: ${task.title}`);
                         window.location.href = "/dashboard/home";
                     };
-
                 }
 
-                // Track if task is missed
+                // Track if task is missed, ensuring no duplicates
                 setTimeout(() => {
                     if (currentTime > taskEndTime) {
-                        console.warn(`⚠️ Task MISSED: ${task.title}`);
-                        missed.push({ ...task, date: todayKey });
-                        localStorage.setItem("missedTasks", JSON.stringify(missed));
+                        const alreadyMissed = missed.find((missedTask) => missedTask.title === task.title && missedTask.date === todayKey);
+
+                        if (!alreadyMissed) {
+                            console.warn(`⚠️ Task MISSED: ${task.title}`);
+                            missed.push({ ...task, date: todayKey });
+                            localStorage.setItem("missedTasks", JSON.stringify(missed));
+                        } else {
+                            console.log(`✅ Task already marked as missed: ${task.title}`);
+                        }
                     }
                 }, 60000); // Check 1 minute after end time
             });
@@ -285,29 +291,32 @@ const NotificationService = ({ tasks }) => {
     };
 
     return (
-        <>
-            {/* React Bootstrap Modal for Missed Tasks */}
-            <Modal show={showModal} onHide={handleClose} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>⚠️ Missed Tasks</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <p>You missed the following tasks:</p>
-                    <ul>
-                        {missedTasks.map((task, index) => (
-                            <li key={index}>
-                                <strong>{task.title}</strong> - {task.description} ({task.startTime} - {task.endTime})
-                            </li>
-                        ))}
-                    </ul>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        </>
+        <Modal show={showModal} onHide={handleClose} centered>
+            <Modal.Body className="missed-tasks-modal">
+                <h3 className="modal-title">⚠️ Missed Tasks</h3>
+                <p className="modal-description">You missed the following tasks:</p>
+
+                <div className="tasks-container">
+                    {missedTasks.map((task, index) => {
+                        const isDaytime = parseInt(task.startTime.split(":")[0], 10) < 18; // Before 6 PM = daytime
+                        return (
+                            <div key={index} className={`task-card ${isDaytime ? "day-task" : "night-task"}`}>
+                                <img src={isDaytime ? sunIcon : moonIcon} alt="Task Icon" className="task-icon" />
+                                <div className="task-details">
+                                    <h5>{task.title}</h5>
+                                    <p>{task.description}</p>
+                                    <span className="task-time">{task.startTime} - {task.endTime}</span>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                <Button variant="secondary" onClick={handleClose} className="close-btn">
+                    Close
+                </Button>
+            </Modal.Body>
+        </Modal>
     );
 };
 
