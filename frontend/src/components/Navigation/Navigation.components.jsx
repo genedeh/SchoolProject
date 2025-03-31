@@ -28,7 +28,7 @@ const MainContent = ({ searchTerm, users, totalUsers, currentPage, prevPage, nex
                 )}
                 {!loading && !usersIsError && users.length > 0 && (
                     users.map((user) => (
-                        <Col md={4} sm={6} xs={12} key={user.id} className="mb-4">
+                        <Col md={4} sm={6} xs={12} key={user.id} className="mb-2">
                             <SearchedProfileCard key={user.id} user={user} />
                         </Col>
                     ))

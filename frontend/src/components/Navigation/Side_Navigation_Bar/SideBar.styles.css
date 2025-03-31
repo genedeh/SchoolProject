@@ -1,42 +1,90 @@
-/* Floating Navbar */
-.floating-navbar {
+/* Floating Navbar Container */
+.floating-navbar-container {
     position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #fff;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 15px;
-    padding: 10px 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 90%;
-    max-width: 600px;
+    top: 50%;
+    left: 20px;
+    /* Adjust the position to your preference */
+    transform: translateY(-50%);
     z-index: 1000;
 }
+
+/* Toggle Button */
+.toggle-btn {
+    background: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+
+.toggle-btn:hover {
+    transform: scale(1.1);
+}
+
+.menu-icon,
+.close-icon {
+    font-size: 24px;
+    color: #333;
+}
+
+/* Floating Navbar */
+.floating-navbar {
+    background: #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    padding: 15px;
+    position: absolute;
+    top: 50%;
+    left: 50px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    /* Vertical layout */
+    align-items: center;
+    gap: 15px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hide Navbar Initially */
+.floating-navbar.hide {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-50%) translateX(-10px);
+}
+
+/* Show Navbar */
+.floating-navbar.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(0);
+}
+
 
 /* Navigation Links */
 .nav-links {
     display: flex;
-    justify-content: space-between;
-    width: 100%;
+    flex-direction: column;
+    /* Vertical alignment */
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
 }
 
 .nav-item {
-    text-align: center;
-    flex: 1;
-    color: rgb(46, 53, 250);
-    font-size: 12px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 8px;
-    transition: color 0.3s, background 0.3s;
-    border-radius: 10px;
+    flex-direction: column;
+    text-decoration: none;
+    font-size: clamp(12px, 2vw, 16px);
+    /* Responsive text size */
+    color: #007bff;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: transform 0.2s ease-in-out, background 0.2s ease-in-out;
 }
-
 /* Active Link */
 .nav-item.active {
     color: #2863d9;
@@ -44,20 +92,60 @@
     /* Blue Color */
     background: rgba(0, 26, 255, 0.16);
 }
-
-/* Hover Effect */
+/* Float-Up Animation on Hover */
 .nav-item:hover {
-    color: #6D28D9;
+    transform: translateY(-5px);
+    background: rgba(0, 123, 255, 0.1);
 }
 
-/* Icons */
+/* Icon Styles */
 .icon {
-    font-size: 20px;
+    font-size: clamp(18px, 3vw, 24px);
+    /* Responsive icon size */
+    margin-bottom: 5px;
 }
 
-/* Responsive */
-@media (max-width: 576px) {
+/* Responsive Vertical Size Adjustment */
+@media (max-width: 1024px) {
     .floating-navbar {
-        width: 95%;
+        padding: 10px;
+        /* Reduce padding */
+        gap: 12px;
+        /* Reduce spacing between items */
+    }
+}
+
+@media (max-width: 768px) {
+    .floating-navbar {
+        padding: 8px;
+        gap: 10px;
+    }
+
+    .nav-item {
+        padding: 6px 10px;
+        /* Reduce nav item padding */
+    }
+
+    .icon {
+        font-size: 20px;
+        /* Decrease icon size */
+    }
+}
+
+@media (max-width: 480px) {
+    .floating-navbar {
+        padding: 6px;
+        gap: 8px;
+    }
+
+    .nav-item {
+        padding: 4px 8px;
+        font-size: 12px;
+        /* Reduce font size */
+    }
+
+    .icon {
+        font-size: 16px;
+        /* Reduce icon size further */
     }
 }
