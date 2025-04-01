@@ -1,5 +1,5 @@
-import { Button,  Col, Card, Row, Container } from 'react-bootstrap';
-
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { FaUserGraduate, FaChalkboardTeacher, FaUserShield } from "react-icons/fa";
 
 export const SelectUserTypeStep = ({ updateFormData, nextStep, selectedOption, setSelectedOption }) => {
 
@@ -26,29 +26,27 @@ export const SelectUserTypeStep = ({ updateFormData, nextStep, selectedOption, s
     };
 
     return (
-        <Container fluid={true} >
-            <hr /><h1 className='text-center'>Choose User Type</h1><hr />
-            <Row className="g-3">
+        <Container className="select-user-type-container">
+            <hr />
+            <h2 className="text-center">Select User Type</h2>
+            <hr />
+            <Row className="justify-content-center">
                 {options.map((option) => (
-                    <Col key={option.id} md={12}>
+                    <Col key={option.id} className="mb-3">
                         <Card
-                            className={`p-3 ${selectedOption === option.id ? 'border-primary' : ''}`}
+                            className={`user-type-card ${selectedOption === option.id ? "selected" : ""}`}
                             onClick={() => handleSelect(option.id)}
-                            style={{ cursor: 'pointer' }}
                         >
-                            <Card.Body className="d-flex align-items-center">
-                                <div className={`icon-${option.title.toLowerCase()}`}></div>
-                                <div className="ms-3">
-                                    <Card.Title>{option.title}</Card.Title>
-                                    <Card.Text>{option.description}</Card.Text>
-                                </div>
+                            <Card.Body className="d-flex flex-column align-items-center">
+                                <div className="icon-container">{option.icon}</div>
+                                <Card.Title>{option.title}</Card.Title>
                             </Card.Body>
                         </Card>
                     </Col>
                 ))}
             </Row>
-            <div className="d-flex justify-content-between mt-4 mb-3">
-                <Button variant="primary" onClick={nextStep}>
+            <div className="d-flex justify-content-center mt-4">
+                <Button variant="primary" onClick={nextStep} disabled={!selectedOption}>
                     Continue
                 </Button>
             </div>
