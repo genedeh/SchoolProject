@@ -98,3 +98,37 @@
     transform: translateY(-3px);
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
 }
+
+
+
+
+
+/* Form Title */
+.form-title {
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Input Group Styling */
+.input-group-text {
+    background: #007bff;
+    color: white;
+    border: none;
+}
+
+/* Input Field */
+.form-control {
+    transition: all 0.3s ease-in-out;
+    border: 2px solid #ced4da;
+}
+
+/* Focus Animation */
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.5);
+}
+
+/* Buttons */
+.footer button {
+    width: 48%;
+}

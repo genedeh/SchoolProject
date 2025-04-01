@@ -105,12 +105,11 @@ export const AddUser = () => {
     };
     return (
         <Container fluid className="add-user-container">
-            <Row>
-                {/* Sidebar with Steps */}
-                <Col md={5} className="sidebar">
-                    <hr />
-                    <h4 className="text-center mt-4">Create User</h4>
-                    <hr />
+            <Row className="h-100">
+                {/* Sidebar - Steps Panel */}
+                <Col md={4} className="sidebar d-flex flex-column align-items-center">
+                    <h4 className="mt-4">Create User</h4>
+                    <hr className="w-75" />
                     <ul className="step-list">
                         {steps.map(({ id, title, icon }) => (
                             <li key={id} className={`step-item ${id === step ? "active" : id < step ? "completed" : ""}`}>
@@ -119,12 +118,13 @@ export const AddUser = () => {
                             </li>
                         ))}
                     </ul>
-                    <ProgressBar now={(step / steps.length) * 100} className="mt-3" />
+                    <ProgressBar now={(step / steps.length) * 100} className="mt-3 w-75" />
                 </Col>
-                {/* Step Content */}
-                <Col md={7} className="content-area">
+
+                {/* Step Content - Right Panel */}
+                <Col md={8} className="content-area">
                     <div className="step-card">
-                        <div className="d-flex flex-column align-items-center justify-content-center">
+                        <div className="step-content d-flex flex-column justify-content-center align-items-center flex-grow-1">
                             {renderStepComponent()}
                         </div>
                     </div>
