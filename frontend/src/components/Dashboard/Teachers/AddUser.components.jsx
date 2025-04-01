@@ -25,7 +25,7 @@ const steps = [
 
 export const AddUser = () => {
     const { currentUser } = useUser();
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(4);
     const [selectedOption, setSelectedOption] = useState(1);
     const [formData, setFormData] = useState({
         "username": "",
@@ -104,7 +104,7 @@ export const AddUser = () => {
         }
     };
     return (
-        <Container fluid className="add-user-container">
+        <Container fluid className="add">
             <Row className="h-100">
                 {/* Sidebar - Steps Panel */}
                 <Col md={4} className="sidebar d-flex flex-column align-items-center">
@@ -122,12 +122,8 @@ export const AddUser = () => {
                 </Col>
 
                 {/* Step Content - Right Panel */}
-                <Col md={8} className="content-area">
-                    <div className="step-card">
-                        <div className="step-content d-flex flex-column justify-content-center align-items-center flex-grow-1">
-                            {renderStepComponent()}
-                        </div>
-                    </div>
+                <Col md={8}>
+                    {renderStepComponent()}
                 </Col>
             </Row>
         </Container>
