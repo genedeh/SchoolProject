@@ -1,24 +1,3 @@
-.box {
-    background: white;
-    padding: 2rem;
-    border-radius: 1rem;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.header {
-    margin-bottom: 2rem;
-}
-
-.title {
-    margin-top: 1rem;
-    color: #333;
-    text-align: center;
-}
-
-.footer {
-    margin-top: 1rem;
-}
-
 .add-user-container {
     height: 100vh;
     display: flex;
@@ -63,15 +42,59 @@
     color: #2831a7;
 }
 
-.content {
-    padding: 40px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+/* Content Area */ 
+.content-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
+.step-card {
+    width: 80%;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .navigation-buttons {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
+}
+
+.select-user-type-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.user-type-card {
+    border: none;
+    border-radius: 12px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.user-type-card .icon-container {
+    font-size: 40px;
+    margin-bottom: 10px;
+    color: #6c757d;
+    transition: color 0.3s ease;
+}
+
+.user-type-card.selected {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.user-type-card.selected .icon-container {
+    color: white;
+}
+
+.user-type-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useUser } from "../../../contexts/User.contexts";
-import { Container, Row, Col, Button, ProgressBar } from "react-bootstrap";
+import { Container, Row, Col, Card, ProgressBar } from "react-bootstrap";
 import { FaUser, FaLock, FaImage, FaCheck, FaBook, FaGraduationCap } from "react-icons/fa";
 import { Navigate } from "react-router-dom";
 import { SelectUserTypeStep } from "./AdminComponents/AddUserTools/SelectUserTypeStep.components";
@@ -86,7 +86,7 @@ export const AddUser = () => {
             case 3:
                 return <PasswordStep formData={formData} nextStep={nextStep} prevStep={prevStep} updateFormData={updateFormData} />;
             case 4:
-                return <ProfilePictureStep formData={formData} nextStep={nextStep} prevStep={prevStep} updateFormData={updateFormData}/>;
+                return <ProfilePictureStep formData={formData} nextStep={nextStep} prevStep={prevStep} updateFormData={updateFormData} />;
             case 5:
                 return <PersonalInfromationStep formData={formData} nextStep={nextStep} prevStep={prevStep} updateFormData={updateFormData} />;
             case 6:
@@ -107,7 +107,7 @@ export const AddUser = () => {
         <Container fluid className="add-user-container">
             <Row>
                 {/* Sidebar with Steps */}
-                <Col md={3} className="sidebar">
+                <Col md={5} className="sidebar">
                     <hr />
                     <h4 className="text-center mt-4">Create User</h4>
                     <hr />
@@ -121,10 +121,13 @@ export const AddUser = () => {
                     </ul>
                     <ProgressBar now={(step / steps.length) * 100} className="mt-3" />
                 </Col>
-
                 {/* Step Content */}
-                <Col md={9} className="content">
-                    {renderStepComponent()}
+                <Col md={7} className="content-area">
+                    <div className="step-card">
+                        <div className="d-flex flex-column align-items-center justify-content-center">
+                            {renderStepComponent()}
+                        </div>
+                    </div>
                 </Col>
             </Row>
         </Container>
