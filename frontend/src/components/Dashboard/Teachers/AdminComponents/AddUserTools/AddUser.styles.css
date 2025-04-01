@@ -18,3 +18,60 @@
 .footer {
     margin-top: 1rem;
 }
+
+.add-user-container {
+    height: 100vh;
+    display: flex;
+    background-color: #f8f9fa;
+}
+
+.sidebar {
+    background: #ffffff;
+    padding: 20px;
+    border-right: 2px solid #e0e0e0;
+    height: 100%;
+}
+
+.step-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.step-item .icon {
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.step-item.active {
+    background: #e3f2fd;
+    font-weight: bold;
+}
+
+.step-item.completed {
+    color: #2831a7;
+}
+
+.content {
+    padding: 40px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}

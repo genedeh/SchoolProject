@@ -87,8 +87,14 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'password', 'email', 'first_name', 'last_name',
-                  'profile_picture',  'birth_date', 'address', 'phone_number', 'gender']
+        fields = ['username', 'password', 'email',
+                  'first_name', 'last_name', 'profile_picture',
+                  'birth_date', 'address',
+                  'phone_number', 'gender',"admission_number",  "parent_guardian_name",
+                  "parent_guardian_phone", "parent_guardian_email", "home_town",
+                  "local_government_area", "nationality", "religion", "blood_group",
+                  "genotype", "disability_status", "boarding_status", "nin", "state_of_origin"
+                  ]
 
     def update(self, instance, validated_data):
         instance.email = validated_data.get('email', instance.email)
@@ -106,6 +112,22 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         instance.phone_number = validated_data.get(
             'phone_number', instance.phone_number)
         instance.gender = validated_data.get('gender', instance.gender)
+
+        instance.admission_number = validated_data.get('admission_number', instance.admission_number)
+        instance.parent_guardian_name = validated_data.get('parent_guardian_name', instance.parent_guardian_name)
+        instance.parent_guardian_phone = validated_data.get('parent_guardian_phone', instance.parent_guardian_phone)
+        instance.parent_guardian_email = validated_data.get('parent_guardian_email', instance.parent_guardian_email)
+        instance.home_town = validated_data.get('home_town', instance.home_town)
+        instance.local_government_area = validated_data.get('local_government_area', instance.local_government_area)
+        instance.nationality = validated_data.get('nationality', instance.nationality)
+        instance.religion = validated_data.get('religion', instance.religion)
+        instance.blood_group = validated_data.get('blood_group', instance.blood_group)
+        instance.genotype = validated_data.get('genotype', instance.genotype)
+        instance.disability_status = validated_data.get('disability_status', instance.disability_status)
+        instance.boarding_status = validated_data.get('boarding_status', instance.boarding_status)
+        instance.nin = validated_data.get('nin', instance.nin)
+        instance.state_of_origin = validated_data.get('state_of_origin', instance.state_of_origin)
+
 
         # Handle password update
         password = validated_data.get('password', None)

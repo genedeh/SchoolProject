@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useUser } from "../../../contexts/User.contexts";
+import { Container, Row, Col, Button, ProgressBar } from "react-bootstrap";
+import { FaUser, FaLock, FaImage, FaCheck, FaBook, FaGraduationCap } from "react-icons/fa";
 import { Navigate } from "react-router-dom";
 import { SelectUserTypeStep } from "./AdminComponents/AddUserTools/SelectUserTypeStep.components";
 import { BasicInformationStep } from "./AdminComponents/AddUserTools/BasicInformationStep.components";
@@ -9,6 +11,17 @@ import { PersonalInfromationStep } from "./AdminComponents/AddUserTools/Personal
 import { ClassSelectStep } from "./AdminComponents/AddUserTools/ClassSelectStep.componets";
 import { SubjectSelectStep } from "./AdminComponents/AddUserTools/SubjectSelectStep.componets";
 import { ConfirmationStep } from "./AdminComponents/AddUserTools/ConfirmationStep.components";
+
+const steps = [
+    { id: 1, title: "Select Type", icon: <FaUser /> },
+    { id: 2, title: "Basic Info", icon: <FaUser /> },
+    { id: 3, title: "Password", icon: <FaLock /> },
+    { id: 4, title: "Profile Pic", icon: <FaImage /> },
+    { id: 5, title: "Personal Info", icon: <FaCheck /> },
+    { id: 6, title: "Class Selection", icon: <FaGraduationCap /> },
+    { id: 7, title: "Subjects", icon: <FaBook /> },
+    { id: 8, title: "Confirmation", icon: <FaCheck /> }
+];
 
 export const AddUser = () => {
     const { currentUser } = useUser();
@@ -63,99 +76,61 @@ export const AddUser = () => {
         if (!currentUser.is_superuser && step === 1) {
             setStep(2); // Automatically skip Step 1 for teachers
         }
-
+    }
+    const renderStepComponent = () => {
         switch (step) {
             case 1:
-                if (currentUser.is_superuser) {
-                    return (
-                        <SelectUserTypeStep
-                            nextStep={nextStep}
-                            updateFormData={updateFormData}
-                            selectedOption={selectedOption}
-                            setSelectedOption={setSelectedOption}
-                        />
-                    );
-                }
-                break; // Prevent fall-through
+                return currentUser.is_superuser && <SelectUserTypeStep nextStep={nextStep} updateFormData={updateFormData} selectedOption={selectedOption} setSelectedOption={setSelectedOption} />;
             case 2:
-                return (
-                    <BasicInformationStep
-                        formData={formData}
-                        updateFormData={updateFormData}
-                        nextStep={nextStep}
-                        prevStep={prevStep}
-                    />
-                );
+                return <BasicInformationStep formData={formData} nextStep={nextStep} prevStep={prevStep} updateFormData={updateFormData} />;
             case 3:
-                return (
-                    <PasswordStep
-                        formData={formData}
-                        updateFormData={updateFormData}
-                        nextStep={nextStep}
-                        prevStep={prevStep}
-                    />
-                );
+                return <PasswordStep formData={formData} nextStep={nextStep} prevStep={prevStep} updateFormData={updateFormData} />;
             case 4:
-                return (
-                    <ProfilePictureStep
-                        formData={formData}
-                        updateFormData={updateFormData}
-                        nextStep={nextStep}
-                        prevStep={prevStep}
-                    />
-                );
+                return <ProfilePictureStep formData={formData} nextStep={nextStep} prevStep={prevStep} updateFormData={updateFormData}/>;
             case 5:
-                return (
-                    <PersonalInfromationStep
-                        formData={formData}
-                        updateFormData={updateFormData}
-                        nextStep={nextStep}
-                        prevStep={prevStep}
-                    />
-                );
+                return <PersonalInfromationStep formData={formData} nextStep={nextStep} prevStep={prevStep} updateFormData={updateFormData} />;
             case 6:
-                if (formData.is_student_or_teacher) {
-                    return (
-                        <ClassSelectStep
-                            formData={formData}
-                            updateFormData={updateFormData}
-                            nextStep={nextStep}
-                            prevStep={prevStep}
-                        />
-                    );
-                }
+                return formData.is_student_or_teacher ? (
+                    <ClassSelectStep formData={formData} nextStep={nextStep} prevStep={prevStep} updateFormData={updateFormData} />
+                ) : null;
             case 7:
-                if (formData.is_student_or_teacher) {
-                    return (
-                        <SubjectSelectStep
-                            formData={formData}
-                            updateFormData={updateFormData}
-                            nextStep={nextStep}
-                            prevStep={prevStep}
-                        />
-                    );
-                }
+                return formData.is_student_or_teacher ? (
+                    <SubjectSelectStep formData={formData} nextStep={nextStep} prevStep={prevStep} updateFormData={updateFormData} />
+                ) : null;
             case 8:
-                return (
-                    <ConfirmationStep
-                        formData={formData}
-                        prevStep={prevStep}
-                        setStep={setStep}
-                        setFormData={setFormData}
-                    />
-                );
+                return <ConfirmationStep formData={formData} prevStep={prevStep} setStep={setStep} />;
             default:
-                return (
-                    <div className="text-center">
-                        <hr />
-                        <h1>Unknown Step</h1>
-                        <hr />
-                    </div>
-                );
+                return <div className="text-center"><h1>Unknown Step</h1></div>;
         }
-    }
+    };
+    return (
+        <Container fluid className="add-user-container">
+            <Row>
+                {/* Sidebar with Steps */}
+                <Col md={3} className="sidebar">
+                    <hr />
+                    <h4 className="text-center mt-4">Create User</h4>
+                    <hr />
+                    <ul className="step-list">
+                        {steps.map(({ id, title, icon }) => (
+                            <li key={id} className={`step-item ${id === step ? "active" : id < step ? "completed" : ""}`}>
+                                <span className="icon">{icon}</span>
+                                <span className="title">{title}</span>
+                            </li>
+                        ))}
+                    </ul>
+                    <ProgressBar now={(step / steps.length) * 100} className="mt-3" />
+                </Col>
+
+                {/* Step Content */}
+                <Col md={9} className="content">
+                    {renderStepComponent()}
+                </Col>
+            </Row>
+        </Container>
+    );
 
     // Default redirection for unexpected cases
-    return <Navigate to="/dashboard/home" />;
+    // return <Navigate to="/dashboard/home" />;
 };
 
