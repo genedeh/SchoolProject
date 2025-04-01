@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { InputGroup, Form, Button } from "react-bootstrap";
-import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
+import { Form, InputGroup, Button } from "react-bootstrap";
+import { EyeFill, EyeSlashFill, LockFill } from "react-bootstrap-icons";
+
 import './AddUser.styles.css'
 export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -27,14 +28,20 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
     };
 
     return (
-        <Form onSubmit={handleSubmit} className="mt-4 box">
+        <Form onSubmit={handleSubmit} className="password-box mt-4">
             <div className="header">
-                <h1 className="title">Fill In Password</h1>
+                <h1 className="title text-center">Set Your Password</h1>
             </div>
+
+            {/* Password Input */}
             <Form.Group className="m-4">
-                <InputGroup>
+                <Form.Label>Password</Form.Label>
+                <InputGroup className="password-input">
+                    <InputGroup.Text>
+                        <LockFill />
+                    </InputGroup.Text>
                     <Form.Control
-                        type={showPassword ? 'text' : 'password'}
+                        type={showPassword ? "text" : "password"}
                         placeholder="Enter your password"
                         name="password"
                         value={formData.password}
@@ -43,7 +50,7 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
                         required
                     />
                     <Button
-                        variant="outline-dark"
+                        variant="outline-primary"
                         onClick={() => setShowPassword(!showPassword)}
                     >
                         {showPassword ? <EyeSlashFill /> : <EyeFill />}
@@ -52,10 +59,15 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
                 </InputGroup>
             </Form.Group>
 
+            {/* Confirm Password Input */}
             <Form.Group className="m-4">
-                <InputGroup>
+                <Form.Label>Confirm Password</Form.Label>
+                <InputGroup className="password-input">
+                    <InputGroup.Text>
+                        <LockFill />
+                    </InputGroup.Text>
                     <Form.Control
-                        type={showConfirmPassword ? 'text' : 'password'}
+                        type={showConfirmPassword ? "text" : "password"}
                         placeholder="Confirm your password"
                         name="confirmPassword"
                         value={confirmPassword}
@@ -64,7 +76,7 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
                         required
                     />
                     <Button
-                        variant="outline-dark"
+                        variant="outline-primary"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     >
                         {showConfirmPassword ? <EyeSlashFill /> : <EyeFill />}
@@ -73,8 +85,9 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
                 </InputGroup>
             </Form.Group>
 
+            {/* Navigation Buttons */}
             <div className="d-flex justify-content-between mt-4">
-                <Button variant="secondary" onClick={prevStep}>
+                <Button variant="outline-secondary" onClick={prevStep}>
                     Back
                 </Button>
                 <Button variant="primary" type="submit">

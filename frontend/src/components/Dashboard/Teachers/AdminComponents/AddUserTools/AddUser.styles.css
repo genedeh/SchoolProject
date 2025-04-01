@@ -132,3 +132,28 @@
 .footer button {
     width: 48%;
 }
+
+.password-box {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.password-box:hover {
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.password-input .form-control {
+    transition: 0.3s;
+}
+
+.password-input .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.5);
+}
+
+.password-input .btn {
+    border-radius: 0;
+}
