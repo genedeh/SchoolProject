@@ -40,10 +40,14 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'password', 'email',
+        fields = ['username', 'password', 'email',
                   'first_name', 'last_name', 'profile_picture',
                   'is_student_or_teacher', 'birth_date', 'address', 'is_superuser',
-                  'phone_number', 'gender', 'classes',  'subjects']
+                  'phone_number', 'gender', 'classes',  'subjects', "admission_number",  "parent_guardian_name",
+                  "parent_guardian_phone", "parent_guardian_email", "home_town",
+                  "local_government_area", "nationality", "religion", "blood_group",
+                  "genotype", "disability_status", "boarding_status", "nin", "state_of_origin"
+                  ]
 
     def validate_username(self, value):
         # Check if the username already exists
@@ -140,7 +144,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "admission_number", "migrated_sessions", "parent_guardian_name",
             "parent_guardian_phone", "parent_guardian_email", "home_town",
             "local_government_area", "nationality", "religion", "blood_group",
-            "genotype", "disability_status", "boarding_status", "previous_classes"
+            "genotype", "disability_status", "boarding_status", "previous_classes", "nin", "state_of_origin"
         ]
 
     def get_profile_picture(self, obj):

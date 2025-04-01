@@ -28,7 +28,21 @@ export const AddUser = () => {
         "phone_number": "",
         "gender": "male",
         "classes": [],
-        "subjects": []
+        "subjects": [],
+        "admission_number": "",
+        "parent_guardian_name": "",
+        "parent_guardian_phone": "",
+        "parent_guardian_email": "",
+        "home_town": "",
+        "local_government_area": "",
+        "nationality": "",
+        "religion": "",
+        "blood_group": "",
+        "genotype": "",
+        "disability_status": "",
+        "boarding_status": "Day",
+        "nin": "",
+        "state_of_origin": "",
     });
     const nextStep = () => setStep(step + 1);
     const prevStep = () => setStep(step - 1);

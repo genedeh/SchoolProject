@@ -43,7 +43,10 @@ const useCreateUser = (userData) => {
 
 export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) => {
     const { username, first_name, last_name, password, email, address, birth_date,
-        is_student_or_teacher, is_superuser, phone_number, profile_picture, classes, gender, subjects
+        is_student_or_teacher, is_superuser, phone_number, profile_picture, classes, gender, subjects,
+        parent_guardian_name, parent_guardian_phone, parent_guardian_email, home_town, admission_number,
+        local_government_area, nationality, religion, blood_group, genotype, disability_status,
+        boarding_status, nin, state_of_origin
     } = formData;
     const current_date = new Date();
     const [currentClassroom, setCurrentClassroom] = useState(null);
@@ -162,6 +165,20 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                                 <ListGroup.Item><strong>Address:</strong> {address}</ListGroup.Item>
                                 <ListGroup.Item><strong>Birth Of Date:</strong> {birth_date && birth_date}</ListGroup.Item>
                                 <ListGroup.Item><strong>Age:</strong> {birth_date && current_date.getFullYear() - Number(birth_date.split('-')[0])}</ListGroup.Item>
+                                <ListGroup.Item><strong>Admission Number:</strong> {admission_number}</ListGroup.Item>
+                                <ListGroup.Item><strong>Parent/Guardian Name:</strong> {parent_guardian_name}</ListGroup.Item>
+                                <ListGroup.Item><strong>Parent/Guardian Phone:</strong> {parent_guardian_phone}</ListGroup.Item>
+                                <ListGroup.Item><strong>Parent/Guardian Email:</strong> {parent_guardian_email}</ListGroup.Item>
+                                <ListGroup.Item><strong>Home Town:</strong> {home_town}</ListGroup.Item>
+                                <ListGroup.Item><strong>Local Government Area:</strong> {local_government_area}</ListGroup.Item>
+                                <ListGroup.Item><strong>Nationality:</strong> {nationality}</ListGroup.Item>
+                                <ListGroup.Item><strong>Religion:</strong> {religion}</ListGroup.Item>
+                                <ListGroup.Item><strong>Blood Group:</strong> {blood_group}</ListGroup.Item>
+                                <ListGroup.Item><strong>Genotype:</strong> {genotype}</ListGroup.Item>
+                                <ListGroup.Item><strong>Disability Status:</strong> {disability_status}</ListGroup.Item>
+                                <ListGroup.Item><strong>Boarding Status:</strong> {boarding_status}</ListGroup.Item>
+                                <ListGroup.Item><strong>NIN:</strong> {nin}</ListGroup.Item>
+                                <ListGroup.Item><strong>State Of Origin:</strong> {state_of_origin}</ListGroup.Item>
                             </ListGroup>
                         </Card.Body>
                     </Card>
