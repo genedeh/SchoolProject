@@ -77,7 +77,7 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
     }
     return (
         // <Container fluid className="form-container">
-        <Form onSubmit={handleSubmit} className="custom-box">
+        <Form onSubmit={handleSubmit} className="mt-4">
             <hr />
             <h2 className="form-title">Fill In Needed Information</h2>
             <hr />

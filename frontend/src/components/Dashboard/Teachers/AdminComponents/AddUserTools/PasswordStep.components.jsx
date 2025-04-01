@@ -28,11 +28,11 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
     };
 
     return (
-        <Form onSubmit={handleSubmit} className="password-box mt-4">
-            <div className="header">
-                <h1 className="title text-center">Set Your Password</h1>
-            </div>
-
+        <Form onSubmit={handleSubmit} className="mt-4">
+            <hr />
+            <h1 className="title text-center">Set Your Password</h1>
+            <hr />
+            <p className="text-center">Please set a password for this account.</p>
             {/* Password Input */}
             <Form.Group className="m-4">
                 <Form.Label>Password</Form.Label>
@@ -86,8 +86,8 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
             </Form.Group>
 
             {/* Navigation Buttons */}
-            <div className="d-flex justify-content-between mt-4">
-                <Button variant="outline-secondary" onClick={prevStep}>
+            <div className="d-flex justify-content-between footer">
+                <Button variant="secondary" onClick={prevStep}>
                     Back
                 </Button>
                 <Button variant="primary" type="submit">
