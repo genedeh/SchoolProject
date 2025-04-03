@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useUser } from "../../../contexts/User.contexts";
-import { Container, Row, Col, Card, ProgressBar } from "react-bootstrap";
+import { Container, Row, Col,  ProgressBar } from "react-bootstrap";
 import { FaUser, FaLock, FaImage, FaCheck, FaBook, FaGraduationCap } from "react-icons/fa";
 import { Navigate } from "react-router-dom";
 import { SelectUserTypeStep } from "./AdminComponents/AddUserTools/SelectUserTypeStep.components";
@@ -25,7 +25,7 @@ const steps = [
 
 export const AddUser = () => {
     const { currentUser } = useUser();
-    const [step, setStep] = useState(4);
+    const [step, setStep] = useState(1);
     const [selectedOption, setSelectedOption] = useState(1);
     const [formData, setFormData] = useState({
         "username": "",
@@ -92,11 +92,11 @@ export const AddUser = () => {
             case 6:
                 return formData.is_student_or_teacher ? (
                     <ClassSelectStep formData={formData} nextStep={nextStep} prevStep={prevStep} updateFormData={updateFormData} />
-                ) : null;
+                ) : <ConfirmationStep formData={formData} prevStep={prevStep} setStep={setStep} />;
             case 7:
                 return formData.is_student_or_teacher ? (
                     <SubjectSelectStep formData={formData} nextStep={nextStep} prevStep={prevStep} updateFormData={updateFormData} />
-                ) : null;
+                ) : <ConfirmationStep formData={formData} prevStep={prevStep} setStep={setStep} />;
             case 8:
                 return <ConfirmationStep formData={formData} prevStep={prevStep} setStep={setStep} />;
             default:
