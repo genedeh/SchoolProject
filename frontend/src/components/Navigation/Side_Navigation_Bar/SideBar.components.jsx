@@ -62,7 +62,7 @@ export const TeacherSidebar = () => {
                             <HouseDoor className="icon" />
                             <span>Home</span>
                         </Nav.Link>
-                        <Nav.Link href="/dashboard/student-profile" className={`nav-item ${location.pathname === "/dashboard/teacher-profile" ? "active" : ""}`}>
+                        <Nav.Link href="/dashboard/teacher-profile" className={`nav-item ${location.pathname === "/dashboard/teacher-profile" ? "active" : ""}`}>
                             <PersonCircle className="icon" />
                             <span>Profile</span>
                         </Nav.Link>
@@ -105,7 +105,7 @@ export const TeacherSidebar = () => {
                             <HouseDoor className="icon" />
                             <span>Home</span>
                         </Nav.Link>
-                        <Nav.Link href="/dashboard/student-profile" className={`nav-item ${location.pathname === "/dashboard/teacher-profile" ? "active" : ""}`}>
+                        <Nav.Link href="/dashboard/teacher-profile" className={`nav-item ${location.pathname === "/dashboard/teacher-profile" ? "active" : ""}`}>
                             <PersonCircle className="icon" />
                             <span>Profile</span>
                         </Nav.Link> 
