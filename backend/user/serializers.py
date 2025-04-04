@@ -187,8 +187,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
             except ClassRoom.DoesNotExist:
                 return None
         # Teacher's classroom
-        return obj.classrooms.name if obj.classrooms else None
-
+        try:
+            return obj.classrooms.name
+        except User.classrooms.RelatedObjectDoesNotExist:
+            return None
     def get_offering_subjects(self, obj):
         """
         Returns the subjects a student is offering.
