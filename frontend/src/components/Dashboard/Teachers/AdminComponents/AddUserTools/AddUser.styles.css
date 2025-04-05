@@ -220,3 +220,35 @@
     justify-content: center;
     border-radius: 12px;
 }
+
+
+.subject-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 15px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    padding: 20px;
+}
+
+.subject-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+}
+
+.subject-card.selected {
+    border-color: #0f48d6ed;
+    background-color: #e8ecff;
+}
+
+
+.icon-container {
+    color: #2c49be;
+    background: #e5e4f7;
+    width: 50px;
+    height: 50px;
+    margin: 0 auto 10px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+}

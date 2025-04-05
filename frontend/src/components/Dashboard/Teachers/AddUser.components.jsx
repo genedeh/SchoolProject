@@ -60,7 +60,6 @@ export const AddUser = () => {
     const nextStep = () => setStep(step + 1);
 
     const prevStep = () => {
-        console.log("Step before: ", step, step - 1);
         if (((step - 1) == 7 || (step - 2) == 6) && !formData.is_student_or_teacher) {
             setStep(5);
         } else {
