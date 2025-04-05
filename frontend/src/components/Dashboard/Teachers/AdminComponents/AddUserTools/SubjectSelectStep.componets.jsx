@@ -46,14 +46,13 @@ export const SubjectSelectStep = ({ formData, updateFormData, nextStep, prevStep
         )
             .then(async response => {
                 const classroomName = response.data["name"]
-                console.log(classroomName)
                 setTerm(classroomName);
                 handleSearch();
             })
     }
     useEffect(() => {
         fetchClassSubject();
-    }, [])
+    })
     return (
         <div className="p-4 bg-light rounded shadow-sm">
             <h3 className="mb-4 text-center">Select Subjects</h3>
