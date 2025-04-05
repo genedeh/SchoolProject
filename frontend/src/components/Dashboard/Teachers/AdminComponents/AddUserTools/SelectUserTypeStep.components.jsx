@@ -4,9 +4,9 @@ import { FaUserGraduate, FaChalkboardTeacher, FaUserShield } from "react-icons/f
 export const SelectUserTypeStep = ({ updateFormData, nextStep, selectedOption, setSelectedOption }) => {
 
     const options = [
-        { id: 1, title: 'Students', description: 'View and manage student data' },
-        { id: 2, title: 'Teachers', description: 'Manage teacher profiles and information' },
-        { id: 3, title: 'Admin', description: 'Access admin controls and settings' },
+        { id: 1, title: 'Students', description: 'View and manage student data', icon: <FaUserGraduate size={50} /> },
+        { id: 2, title: 'Teachers', description: 'Manage teacher profiles and information', icon: <FaChalkboardTeacher size={50} /> },
+        { id: 3, title: 'Admin', description: 'Access admin controls and settings', icon: <FaUserShield size={50} /> },
     ];
 
     const handleSelect = (id) => {
@@ -38,7 +38,7 @@ export const SelectUserTypeStep = ({ updateFormData, nextStep, selectedOption, s
                             onClick={() => handleSelect(option.id)}
                         >
                             <Card.Body className="d-flex flex-column align-items-center">
-                                <div className="icon-container">{option.icon}</div>
+                                <div>{option.icon}</div>
                                 <Card.Title>{option.title}</Card.Title>
                             </Card.Body>
                         </Card>
