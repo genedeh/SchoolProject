@@ -58,7 +58,15 @@ export const AddUser = () => {
         "state_of_origin": "",
     });
     const nextStep = () => setStep(step + 1);
-    const prevStep = () => setStep(step - 1);
+
+    const prevStep = () => {
+        console.log("Step before: ", step, step - 1);
+        if (((step - 1) == 7 || (step - 2) == 6) && !formData.is_student_or_teacher) {
+            setStep(5);
+        } else {
+            setStep(step - 1);
+        }
+    };
 
     const updateFormData = (field, value) => {
         setFormData((prevData) => ({
@@ -78,30 +86,94 @@ export const AddUser = () => {
         }
     }
     const renderStepComponent = () => {
-        switch (step) {
-            case 1:
-                return currentUser.is_superuser && <SelectUserTypeStep nextStep={nextStep} updateFormData={updateFormData} selectedOption={selectedOption} setSelectedOption={setSelectedOption} />;
-            case 2:
-                return <BasicInformationStep formData={formData} nextStep={nextStep} prevStep={prevStep} updateFormData={updateFormData} />;
-            case 3:
-                return <PasswordStep formData={formData} nextStep={nextStep} prevStep={prevStep} updateFormData={updateFormData} />;
-            case 4:
-                return <ProfilePictureStep formData={formData} nextStep={nextStep} prevStep={prevStep} updateFormData={updateFormData} />;
-            case 5:
-                return <PersonalInfromationStep formData={formData} nextStep={nextStep} prevStep={prevStep} updateFormData={updateFormData} />;
-            case 6:
-                return formData.is_student_or_teacher ? (
-                    <ClassSelectStep formData={formData} nextStep={nextStep} prevStep={prevStep} updateFormData={updateFormData} />
-                ) : <ConfirmationStep formData={formData} prevStep={prevStep} setStep={setStep} />;
-            case 7:
-                return formData.is_student_or_teacher ? (
-                    <SubjectSelectStep formData={formData} nextStep={nextStep} prevStep={prevStep} updateFormData={updateFormData} />
-                ) : <ConfirmationStep formData={formData} prevStep={prevStep} setStep={setStep} />;
-            case 8:
-                return <ConfirmationStep formData={formData} prevStep={prevStep} setStep={setStep} />;
-            default:
-                return <div className="text-center"><h1>Unknown Step</h1></div>;
+        let adjustedStep = step;
+
+        // If step 6 or 7 is reached but the user isn't a student or teacher, skip to step 8
+        if ((step === 6 || step === 7) && !formData.is_student_or_teacher) {
+            adjustedStep = 8;
+            setStep(8); // Set step to 8 to avoid confusion
         }
+
+        switch (adjustedStep) {
+            case 1:
+                return currentUser.is_superuser && (
+                    <SelectUserTypeStep
+                        nextStep={nextStep}
+                        updateFormData={updateFormData}
+                        selectedOption={selectedOption}
+                        setSelectedOption={setSelectedOption}
+                    />
+                );
+            case 2:
+                return (
+                    <BasicInformationStep
+                        formData={formData}
+                        nextStep={nextStep}
+                        prevStep={prevStep}
+                        updateFormData={updateFormData}
+                    />
+                );
+            case 3:
+                return (
+                    <PasswordStep
+                        formData={formData}
+                        nextStep={nextStep}
+                        prevStep={prevStep}
+                        updateFormData={updateFormData}
+                    />
+                );
+            case 4:
+                return (
+                    <ProfilePictureStep
+                        formData={formData}
+                        nextStep={nextStep}
+                        prevStep={prevStep}
+                        updateFormData={updateFormData}
+                    />
+                );
+            case 5:
+                return (
+                    <PersonalInfromationStep
+                        formData={formData}
+                        nextStep={nextStep}
+                        prevStep={prevStep}
+                        updateFormData={updateFormData}
+                    />
+                );
+            case 6:
+                return (
+                    <ClassSelectStep
+                        formData={formData}
+                        nextStep={nextStep}
+                        prevStep={prevStep}
+                        updateFormData={updateFormData}
+                    />
+                );
+            case 7:
+                return (
+                    <SubjectSelectStep
+                        formData={formData}
+                        nextStep={nextStep}
+                        prevStep={prevStep}
+                        updateFormData={updateFormData}
+                    />
+                );
+            case 8:
+                return (
+                    <ConfirmationStep
+                        formData={formData}
+                        prevStep={prevStep}
+                        setStep={setStep}
+                    />
+                );
+            default:
+                return (
+                    <div className="text-center">
+                        <h1>Unknown Step</h1>
+                    </div>
+                );
+        }
+
     };
     return (
         <Container fluid className="add">
