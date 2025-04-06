@@ -2,9 +2,11 @@ import { Card, Button, Image, Badge } from "react-bootstrap";
 import { BsThreeDots } from "react-icons/bs";
 import { useState } from 'react';
 import { ProfileModal } from './UserProfileModal.components';
+import NoProfilePicture from '../../../assets/NoProfilePicture.jpg'
 import "./profilecard.styles.css"
 
 const SearchedProfileCard = ({ user }) => {
+    console.log(user)
     const { username, is_student_or_teacher, profile_picture_url, classes, classrooms, is_superuser } = user;
     const [show, setShow] = useState(false);
     let className = "None"
@@ -26,7 +28,8 @@ const SearchedProfileCard = ({ user }) => {
                 <div className="profile-header d-flex align-items-center justify-content-between">
                     <div className="d-flex align-items-center">
                         <Image
-                            src={profile_picture_url}
+                            src={profile_picture_url.includes('null') ? NoProfilePicture : profile_picture_url}
+                            alt="Profile"
                             roundedCircle
                             className="profile-img"
                         />

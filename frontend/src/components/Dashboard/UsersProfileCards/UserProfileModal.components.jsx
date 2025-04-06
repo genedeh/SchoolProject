@@ -4,6 +4,7 @@ import { useUser } from "../../../contexts/User.contexts";
 import { FaPencilAlt } from "react-icons/fa";
 import { useMutation, useQueryClient } from "react-query";
 import { CenteredSpinner } from '../../Loading/CenteredSpinner.components';
+import NoProfilePicture from '../../../assets/NoProfilePicture.jpg'
 import axios from "axios";
 
 
@@ -95,7 +96,7 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
     };
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        if (name == "password" && value.length == 0) {
+        if (name === "password" && value.length === 0) {
             console.log("Gone")
             delete formData["password"]
         }
@@ -143,7 +144,7 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
             <Modal.Body className="text-center" style={{ backgroundColor: 'white' }}>
                 <div className="position-relative d-inline-block">
                     <Image
-                        src={isEditMode ? (!displayProfilePicture ? profile_picture_url : displayProfilePicture) : (profile_picture_url)}
+                        src={isEditMode ? (!displayProfilePicture ? profile_picture_url.includes('null') ? NoProfilePicture : profile_picture_url : displayProfilePicture) : (profile_picture_url.includes('null') ? NoProfilePicture : profile_picture_url)}
                         roundedCircle
                         style={{ width: '150px', height: '150px', objectFit: 'cover' }}
                         className="mb-3" />
