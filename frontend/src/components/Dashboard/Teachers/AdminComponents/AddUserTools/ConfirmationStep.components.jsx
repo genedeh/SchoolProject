@@ -1,8 +1,9 @@
-import { Card, ListGroup, Button, Table, Row, Col, Badge, Alert } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
+import { Card, Badge, Table, ListGroup, Row, Col, Button, Alert, Spinner } from 'react-bootstrap';
+import { FaUser,  FaEnvelope, FaPhone, FaMapMarkedAlt, FaBirthdayCake, FaTransgender, FaSchool,  FaBook, FaCheckCircle } from 'react-icons/fa'; import { useState, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { ErrorAlert } from '../../../../Alerts/ErrorAlert.components';
 import { ErrorMessageHandling } from '../../../../../utils/ErrorHandler.utils'
+import NoProfilePicture from '../../../../../assets/NoProfilePicture.jpg'
 import { SuccessAlert } from '../../../../Alerts/SuccessAlert.components';
 import axios from 'axios';
 import './AddUser.styles.css'
@@ -122,96 +123,121 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
 
     return (
         <>
+            {isLoading ? (
+                <div className="text-center py-5">
+                    <CenteredSpinner caption={`Creating ${username}...`} />
+                </div>
+            ) : (
+                <div className="mt-4 user-preview">
 
-            {isLoading ? (<CenteredSpinner caption={`Creating ${username}...`} />) : (
-                <div className="mt-4">
-                    {/* User Header */}
-
-                    <Card className="mb-4 box">
+                    {/* Header Card */}
+                    <Card className="mb-4 box shadow-sm">
                         <Card.Body>
-                            <Row>
-                                <Col md={2} className="text-center">
+                            <Row className="align-items-center">
+                                <Col xs={12} md={2} className="text-center mb-3 mb-md-0">
                                     <img
-                                        src={
-                                            displayProfilePicture ||
-                                            'http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg' // Default placeholder image
-                                        }
+                                        src={displayProfilePicture || NoProfilePicture}
                                         alt="Profile"
+                                        className="rounded-circle img-fluid border border-2"
                                         style={{ width: '100px', height: '100px', objectFit: 'cover' }}
-                                        className="rounded-circle"
                                     />
                                 </Col>
-                                <Col md={8}>
-                                    <h4 className='mt-2 text-center'>{username.replace("_", " ")}  <hr />
-                                        {userType === "Student" ? (<Badge bg="primary">Student</Badge>)
-                                            : (userType === "Admin" ? (<Badge bg="success">Admin</Badge>)
-                                                : (<Badge bg="danger">Teacher</Badge>))}</h4>
-                                    {is_student_or_teacher && <p className="text-muted text-center">{currentClassroom ? (currentClassroom.name) : ('No Class Selected')}</p>}
+                                <Col md={10}>
+                                    <h4 className='text-center text-md-start'>{username.replace('_', ' ')} <hr />
+                                        <Badge bg={
+                                            userType === 'Student' ? 'primary' :
+                                                userType === 'Admin' ? 'success' :
+                                                    'danger'
+                                        }>
+                                            {userType}
+                                        </Badge>
+                                    </h4>
+                                    {is_student_or_teacher && (
+                                        currentClassroom ? (
+                                            <p className="text-muted text-center text-md-start">
+                                                <FaSchool className="me-2" />
+                                                {currentClassroom.name}
+                                            </p>
+                                        ) : (
+                                            <Spinner animation="border" size="sm" variant="secondary" className="ms-2" />
+                                        )
+                                    )}
                                 </Col>
                             </Row>
                         </Card.Body>
                     </Card>
 
-                    {/* User Details */}
-                    <Card className="mb-4 box">
+                    {/* Details Section */}
+                    <Card className="mb-4 box shadow-sm">
                         <Card.Body>
                             <ListGroup variant="flush">
-                                <ListGroup.Item><strong>FirstName:</strong> {first_name}</ListGroup.Item>
-                                <ListGroup.Item><strong>LastName:</strong> {last_name}</ListGroup.Item>
-                                <ListGroup.Item><strong>Password:</strong> {password}</ListGroup.Item>
-                                <ListGroup.Item><strong>Gender:</strong> {gender.toLocaleUpperCase()}</ListGroup.Item>
-                                <ListGroup.Item><strong>Email Address:</strong> {email}</ListGroup.Item>
-                                <ListGroup.Item><strong>Phone Number:</strong> {phone_number}</ListGroup.Item>
-                                <ListGroup.Item><strong>Address:</strong> {address}</ListGroup.Item>
-                                <ListGroup.Item><strong>Birth Of Date:</strong> {birth_date && birth_date}</ListGroup.Item>
-                                <ListGroup.Item><strong>Age:</strong> {birth_date && current_date.getFullYear() - Number(birth_date.split('-')[0])}</ListGroup.Item>
-                                <ListGroup.Item><strong>Admission Number:</strong> {admission_number}</ListGroup.Item>
-                                <ListGroup.Item><strong>Parent/Guardian Name:</strong> {parent_guardian_name}</ListGroup.Item>
-                                <ListGroup.Item><strong>Parent/Guardian Phone:</strong> {parent_guardian_phone}</ListGroup.Item>
-                                <ListGroup.Item><strong>Parent/Guardian Email:</strong> {parent_guardian_email}</ListGroup.Item>
+                                <ListGroup.Item><FaUser className="me-2" /> <strong>FirstName:</strong> {first_name}</ListGroup.Item>
+                                <ListGroup.Item><FaUser className="me-2" /> <strong>LastName:</strong> {last_name}</ListGroup.Item>
+                                <ListGroup.Item><FaCheckCircle className="me-2" /> <strong>Password:</strong> {password}</ListGroup.Item>
+                                <ListGroup.Item><FaTransgender className="me-2" /> <strong>Gender:</strong> {gender.toUpperCase()}</ListGroup.Item>
+                                <ListGroup.Item><FaEnvelope className="me-2" /> <strong>Email:</strong> {email}</ListGroup.Item>
+                                <ListGroup.Item><FaPhone className="me-2" /> <strong>Phone:</strong> {phone_number}</ListGroup.Item>
+                                <ListGroup.Item><FaMapMarkedAlt className="me-2" /> <strong>Address:</strong> {address}</ListGroup.Item>
+                                <ListGroup.Item><FaBirthdayCake className="me-2" /> <strong>DOB:</strong> {birth_date} | <strong>Age:</strong> {birth_date && current_date.getFullYear() - Number(birth_date.split('-')[0])}</ListGroup.Item>
+                                <ListGroup.Item><strong>Admission No:</strong> {admission_number}</ListGroup.Item>
+                                <ListGroup.Item><strong>Guardian Name:</strong> {parent_guardian_name}</ListGroup.Item>
+                                <ListGroup.Item><strong>Guardian Phone:</strong> {parent_guardian_phone}</ListGroup.Item>
+                                <ListGroup.Item><strong>Guardian Email:</strong> {parent_guardian_email}</ListGroup.Item>
                                 <ListGroup.Item><strong>Home Town:</strong> {home_town}</ListGroup.Item>
-                                <ListGroup.Item><strong>Local Government Area:</strong> {local_government_area}</ListGroup.Item>
+                                <ListGroup.Item><strong>LGA:</strong> {local_government_area}</ListGroup.Item>
                                 <ListGroup.Item><strong>Nationality:</strong> {nationality}</ListGroup.Item>
                                 <ListGroup.Item><strong>Religion:</strong> {religion}</ListGroup.Item>
                                 <ListGroup.Item><strong>Blood Group:</strong> {blood_group}</ListGroup.Item>
                                 <ListGroup.Item><strong>Genotype:</strong> {genotype}</ListGroup.Item>
-                                <ListGroup.Item><strong>Disability Status:</strong> {disability_status}</ListGroup.Item>
-                                <ListGroup.Item><strong>Boarding Status:</strong> {boarding_status}</ListGroup.Item>
+                                <ListGroup.Item><strong>Disability:</strong> {disability_status}</ListGroup.Item>
+                                <ListGroup.Item><strong>Boarding:</strong> {boarding_status}</ListGroup.Item>
                                 <ListGroup.Item><strong>NIN:</strong> {nin}</ListGroup.Item>
                                 <ListGroup.Item><strong>State Of Origin:</strong> {state_of_origin}</ListGroup.Item>
                             </ListGroup>
                         </Card.Body>
                     </Card>
 
-                    {/* Organizations */}
-                    {is_student_or_teacher &&
-                        <Card className="mb-4 box">
-                            <Card.Header>Offering Subjects</Card.Header>
+                    {/* Subjects Section */}
+                    {is_student_or_teacher && (
+                        <Card className="mb-4 shadow-sm box">
+                            <Card.Header>
+                                <FaBook className="me-2" />
+                                Offering Subjects
+                            </Card.Header>
                             <Card.Body>
-                                <Table striped bordered hover>
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Assigned Teacher</th>
-                                            <th>No Of Students</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {offeringSubjects.map(({ id, name, assigned_teacher, students_offering }) => (
-                                            <tr key={id}>
-                                                <td>{name.replace('_', ' ')}</td>
-                                                <td>{assigned_teacher ? (assigned_teacher.username.replace('_', ' ')) : ("NO ASSIGNED TEACHER")}</td>
-                                                <td>{students_offering.length}</td>
+                                {offeringSubjects.length === 0 ? (
+                                    <div className="text-center">
+                                        <Spinner animation="grow" size="sm" className="me-2" />
+                                        Loading subjects...
+                                    </div>
+                                ) : (
+                                    <Table responsive striped hover>
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Assigned Teacher</th>
+                                                <th>No Of Students</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
+                                        </thead>
+                                        <tbody>
+                                            {offeringSubjects.map(({ id, name, assigned_teacher, students_offering }) => (
+                                                <tr key={id}>
+                                                    <td>{name.replace('_', ' ')}</td>
+                                                    <td>{assigned_teacher ? (assigned_teacher.username.replace('_', ' ')) : "No Assigned Teacher"}</td>
+                                                    <td><Badge bg="info">{students_offering.length}</Badge></td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </Table>
+                                )}
                             </Card.Body>
-                        </Card>}
-
+                        </Card>
+                    )}
                 </div>
             )}
-            {isSuccess &&
+
+            {/* Success Alert */}
+            {isSuccess && (
                 <SuccessAlert heading="User Creation Status" message={`User ${username} was created successfully`}>
                     <Alert.Link onClick={() => {
                         setFormData({
@@ -228,25 +254,36 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                             "phone_number": "",
                             "gender": "male",
                             "classes": [],
-                            "subjects": []
-                        })
-                        setStep(1)
+                            "subjects": [],
+                            "admission_number": "",
+                            "parent_guardian_name": "",
+                            "parent_guardian_phone": "",
+                            "parent_guardian_email": "",
+                            "home_town": "",
+                            "local_government_area": "",
+                            "nationality": "",
+                            "religion": "",
+                            "blood_group": "",
+                            "genotype": "",
+                            "disability_status": "",
+                            "boarding_status": "Day",
+                            "nin": "",
+                            "state_of_origin": "",
+                        });
+                        setStep(1);
                     }}>Go Back</Alert.Link>
                 </SuccessAlert>
-            }
-            {isError && <ErrorAlert heading="User creation failed" message={ErrorMessageHandling(isError, error)} removable={true} />}
+            )}
 
+            {isError && (
+                <ErrorAlert heading="User creation failed" message={ErrorMessageHandling(isError, error)} removable />
+            )}
+
+            {/* Navigation */}
             <div className="d-flex justify-content-between mt-4">
-                <Button variant="secondary" onClick={prevStep}>
-                    Back
-                </Button>
-                <Button variant="primary" onClick={() => {
-                    handleSubmit(formData);
-                }} disabled={isLoading}>
-                    Submit
-                </Button>
+                <Button variant="secondary" onClick={prevStep}>Back</Button>
+                <Button variant="primary" onClick={() => handleSubmit(formData)} disabled={isLoading}>Submit</Button>
             </div>
-            <br />
         </>
     );
 };

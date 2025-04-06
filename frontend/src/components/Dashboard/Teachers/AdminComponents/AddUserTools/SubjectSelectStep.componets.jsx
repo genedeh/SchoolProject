@@ -52,7 +52,7 @@ export const SubjectSelectStep = ({ formData, updateFormData, nextStep, prevStep
     }
     useEffect(() => {
         fetchClassSubject();
-    })
+    }, [])
     return (
         <div className="p-4 bg-light rounded shadow-sm">
             <h3 className="mb-4 text-center">Select Subjects</h3>

@@ -163,6 +163,7 @@ export const AddUser = () => {
                         formData={formData}
                         prevStep={prevStep}
                         setStep={setStep}
+                        setFormData={setFormData}
                     />
                 );
             default:
