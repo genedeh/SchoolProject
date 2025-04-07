@@ -1,3 +1,5 @@
+@import '../../../index.css';
+
 /* Floating Navbar Container */
 .floating-navbar-container {
     position: fixed;
@@ -10,11 +12,11 @@
 
 /* Toggle Button */
 .toggle-btn {
-    background: #fff;
+    background: var(--color-bg);
     border: none;
     padding: 12px;
     border-radius: 50%;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px var(--color-dark);
     cursor: pointer;
     transition: transform 0.3s ease-in-out;
 }
@@ -26,13 +28,13 @@
 .menu-icon,
 .close-icon {
     font-size: 24px;
-    color: #333;
+    color: var(--color-dark);
 }
 
 /* Floating Navbar */
 .floating-navbar {
-    background: #fff;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    background: var(--color-bg);
+    box-shadow: 3px 4px 10px var(--color-dark);
     border-radius: 12px;
     padding: 15px;
     position: absolute;
@@ -79,7 +81,7 @@
     text-decoration: none;
     font-size: clamp(12px, 2vw, 16px);
     /* Responsive text size */
-    color: #007bff;
+    color: var(--color-primary);
     font-weight: 500;
     padding: 8px 12px;
     border-radius: 8px;
@@ -87,7 +89,7 @@
 }
 /* Active Link */
 .nav-item.active {
-    color: #2863d9;
+    color: var(--color-primary);
     font-weight: bold;
     /* Blue Color */
     background: rgba(0, 26, 255, 0.16);
