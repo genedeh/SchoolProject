@@ -20,7 +20,7 @@ const TopLevel = ({ searchHandler, term }) => {
             <Stack direction="horizontal" gap={1} className='container-input'>
                 <InputGroup >
                     <Form.Control className="me-auto" placeholder='Enter Student Or Teacher Username...' value={searchTerm} onChange={changeSearchTerm} />
-                    <Button variant='outline-primary' onClick={() => searchHandler(searchTerm)}>
+                    <Button variant='outline-primary' className='custom-btn' onClick={() => searchHandler(searchTerm)}>
                         <Search className='me-2' />
                     </Button>
                 </InputGroup>
@@ -33,7 +33,7 @@ const TopLevel = ({ searchHandler, term }) => {
                     style={{ 'objectFit': 'cover' }}
                 />
                 <div>
-                    <div><Button onClick={logoutHandler} size='sm' variant="outline-primary">Logout</Button></div>
+                    <div><Button onClick={logoutHandler} size='sm' variant="outline-primary" className='custom-btn'>Logout</Button></div>
                 </div>
 
             </Stack>

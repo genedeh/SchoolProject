@@ -46,7 +46,7 @@ export const SelectUserTypeStep = ({ updateFormData, nextStep, selectedOption, s
                 ))}
             </Row>
             <div className="d-flex justify-content-center mt-4">
-                <Button variant="primary" onClick={nextStep} disabled={!selectedOption}>
+                <Button className="custom-btn" onClick={nextStep} disabled={!selectedOption}>
                     Continue
                 </Button>
             </div>
