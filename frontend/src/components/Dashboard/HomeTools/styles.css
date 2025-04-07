@@ -1,3 +1,4 @@
+@import '../../../index.css';
 /* /DAY SELECTOR/ */
 .day-selector-container {
     text-align: center;
@@ -17,7 +18,7 @@
 .nav-icon {
     cursor: pointer;
     font-size: 20px;
-    color: #555;
+    color: var(--color-dark);
 }
 
 .nav-icon:hover {
@@ -35,7 +36,7 @@
     align-items: center;
     background: none;
     border: none;
-    color: #555;
+    color: var(--color-dark);
     font-weight: bold;
     padding: 10px;
     transition: all 0.3s ease-in-out;
@@ -46,7 +47,7 @@
 }
 
 .active-day {
-    background: #180dad;
+    background: var(--color-primary);
     color: white;
     border-radius: 10px;
     padding: 10px 20px;
@@ -74,8 +75,8 @@
 
 .form-input:focus {
     outline: none;
-    border: 2px solid #2d0dad;
-    box-shadow: 0 0 5px rgba(13, 24, 173, 0.5);
+    border: 2px solid var(--color-primary);
+    box-shadow: 0 0 5px var(--color-primary);
 }
 
 .time-row {
@@ -93,17 +94,17 @@
 
 .submit-btn {
     width: 100%;
-    background-color: #0d1aad;
+    background-color: var(--color-dark);
     border: none;
     padding: 10px;
     border-radius: 5px;
     font-weight: bold;
-    color: white;
+    color: var(--color-bg);
     transition: all 0.3s ease-in-out;
 }
 
 .submit-btn:hover {
-    background-color: #5a0099;
+    background-color: var(--color-primary);
 }
 /* /TASK LIST AND ITEM / */
 .task-card {
@@ -123,7 +124,7 @@
 }
 
 .active-task {
-    background: #80b8f4 !important;
+    background: var(--color-primary) !important;
     color: white;
 }
 
@@ -167,7 +168,7 @@
 }
 
 .modal-description {
-    color: #666;
+    color: var(--color-dark);
     margin-bottom: 15px;
 }
 
@@ -181,7 +182,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #fff;
+    background: var(--color-bg);
     border-radius: 12px;
     padding: 15px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -194,12 +195,12 @@
 
 .day-task {
     background: linear-gradient(to right, #ffedb6, #fff7e3);
-    border-left: 5px solid #fbc02d;
+    border-left: 5px solid var(--color-accent);
 }
 
 .night-task {
     background: linear-gradient(to right, #d8e2ff, #eef2ff);
-    border-left: 5px solid #5c6bc0;
+    border-left: 5px solid var(--color-primary);
 }
 
 .task-icon {
@@ -232,12 +233,12 @@
 }
 
 .close-btn {
-    background: #ff9800;
+    background: var(--color-accent);
     border: none;
     border-radius: 20px;
     padding: 10px 20px;
     font-weight: bold;
-    margin-top: 15px;
+    margin-top: 15px; 
     transition: background 0.3s ease;
 }
 
