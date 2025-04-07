@@ -23,3 +23,11 @@ code {
   box-shadow: 0 0 10px rgba(9, 2, 215, 0.815);
   margin-top: 1rem;
 }
+
+:root {
+  --color-primary: #002F86;
+  --color-secondary: #D71920;
+  --color-accent: #FFD600;
+  --color-bg: #FFFFFF;
+  --color-dark: #030f24;
+}

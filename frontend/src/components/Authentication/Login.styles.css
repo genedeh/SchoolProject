@@ -1,3 +1,6 @@
+@import '../../index.css';
+
+
 /* Global Styles */
 body {
     font-family: "Poppins", sans-serif;
@@ -27,8 +30,8 @@ body {
 
 /* Left Side - Login Box */
 .login-box {
-    background: #1b1b1b;
-    color: white;
+    background: var(--color-dark);
+    color: var(--color-bg);
     padding: 50px;
     display: flex;
     justify-content: center;
@@ -49,7 +52,7 @@ body {
 .login-subtitle {
     font-size: 14px;
     margin-bottom: 20px;
-    color: #aaa;
+    color: var(--color-bg);
 }
 
 /* Form Styling */
@@ -92,7 +95,7 @@ body {
 /* Login Button */
 .login-btn {
     width: 100%;
-    background: #0d6efd;
+    background: var(--color-primary);
     border: none;
     padding: 12px;
     margin-top: 15px;
@@ -102,7 +105,7 @@ body {
 
 /* Right Side - Image Container */
 .login-image-container {
-    background: linear-gradient(135deg, #dddaff, #4f7bff);
+    background: linear-gradient(135deg, #002F86, #001B4E);
     color: white;
     text-align: center;
     padding: 50px;
@@ -117,7 +120,7 @@ body {
 }
 
 .login-image span {
-    color: #fff;
+    color: var(--color-accent);
 }
 
 .login-image p {
