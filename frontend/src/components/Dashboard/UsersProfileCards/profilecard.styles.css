@@ -45,3 +45,32 @@
         height: 40px;
     }
 }
+
+
+.grid-input .form-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.grid-input .input-group-text {
+    background-color: #f1f1f1;
+    border-right: none;
+    font-size: 1.2rem;
+    color: #007bff;
+}
+
+.grid-input .form-control,
+.grid-input .form-select {
+    border-left: none;
+}
+
+.save-btn {
+    transition: all 0.3s ease;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.save-btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}

@@ -6,7 +6,6 @@ import NoProfilePicture from '../../../assets/NoProfilePicture.jpg'
 import "./profilecard.styles.css"
 
 const SearchedProfileCard = ({ user }) => {
-    console.log(user)
     const { username, is_student_or_teacher, profile_picture_url, classes, classrooms, is_superuser } = user;
     const [show, setShow] = useState(false);
     let className = "None"
