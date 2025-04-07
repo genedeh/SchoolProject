@@ -3,7 +3,7 @@ import { Container, Row, Col, Form, Button, Image } from "react-bootstrap";
 import '../Authentication/Login.styles.css'
 import { ErrorAlert } from '../Alerts/ErrorAlert.components';
 import { WarningAlert } from '../Alerts/WarningAlert.components';
-import loginImage from "../../assets/4214472.jpg"
+import loginImage from "../../assets/logo512.png"
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { LoadingOverlay } from '../Loading/LoadingOverlay.components';
 import useLogin from '../../utils/LoginHandler.utils';
