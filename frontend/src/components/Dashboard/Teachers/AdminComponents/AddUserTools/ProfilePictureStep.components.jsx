@@ -95,10 +95,10 @@ export const ProfilePictureStep = ({ formData, updateFormData, nextStep, prevSte
             </div>
             {/* Navigation Buttons */}
             <div className="d-flex justify-content-between footer">
-                <Button variant="secondary" onClick={prevStep}>
+                <Button variant="secondary" onClick={prevStep} className="custom-btn2">
                     Back
                 </Button>
-                <Button variant="primary" onClick={nextStep}>
+                <Button onClick={nextStep} className="custom-btn">
                     Next
                 </Button>
             </div>

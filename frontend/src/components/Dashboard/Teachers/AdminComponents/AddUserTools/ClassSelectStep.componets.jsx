@@ -88,14 +88,14 @@ export const ClassSelectStep = ({ formData, updateFormData, nextStep, prevStep }
             </Row>
 
             <div className="d-flex justify-content-between align-items-center my-4">
-                <Button onClick={goToPrevPage} disabled={!prevPage}>Previous</Button>
+                <Button onClick={goToPrevPage} disabled={!prevPage} className="custom-btn">Previous</Button>
                 <span>Page {currentPage}</span>
-                <Button onClick={goToNextPage} disabled={!nextPage}>Next</Button>
+                <Button onClick={goToNextPage} disabled={!nextPage} className="custom-btn">Next</Button>
             </div>
 
             <div className="d-flex justify-content-between mt-4 footer">
-                <Button variant="secondary" onClick={prevStep}>Back</Button>
-                <Button variant="primary" onClick={handleSubmit}>Confirm</Button>
+                <Button variant="secondary" onClick={prevStep} className="custom-btn2">Back</Button>
+                <Button variant="primary" onClick={handleSubmit} className="custom-btn">Confirm</Button>
             </div>
         </div>
     );

@@ -131,11 +131,11 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
                 </Form.Group>
 
                 {/* Navigation Buttons */}
-                <div className="d-flex justify-content-between footer">
-                    <Button variant="secondary" onClick={prevStep}>
+                <div className="d-flex justify-content-between footer mt-5">
+                    <Button variant="secondary" onClick={prevStep} className="custom-btn2">
                         Back
                     </Button>
-                    <Button variant="primary" type="submit">
+                    <Button type="submit" className="custom-btn">
                         Next
                     </Button>
                 </div>

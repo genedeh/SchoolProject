@@ -280,9 +280,9 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
             )}
 
             {/* Navigation */}
-            <div className="d-flex justify-content-between mt-4">
-                <Button variant="secondary" onClick={prevStep}>Back</Button>
-                <Button variant="primary" onClick={() => handleSubmit(formData)} disabled={isLoading}>Submit</Button>
+            <div className="d-flex justify-content-between mt-4 footer mb-3">
+                <Button variant="secondary" onClick={prevStep} className="custom-btn2">Back</Button>
+                <Button className="custom-btn" onClick={() => handleSubmit(formData)} disabled={isLoading}>Submit</Button>
             </div>
         </>
     );

@@ -324,9 +324,9 @@ export const PersonalInfromationStep = ({ formData, updateFormData, nextStep, pr
             </Row>
 
             {/* Buttons */}
-            <div className="d-flex justify-content-between footer mt-2">
-                <Button variant="secondary" onClick={prevStep}> Back </Button>
-                <Button type="submit" variant="primary"> Next </Button>
+            <div className="d-flex justify-content-between footer mt-5">
+                <Button variant="secondary" onClick={prevStep} className="custom-btn2"> Back </Button>
+                <Button type="submit" className="custom-btn"> Next </Button>
             </div>
         </Form>
     );

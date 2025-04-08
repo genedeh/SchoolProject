@@ -101,11 +101,11 @@ export const SubjectSelectStep = ({ formData, updateFormData, nextStep, prevStep
 
             {/* Pagination Controls */}
             <div className="d-flex justify-content-between align-items-center my-4">
-                <Button onClick={goToPrevPage} disabled={!prevPage}>
+                <Button onClick={goToPrevPage} disabled={!prevPage} className="custom-btn">
                     Previous
                 </Button>
                 <span>Page {currentPage}</span>
-                <Button onClick={goToNextPage} disabled={!nextPage}>
+                <Button onClick={goToNextPage} disabled={!nextPage} className="custom-btn">
                     Next
                 </Button>
             </div>
@@ -119,8 +119,8 @@ export const SubjectSelectStep = ({ formData, updateFormData, nextStep, prevStep
 
             {/* Footer */}
             <div className="d-flex justify-content-between  footer mt-4">
-                <Button variant="secondary" onClick={prevStep}>Back</Button>
-                <Button variant="primary" onClick={handleSubmit}>Confirm</Button>
+                <Button variant="secondary" onClick={prevStep} className="custom-btn2">Back</Button>
+                <Button variant="primary" onClick={handleSubmit} className="custom-btn">Confirm</Button>
             </div>
         </div>
     )

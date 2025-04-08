@@ -50,7 +50,7 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
                         required
                     />
                     <Button
-                        variant="outline-primary"
+                        className="custom-btn"
                         onClick={() => setShowPassword(!showPassword)}
                     >
                         {showPassword ? <EyeSlashFill /> : <EyeFill />}
@@ -76,7 +76,7 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
                         required
                     />
                     <Button
-                        variant="outline-primary"
+                        className="custom-btn"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     >
                         {showConfirmPassword ? <EyeSlashFill /> : <EyeFill />}
@@ -87,10 +87,10 @@ export const PasswordStep = ({ formData, updateFormData, nextStep, prevStep }) =
 
             {/* Navigation Buttons */}
             <div className="d-flex justify-content-between footer">
-                <Button variant="secondary" onClick={prevStep}>
+                <Button variant="secondary" onClick={prevStep} className="custom-btn2">
                     Back
                 </Button>
-                <Button variant="primary" type="submit">
+                <Button  type="submit" className="custom-btn">
                     Next
                 </Button>
             </div>
