@@ -30,7 +30,8 @@ const TopLevel = ({ searchHandler, term }) => {
                     width="35"
                     height="32"
                     className="me-2 "
-                    style={{ 'objectFit': 'cover' }}
+                    style={{ 'objectFit': 'cover', 'border': '2px solid #002F86 ' }}
+                    alt="Profile Picture"
                 />
                 <div>
                     <div><Button onClick={logoutHandler} size='sm' variant="outline-primary" className='custom-btn'>Logout</Button></div>

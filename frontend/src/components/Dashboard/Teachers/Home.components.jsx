@@ -13,15 +13,21 @@ const TeacherHome = () => {
             <Container fluid className="dashboard">
                 <Row className="mb-4">
                     <Col md={12}>
-                        <Card className="p-3 mb-4 container-welcome" bg="primary" text='light' >
+                        <Card className="p-3 mb-4 mt-3 custom-btn" bg="" text='light' >
                             <Card.Body >
                                 <Card.Title>Welcome back, {username.replace('_', ' ')} 👋</Card.Title>
+                                <Card.Text>
+                                    <strong>This is your dashboard. Here you can find all the information you need to manage your classes and students.</strong>
+                                    <br />
+                                    <strong>Have a great day!</strong>
+                                </Card.Text>
                             </Card.Body>
+
                         </Card>
                         <FlipClock />
 
                         <hr />
-                        <Schedule />
+                        <Schedule/>
                         <hr />
                         <h2 className='text-center'>Inspirational Quotes</h2>
                         <hr />

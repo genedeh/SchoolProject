@@ -18,11 +18,6 @@ code {
   margin-top: 1rem;
 }
 
-.container-welcome {
-  border-radius: 1rem;
-  box-shadow: 0 0 10px rgba(9, 2, 215, 0.815);
-  margin-top: 1rem;
-}
 
 :root {
   --color-primary: #002F86;
