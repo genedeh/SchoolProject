@@ -31,7 +31,8 @@ export const ResultCreationHandlerButton = ({ studentName, classroomID = null, a
         <>
             < Button
                 size="sm"
-                variant="outline-success"
+                variant="success"
+                className="custom-btn3"
                 onClick={() => {
                     if (admin) {
                         const url = `/dashboard/create-student-result/?student_id=${studentId}&studentName=${studentName}`; // Admin can create result for any student
@@ -43,7 +44,6 @@ export const ResultCreationHandlerButton = ({ studentName, classroomID = null, a
                     const url = `/dashboard/create-student-result/?student_id=${studentId}&studentName=${studentName}&classroom_id=${classroomID}`;
                     window.open(url, "_blank"); // Open in new tab
                 }}
-                className="me-2"
             > <PlusCircleFill className="me-1" /> Add Result</Button >
         </>
     );

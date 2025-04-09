@@ -116,6 +116,38 @@
     transition: all 0.3s ease;
 }
 
+.custom-btn3 {
+    background-color: var(--color-success);
+    color: white;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.custom-btn4 {
+    background-color: var(--color-grey);
+    color: white;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.custom-btn5 {
+    background-color: var(--color-secondary);
+    color: white;
+    border-radius: 12px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
 .user-type-card.selected .icon-container {
     color: white;
 }

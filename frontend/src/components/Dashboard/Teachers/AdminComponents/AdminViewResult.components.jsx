@@ -47,7 +47,7 @@ export const AdminViewResult = () => {
     const { data: students, isLoading: studentsLoading, isError: studentsError } =
         useQuery(['students-result', currentPage, searchTerm], () => fetchStudents(currentPage, searchTerm), {
             enabled: !!searchTerm,
-            retry: 3,
+            retry: 1,
             keepPreviousData: false,
         });
 
@@ -56,7 +56,7 @@ export const AdminViewResult = () => {
             enabled: !!selectedStudent?.id,
             keepPreviousData: true,
             refetchOnWindowFocus: false,
-            retry: 3,
+            retry: 1,
             staleTime: 1000 * 60 * 5,
             cacheTime: 1000 * 60 * 10,
             onSuccess: () => setSessionModalShow(true),
@@ -84,6 +84,7 @@ export const AdminViewResult = () => {
                 />
                 <Button
                     variant='outline-primary'
+                    className='custom-btn'
                     onClick={() => {
                         setCurrentPage(1);
                         setSearchTerm(tempSearchTerm);

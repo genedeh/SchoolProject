@@ -157,7 +157,11 @@ const StudentViewResult = () => {
                                         <div className="col-md-4">
                                             <div className="p-3 shadow rounded text-center">
                                                 <h6>📈 Overall Average</h6>
-                                                <h3 className="text-primary">{avgScore}%</h3>
+                                                <h3 style={{
+                                                    fontSize: "2rem",
+                                                    fontWeight: "bold",
+                                                    color: "var(--color-primary)",
+                                                }}>{avgScore}%</h3>
                                                 <h3 className="text-muted font-bold">{getGrade(avgScore)}</h3>
                                             </div>
                                         </div>
@@ -235,7 +239,9 @@ const StudentViewResult = () => {
                                 {data.available_sessions.map((session) => (
                                     <Tab.Pane eventKey={session} key={session}>
                                         <div className="p-3 border rounded">
-                                            <h6 className="fw-bold">📄 Available Terms for {session}</h6>
+                                            <h6 style={{
+                                                color: "var(--color-dark)",
+                                            }}>📄 Available Terms for {session}</h6>
 
                                             {data.terms ? (
                                                 Object.keys(data.terms).map((term) => {
@@ -244,7 +250,7 @@ const StudentViewResult = () => {
                                                             <Button
                                                                 key={term}
                                                                 variant="outline-primary"
-                                                                className="m-2"
+                                                                className="m-2 custom-btn"
                                                                 onClick={() => {
                                                                     setStudentResult(data.terms[term])
                                                                     setShowModal(true)

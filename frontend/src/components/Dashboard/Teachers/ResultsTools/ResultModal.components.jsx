@@ -5,16 +5,15 @@ import { CenteredSpinner } from "../../../Loading/CenteredSpinner.components"
 import { ErrorAlert } from "../../../Alerts/ErrorAlert.components"
 import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils"
 import { Modal, Table, Card, Image, Alert, Row, Col, Button, Spinner } from "react-bootstrap";
-import { FaUser, FaCalendarAlt, FaBook, FaComments, FaStar, FaChartPie, FaFileDownload } from "react-icons/fa";
+import { FaUser, FaCalendarAlt, FaBook, FaComments, FaStar, FaChartPie, FaFileDownload, FaUserGraduate, FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import { PieChart, Pie, Tooltip, BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 import axios from "axios";
+import logo from "../../../../assets/logo512.png";
 
-// Colors for different grades
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#FF4560"];
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 
-// Function to calculate grade
+// Grade calculator
 const calculateGrade = (total) => {
     if (total >= 75) return "A1";
     if (total >= 70) return "B2";
@@ -26,6 +25,164 @@ const calculateGrade = (total) => {
     if (total >= 40) return "E8";
     return "F9";
 };
+
+
+export const generateResultPDF = async (result, overallPercentage) => {
+    const pdf = new jsPDF();
+
+    const student = result.assigned_student;
+    const classroom = result.classroom;
+    const comments = result.comments;
+
+    // Load local image
+    // const logoBase64 = await getImageBase64("../../"); // Replace with actual path
+
+    // 1. Header: School Info
+    if (logo) {
+        pdf.addImage(logo, "PNG", 14, 10, 20, 23);
+    }
+    pdf.setFontSize(16);
+    pdf.text("Ogunboyejo Adeola Memorail Schools", 38, 18);
+    pdf.setFontSize(10);
+    const contactText = "4,6 & 8 Akpofure Street, Off Araromi Road, Adamo, Ikorodu, Lagos.\nTel: 0802 501 9519, 0806 215 6593\nE-mail: ogunboyejoadeolaschools@gmail.com";
+
+    const lines = contactText.split("\n");
+    let startY = 24;
+    lines.forEach((line) => {
+        pdf.text(line, 38, startY);
+        startY += 5; // space between lines
+    });
+    pdf.line(10, 40, 200, 40); // Line below header
+
+    // 2. Student Details
+    pdf.setFontSize(12);
+    pdf.text(`Name: ${student.username.replace("_", " ")}`, 14, 44);
+    pdf.text(`Class: ${classroom.name}`, 90, 44);
+    pdf.text(`Term: ${result.term}`, 14, 50);
+    pdf.text(`Session: ${result.session}`, 90, 50);
+    pdf.text(`Admission No: ${comments.Admission_No}`, 14, 56);
+    pdf.text(`No in Class: ${comments.No_In_Class}`, 90, 56);
+    pdf.text(`Next Term: ${comments.Next_Term_Begins_ON}`, 14, 62);
+    pdf.text(`Attendance: ${comments.Times_Present}/${comments.Times_School_Opened}`, 90, 62);
+
+    // 3. Scores Table
+    const scoresTable = Object.entries(result.scores).map(([subject, data]) => {
+        const total = data.test + data.exam;
+        const grade = calculateGrade(total);
+        return [subject, data.test, data.exam, total, grade];
+    });
+
+    autoTable(pdf, {
+        startY: 65,
+        head: [["Subject", "Test", "Exam", "Total", "Grade"]],
+        body: scoresTable,
+        styles: { halign: "center" },
+        headStyles: { fillColor: [0, 51, 102], textColor: [255, 255, 255] },
+    });
+
+    // 4. Comments Table (Left middle)
+    let commentY = pdf.lastAutoTable.finalY + 10;
+    pdf.setFontSize(12);
+    pdf.text("Teacher's Comment:", 14, commentY);
+    pdf.setFontSize(10);
+    pdf.text(comments.Class_Teachers_Comments || "N/A", 14, commentY + 6);
+
+    commentY += 15;
+    pdf.setFontSize(12);
+    pdf.text("Principal's Comment:", 14, commentY);
+    pdf.setFontSize(10);
+    pdf.text(comments.Principals_Comments || "N/A", 14, commentY + 6);
+
+    pdf.setFontSize(16);
+    pdf.text("Percentage:", 14, commentY + 14);
+    pdf.setFontSize(15);
+    pdf.text(Math.floor(overallPercentage) + "%" || "N/A", 14, commentY + 22);
+
+    pdf.setFontSize(16);
+    pdf.text("Overall Grade:", 14, commentY + 28);
+    pdf.setFontSize(15);
+    pdf.text(calculateGrade(Math.floor(overallPercentage)) || "N/A", 14, commentY + 36);
+
+
+    // 5. General Remarks (Right side - Table style)
+    let remarkY = pdf.lastAutoTable.finalY + 10;
+    let x = 120;
+    pdf.setFontSize(12);
+    pdf.text("General Remarks", x, remarkY);
+    remarkY += 4;
+
+    // Table headers
+    pdf.setDrawColor(0);
+    pdf.setFillColor(230, 230, 230); // Light gray header
+    pdf.rect(x, remarkY, 70, 7, "F");
+    pdf.setFontSize(10);
+    pdf.text("Trait", x + 2, remarkY + 5);
+    pdf.text("Rating", x + 45, remarkY + 5);
+    remarkY += 7;
+
+    // Table rows
+    Object.entries(result.general_remarks).forEach(([trait, value]) => {
+        const label = trait.replace(/_/g, " ");
+        const stars = value + " "
+
+        // Row box
+        pdf.setFillColor(255, 255, 255);
+        pdf.rect(x, remarkY, 70, 7, "F");
+
+        // Text inside row
+        pdf.setTextColor(0);
+        pdf.text(label, x + 2, remarkY + 5);
+        pdf.text(stars, x + 45, remarkY + 5);
+        remarkY += 7;
+    });
+
+
+    // 6. Grade Scale (Table style on far left)
+    let gradeX = 14; // Far left
+    let gradeY = 250;
+
+    pdf.setFontSize(12);
+    pdf.text("Grade Scale", gradeX, gradeY);
+    gradeY += 4;
+
+    // Draw header
+    pdf.setFillColor(230, 230, 230); // Light gray
+    pdf.rect(gradeX, gradeY, 50, 7, "F");
+    pdf.setFontSize(10);
+    pdf.text("Grade", gradeX + 2, gradeY + 5);
+    pdf.text("Range", gradeX + 28, gradeY + 5);
+    gradeY += 7;
+
+    // Grade scale rows
+    const scale = [
+        ["A1", "75 - 100"],
+        ["B2", "70 - 74"],
+        ["B3", "65 - 69"],
+        ["C4", "60 - 64"],
+        ["C5", "55 - 59"],
+        ["C6", "50 - 54"],
+        ["D7", "45 - 49"],
+        ["E8", "40 - 44"],
+        ["F9", "0 - 39"],
+    ];
+
+    scale.forEach(([grade, range]) => {
+        // Draw row background
+        pdf.setFillColor(255, 255, 255); // White row
+        pdf.rect(gradeX, gradeY, 50, 7, "F");
+
+        // Write text
+        pdf.text(grade, gradeX + 2, gradeY + 5);
+        pdf.text(range, gradeX + 28, gradeY + 5);
+
+        gradeY += 7;
+    });
+
+
+    // Save
+    pdf.save(`${student.username}_${result.session}_${result.term}_result.pdf`);
+};
+
 
 // Function to render stars
 const renderStars = (rating) => {
@@ -42,7 +199,6 @@ const renderStars = (rating) => {
 
 export const ResultModal = ({ show, handleClose, result }) => {
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
     const { currentUser } = useUser();
 
     const { mutate, isLoading, isError, error: resultDeleteError, isSuccess } = useMutation(
@@ -51,7 +207,6 @@ export const ResultModal = ({ show, handleClose, result }) => {
             if (!token) {
                 throw new Error("Authentication token is missing!");
             }
-
             return await axios.delete(
                 `/api/update-student-result/${result[0]?.id}/`,
                 {
@@ -72,43 +227,7 @@ export const ResultModal = ({ show, handleClose, result }) => {
     if (!result) return null;
 
     const { assigned_student, session, term, created_at, updated_at, scores, general_remarks, comments, classroom } = result[0];
-    const saveAsPDF = async (name, term, session) => {
-        setLoading(true);
-        setError(null);
 
-        try {
-            const element = document.getElementById("result-content");
-
-            // Ensure the whole content is captured dynamically
-            const canvas = await html2canvas(element, { scale: 2, useCORS: true });
-
-            const imgData = canvas.toDataURL("image/png");
-            const pdf = new jsPDF("p", "mm", "a4");
-
-            // Calculate height dynamically to fit large content
-            const imgWidth = 210; // A4 page width in mm
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-            let yPos = 10;
-            if (imgHeight > 297) { // If the image is longer than one page
-                let position = 0;
-                while (position < imgHeight) {
-                    pdf.addImage(imgData, "PNG", 0, yPos, imgWidth, imgHeight);
-                    position += 297; // Move to the next page
-                    if (position < imgHeight) pdf.addPage();
-                }
-            } else {
-                pdf.addImage(imgData, "PNG", 0, 10, imgWidth, imgHeight);
-            }
-
-            pdf.save(`${name}_${session}_${term}_result.pdf`);
-        } catch (err) {
-            console.error("Error generating PDF:", err);
-            setError("Failed to generate PDF. Please try again.");
-        } finally {
-            setLoading(false);
-        }
-    };
 
 
 
@@ -135,140 +254,137 @@ export const ResultModal = ({ show, handleClose, result }) => {
 
 
     return (
-        <Modal show={show} onHide={handleClose} fullscreen={true} scrollable={true}>
-            <Modal.Header closeButton>
-                <Modal.Title>Student Result</Modal.Title>
+        <Modal show={show} onHide={handleClose} fullscreen scrollable >
+            <Modal.Header closeButton className="bg-primary text-white">
+                <Modal.Title>
+                    <FaUserGraduate className="me-2" /> Student Result
+                </Modal.Title>
             </Modal.Header>
-            <Modal.Body>
-                {!currentUser.is_student_or_teacher && <div>
-                    <hr />
-                    <Button
-                        size="sm"
-                        variant="outline-primary"
-                        onClick={() => {
-                            const encodedResult = encodeURIComponent(JSON.stringify(result[0]));
-                            const url = `/dashboard/update-student-result/${assigned_student.username}_${term}_session?data=${encodedResult}`;
-                            window.open(url, "_blank"); // Open in new tab
-                        }}
-                        disabled={!result[0]} // Disable button if result is not available
-                    >
-                        ✏️ Update Result
-                    </Button>
-                    <hr />
-                </div>}
-                {currentUser.is_superuser && <div>
-                    <Button
-                        size="sm"
-                        variant="outline-danger"
-                        onClick={() => {
-                            if (window.confirm("Are you sure you want to delete this result?")) {
-                                mutate();
 
-                            }
-                        }}
-                        disabled={!result[0]} // Disable button if result is not available
-                    >
-                        ❌ Delete Result
-                    </Button>
-                    <hr />
-                </div>}
-                <div id="result-content" className="position-relative">
-                    {loading && (
-                        <div className="loading-overlay">
-                            <Spinner animation="border" variant="light" size="lg" />
-                            <p className="text-white mt-2">Generating PDF...</p>
-                        </div>
+            <Modal.Body className="bg-light px-3 px-md-5" id="result-content" >
+                <div className="text-end my-3 d-flex footer justify-content-end gap-5">
+                    {!currentUser.is_student_or_teacher && (
+                        <Button
+                            size="sm"
+                            variant="outline-primary"
+                            className="fw-bold custom-btn"
+                            onClick={() => {
+                                const encodedResult = encodeURIComponent(JSON.stringify(result[0]));
+                                const url = `/dashboard/update-student-result/${assigned_student.username}_${term}_session?data=${encodedResult}`;
+                                window.open(url, "_blank");
+                            }}
+                            disabled={!result[0]}
+                        >
+                            <FaPencilAlt className="me-2" /> Update Result
+                        </Button>
                     )}
-                    {isLoading && <CenteredSpinner caption={`Deleting ${assigned_student?.username} ${term} of session ${session} classroom: ${classroom?.name} Result`} />}
-                    {isError && <ErrorAlert heading="Error while deleting Result" message={ErrorMessageHandling(isError, resultDeleteError)} />}
+                    {currentUser.is_superuser && (
+                        <Button
+                            size="sm"
+                            variant="outline-danger"
+                            className="fw-bold custom-btn5"
+                            onClick={() => {
+                                if (window.confirm("Are you sure you want to delete this result?")) {
+                                    mutate();
+                                }
+                            }}
+                            disabled={!result[0]}
+                        >
+                            <FaTrashAlt className="me-2" /> Delete Result
+                        </Button>
+                    )}
+                </div>
+
+                <div id="result-content" className="position-relative">
+
+
+                    {isLoading && (
+                        <CenteredSpinner
+                            caption={`Deleting ${assigned_student?.username} ${term} of session ${session} classroom: ${classroom?.name} Result`}
+                        />
+                    )}
+
+                    {isError && (
+                        <ErrorAlert
+                            heading="Error while deleting Result"
+                            message={ErrorMessageHandling(isError, resultDeleteError)}
+                        />
+                    )}
 
                     {/* Student Info */}
-                    <Card className="mb-4 shadow-lg border-0 rounded-4 p-3" style={{ background: "#f8f9fa" }}>
-                        <Card.Body className="d-flex align-items-center">
-                            {/* Profile Picture with Border */}
+                    <Card className="mb-4 border-0 rounded-4 shadow-sm bg-white">
+                        <Card.Body className="d-flex flex-column flex-md-row align-items-center gap-3">
                             <Image
                                 src={assigned_student["profile_picture"]}
                                 roundedCircle
-                                width={100}
-                                height={100}
-                                className="me-4 border border-3 border-primary shadow-sm"
+                                width={150}
+                                height={150}
+                                style={{ objectFit: "cover" }}
+                                className="shadow-lg border border-2 border-primary"
                             />
-
-                            {/* Student Details */}
                             <div className="flex-grow-1">
                                 <h4 className="fw-bold text-dark mb-2">
                                     <FaUser className="me-2 text-primary" />
                                     {assigned_student["username"]}
                                 </h4>
-
-                                <div className="d-flex flex-wrap">
-                                    <p className="me-4 mb-1 text-muted">
+                                <div className="d-flex flex-wrap text-muted">
+                                    <p className="me-4 mb-1">
                                         <FaCalendarAlt className="me-2 text-secondary" />
-                                        <strong>Session:</strong> <span className="text-dark">{session}</span>
+                                        <strong>Session:</strong> {session}
                                     </p>
-
-                                    <p className="me-4 mb-1 text-muted">
-                                        <strong>Term:</strong> <span className="text-dark">{term}</span>
+                                    <p className="me-4 mb-1">
+                                        <strong>Term:</strong> {term}
                                     </p>
-
-                                    <p className="me-4 mb-1 text-muted">
-                                        <strong>Class:</strong> <span className="text-dark">{classroom["name"]}</span>
+                                    <p className="me-4 mb-1">
+                                        <strong>Class:</strong> {classroom["name"]}
                                     </p>
                                 </div>
-
-                                <p className="mb-1 text-muted">
-                                    <strong>Created At:</strong> <span className="text-dark">{new Date(created_at).toLocaleString()}</span>
+                                <p className="mb-1">
+                                    <strong>Created:</strong>{" "}
+                                    <span className="text-dark">{new Date(created_at).toLocaleString()}</span>
                                 </p>
-
-                                <p className="mb-0 text-muted">
-                                    <strong>Updated At:</strong> <span className="text-dark">{new Date(updated_at).toLocaleString()}</span>
+                                <p className="mb-0">
+                                    <strong>Updated:</strong>{" "}
+                                    <span className="text-dark">{new Date(updated_at).toLocaleString()}</span>
                                 </p>
                             </div>
                         </Card.Body>
                     </Card>
 
-                    {/* Scores Table */}
-                    <Card className="mb-4 shadow-lg border-0 rounded-4">
-                        {/* Header with Gradient Background */}
-                        <Card.Header
-                            className="text-white text-center fw-bold"
-                            style={{ background: "linear-gradient(135deg, #1E3A8A, #2563EB)" }}
-                        >
+                    {/* Subject Scores */}
+                    <Card className="mb-4 border-0 rounded-4 shadow-sm">
+                        <Card.Header className="text-white text-center fw-bold" style={{ background: "linear-gradient(135deg, var(--color-primary), #2563EB)" }}>
                             <FaBook className="me-2" /> Subject Scores
                         </Card.Header>
-
                         <Card.Body className="p-0">
-                            <Table responsive={true} className="mb-0">
-                                {/* Table Head */}
-                                <thead>
-                                    <tr style={{ background: "#1E3A8A", color: "#ffffff", textTransform: "uppercase" }}>
+                            <Table responsive hover className="mb-0">
+                                <thead style={{ backgroundColor: "var(--color-primary)", color: "#fff" }}>
+                                    <tr>
                                         <th className="py-3">Subject</th>
-                                        <th className="py-3">Test</th>
-                                        <th className="py-3">Exam</th>
-                                        <th className="py-3">Total</th>
-                                        <th className="py-3">Grade</th>
+                                        <th className="py-3 text-center">Test</th>
+                                        <th className="py-3 text-center">Exam</th>
+                                        <th className="py-3 text-center">Total</th>
+                                        <th className="py-3 text-center">Grade</th>
                                     </tr>
                                 </thead>
-
-                                {/* Table Body */}
                                 <tbody>
                                     {Object.entries(scores).map(([subject, { test, exam }], index) => {
                                         const total = test + exam;
                                         const grade = calculateGrade(total);
-
-                                        // Determine row color
-                                        let rowClass = "bg-light"; // Default
-                                        if (total < 40) rowClass = "bg-danger text-white"; // Fail
-                                        else if (total >= 75) rowClass = "bg-success text-white"; // Excellent
-                                        else if (index % 2 === 0) rowClass = "bg-white"; // Alternating rows
-
+                                        let rowClass = total < 40
+                                            ? "table-danger"
+                                            : total >= 75
+                                                ? "table-success"
+                                                : index % 2 === 0
+                                                    ? "table-light"
+                                                    : "table-white";
                                         return (
                                             <tr key={subject} className={rowClass}>
                                                 <td className="fw-bold">{subject}</td>
                                                 <td className="text-center">{test}</td>
                                                 <td className="text-center">{exam}</td>
                                                 <td className="text-center fw-bold">{total}</td>
-                                                <td className="text-center fw-bold" style={{ color: total >= 75 ? "green" : total < 40 ? "red" : "yellow" }}>
+                                                <td className="text-center fw-bold text-success">
                                                     {grade}
                                                 </td>
                                             </tr>
@@ -279,21 +395,17 @@ export const ResultModal = ({ show, handleClose, result }) => {
                         </Card.Body>
                     </Card>
 
-
-                    {/* Analytics */}
-                    <Card className="mb-4 shadow-lg border-0 rounded-4">
-                        {/* Header with Gradient Background */}
+                    {/* Analytics Section */}
+                    <Card className="mb-4 border-0 rounded-4 shadow-sm">
                         <Card.Header
                             className="text-white text-center fw-bold"
-                            style={{ background: "linear-gradient(135deg, #198754, #28A745)" }}
+                            style={{ background: "linear-gradient(135deg, var(--color-success), #198754)" }}
                         >
                             <FaChartPie className="me-2" /> Performance Analytics
                         </Card.Header>
-
                         <Card.Body>
                             <Row>
-                                {/* Pie Chart (Overall Performance) */}
-                                <Col md={6} className="text-center">
+                                <Col md={6} className="text-center mb-3">
                                     <h6 className="fw-bold">Overall Performance</h6>
                                     <ResponsiveContainer width="100%" height={220}>
                                         <PieChart>
@@ -303,112 +415,131 @@ export const ResultModal = ({ show, handleClose, result }) => {
                                                 cy="50%"
                                                 innerRadius={50}
                                                 outerRadius={80}
-                                                fill="#28A745"
+                                                fill="var(--color-success)"
                                                 dataKey="value"
                                                 label={({ value }) => `${value.toFixed(1)}%`}
                                             />
                                             <Tooltip />
                                         </PieChart>
                                     </ResponsiveContainer>
-                                    <p className="mt-2"><strong>Overall Percentage:</strong> {overallPercentage.toFixed(2)}%</p>
-                                    <p><strong>Overall Grade:</strong> {overallGrade}</p>
+                                    <p><strong>Overall:</strong> {overallPercentage.toFixed(2)}%</p>
+                                    <p><strong>Grade:</strong> {overallGrade}</p>
                                 </Col>
-
-                                {/* Bar Chart (Subject Grades) */}
                                 <Col md={6} className="text-center">
                                     <h6 className="fw-bold">Subject Grades</h6>
                                     <ResponsiveContainer width="100%" height={220}>
                                         <BarChart data={subjectGrades} margin={{ left: 20, right: 20 }}>
-                                            <XAxis
-                                                dataKey="subject"
-                                                angle={-90}
-                                                textAnchor="end"
-                                                height={80}
-                                                interval={0}
-                                                tick={{ fontSize: 12 }}
-                                            />
+                                            <XAxis dataKey="subject" angle={-90} textAnchor="end" height={80} interval={0} tick={{ fontSize: 12 }} />
                                             <YAxis />
                                             <Tooltip />
-                                            <Bar dataKey="grade" fill="#1E88E5" barSize={30} />
+                                            <Bar dataKey="grade" fill="var(--color-primary)" barSize={30} />
                                         </BarChart>
                                     </ResponsiveContainer>
                                 </Col>
                             </Row>
-
-                            {/* Best & Weakest Subjects */}
                             <h6 className="mt-4 fw-bold">Best & Weakest Subjects</h6>
                             <Alert variant="success">
-                                <strong>Best Subject:</strong> {bestSubject.name} ({bestSubject.score} Marks)
+                                <strong>Best:</strong> {bestSubject.name} ({bestSubject.score} Marks)
                             </Alert>
                             <Alert variant="danger">
-                                <strong>Weakest Subject:</strong> {weakestSubject.name} ({weakestSubject.score} Marks)
+                                <strong>Weakest:</strong> {weakestSubject.name} ({weakestSubject.score} Marks)
                             </Alert>
                         </Card.Body>
                     </Card>
 
-
-                    <Card className="mb-4 shadow-lg border-0 rounded-4">
+                    {/* General Remarks */}
+                    <Card className="mb-4 border-0 rounded-4 shadow-sm">
                         <Card.Header className="bg-warning text-dark">
                             ⭐ General Remarks
                         </Card.Header>
                         <Card.Body>
-                            <Row>
+                            <Row xs={1} md={2} className="g-3">
                                 {Object.entries(general_remarks).map(([remark, rating]) => (
-                                    <Col md={6} key={remark} className="mb-2">
-                                        <Alert variant="warning">
-                                            <strong>{remark.toUpperCase()}:</strong> {rating}  {renderStars(rating)}
+                                    <Col key={remark}>
+                                        <Alert
+                                            style={{
+                                                color: "var(--color-dark)",
+                                            }}
+                                            variant="warning border border-3 border-dark"
+                                            className="d-flex align-items-center justify-content-between"
+                                        >
+                                            <div>
+                                                <strong>{remark.toUpperCase()}:</strong>
+                                            </div>
+                                            <div>{renderStars(rating)}</div>
                                         </Alert>
                                     </Col>
                                 ))}
                             </Row>
                         </Card.Body>
-                    </Card>.
+                    </Card>
 
-                    {/* Comments Section */}
-                    <Card className="mb-4 shadow-lg border-0 rounded-4">
+                    {/* Comments */}
+                    <Card className="mb-4 border-0 rounded-4 shadow-sm">
                         <Card.Header className="bg-primary text-white">
                             <FaComments className="me-2" /> Comments
                         </Card.Header>
                         <Card.Body>
-                            {Object.entries(comments).map(([comment_type, comment]) => (
-                                <Alert key={comment_type} variant="primary">
-                                    <strong>{comment_type.toLocaleUpperCase()}:</strong> {comment}
-                                </Alert>
-                            ))}
+                            <Row xs={1} md={2} className="g-3">
+
+                                {Object.entries(comments).map(([comment_type, comment]) => (
+                                    <Col key={comment_type}>
+                                        <Alert style={{
+                                            color: "var(--color-dark)",
+                                        }}
+                                            variant="primary border border-3 border-dark"
+                                            className="d-flex ">
+                                            <strong>{comment_type.toUpperCase()}:</strong> {comment}
+                                        </Alert>
+                                    </Col>
+                                ))}
+                            </Row>
                         </Card.Body>
                     </Card>
                 </div>
             </Modal.Body>
 
             {/* Footer */}
-            <Modal.Footer className="d-flex justify-content-between">
-                <small className="text-muted">
+            <Modal.Footer className="d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <small className="text-muted text-center text-md-start mb-2 mb-md-0">
                     © {new Date().getFullYear()} Ogunboyejo Adeola Memorial School. All rights reserved.
                 </small>
-                <Button variant="primary" onClick={() => saveAsPDF(result[0].assigned_student.username, result[0].term, result[0].session)} disabled={loading}>
-                    <FaFileDownload className="me-2" /> {loading ? "Generating..." : "Save as PDF"}
+                <Button
+                    variant="primary"
+                    onClick={() => {
+                        generateResultPDF(result[0], overallPercentage)
+                            .then(() => {
+                                setLoading(false)
+                            })
+                            .catch((error) => {
+                                console.error("Error generating PDF:", error);
+                                setLoading(false)
+                            });
+                    }}
+                    disabled={loading}
+                >
+                    <FaFileDownload className="me-2" />
+                    {loading ? "Generating..." : "Save as PDF"}
                 </Button>
             </Modal.Footer>
 
-            {/* Error Alert */}
-            {error && <div className="alert alert-danger text-center">{error}</div>}
-            {/* Styles for loading overlay */}
+
             <style jsx>{`
-                .loading-overlay {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.7);
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    z-index: 10;
-                    border-radius: 5px;
-                }
-            `}</style>
-        </Modal>
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      border-radius: 5px;
+    }
+  `}</style>
+        </Modal >
     );
 };

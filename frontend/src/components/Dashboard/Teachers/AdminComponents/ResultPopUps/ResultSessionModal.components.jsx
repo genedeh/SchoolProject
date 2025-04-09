@@ -39,7 +39,7 @@ export const ResultSessionModal = ({ show, handleClose, result, student, isLoadi
         fetchStudentResults,
         {
             enabled: !!selectedSession,
-            retry: 3,
+            retry: 1,
             refetchOnWindowFocus: false,
             onSuccess: (data) => {
                 setSelectedResult(data);
@@ -86,6 +86,7 @@ export const ResultSessionModal = ({ show, handleClose, result, student, isLoadi
                                 </div>
                                 <Button
                                     variant={selectedResult?.session === session ? "primary" : "outline-primary"}
+                                    className="custom-btn"
                                     onClick={() => handleSessionClick(session)}
                                     disabled={selectedSession === session && isFetchingResult}
                                 >
@@ -113,17 +114,17 @@ export const ResultSessionModal = ({ show, handleClose, result, student, isLoadi
                 <ResultTermModal showOverlay={showOverlay} setShowOverlay={setShowOverlay} studentResult={selectedResult} />
             </Modal.Body>
             <Modal.Footer className="d-flex justify-content-between">
-                <small className="text-muted">
-                    © {new Date().getFullYear()} Ogunboyejo Adeola Memorial School. All rights reserved.
-                </small>
-                <Button variant="secondary" onClick={handleClose}>
-                    <XCircle className="me-2" /> Close
-                </Button>
                 {selectedResult && (
-                    <Button variant="success" onClick={() => setShowOverlay(true)}>
+                    <Button className="custom-btn3" variant="success" onClick={() => setShowOverlay(true)}>
                         <CheckCircle className="me-2" /> View Full Result
                     </Button>
                 )}
+                <small className="text-muted">
+                    © {new Date().getFullYear()} Ogunboyejo Adeola Memorial School. All rights reserved.
+                </small>
+                <Button variant="secondary" className="custom-btn2" onClick={handleClose}>
+                    <XCircle className="me-2" /> Close
+                </Button>
             </Modal.Footer>
         </Modal>
     );
