@@ -43,7 +43,7 @@ export const DeleteSubjectModal = ({ show, handleClose, subjectId }) => {
                     Are you sure you want to delete this subject?
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => {
+                    <Button variant="secondary" className='custom-btn4' onClick={() => {
                         if (!loading) {
                             setError(null);
                             handleClose();
@@ -51,7 +51,7 @@ export const DeleteSubjectModal = ({ show, handleClose, subjectId }) => {
                     }}>
                         Cancel
                     </Button>
-                    <Button variant="danger" onClick={handleDelete} disabled={loading}>
+                    <Button variant="danger" onClick={handleDelete} className='custom-btn5' disabled={loading}>
                         {loading ? 'Deleting...' : 'Delete'}
                     </Button>
                 </Modal.Footer>
