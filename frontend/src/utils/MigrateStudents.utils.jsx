@@ -27,7 +27,6 @@ export const useMigrateStudents = () => {
         const { data } = await axios.post("/api/migrate-students/", { session }, {
             headers: { Authorization: `Bearer ${token}` },
         });
-        console.log(data)
         return data;
     });
 };
