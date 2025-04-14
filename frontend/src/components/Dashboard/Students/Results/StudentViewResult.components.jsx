@@ -42,7 +42,7 @@ const StudentViewResult = () => {
             },
             keepPreviousData: true,
             refetchOnWindowFocus: true,
-            retry: 3,
+            retry: 1,
             staleTime: 1000 * 60 * 5,
             cacheTime: 1000 * 60 * 10,
         }
@@ -54,8 +54,8 @@ const StudentViewResult = () => {
             <div>
                 <h2 className="m-4">📊 Student Results Dashboard</h2>
 
-                {isLoading && <CenteredSpinner caption="Fetching Results..." />}
-                {isFetching && <CenteredSpinner caption="Fetching Results..." />}
+                {isLoading && !isFetching && <CenteredSpinner caption="Fetching Results..." />}
+                {!isLoading && isFetching && <CenteredSpinner caption="Fetching Results..." />}
                 {isError && <ErrorAlert heading="Error while fetching results" message={ErrorMessageHandling(isError, error)} removable={true} />}
 
                 {!isLoading && !isFetching && !isError && (

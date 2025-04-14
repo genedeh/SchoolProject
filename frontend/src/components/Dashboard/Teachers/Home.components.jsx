@@ -16,6 +16,7 @@ const TeacherHome = () => {
                         <Card className="p-3 mb-4 mt-3 custom-btn" bg="" text='light' >
                             <Card.Body >
                                 <Card.Title>Welcome back, {username.replace('_', ' ')} 👋</Card.Title>
+                                <hr />
                                 <Card.Text>
                                     <strong>This is your dashboard. Here you can find all the information you need to manage your classes and students.</strong>
                                     <br />

@@ -144,14 +144,16 @@ export const AssignedClassrooms = () => {
                     <>
                         {/* Add User Button */}
                         <div className="d-grid gap-2 m-4">
-                            <Button size="lg" variant="outline-primary" href="/dashboard/add-user">
+                            <Button size="lg" variant="outline-primary" href="/dashboard/add-user" className="mb-3 custom-btn">
                                 <PersonFillAdd className="me-2" /> Add New Student (Ensure To only Select Your Class)
                             </Button>
                         </div>
 
                         {performanceData && <ClassroomPerformance performanceData={performanceData} />}
                         <div className="m-4">
-                            <Button size="lg" variant="outline-success" onClick={() => {
+                            <Button size="lg"
+                                className="mb-3 custom-btn3"
+                                variant="outline-success" onClick={() => {
                                 setClassroomId(data[0].id)
                                 console.log(data[0].id)
                             }} disabled={isPerfFetching || isPerfLoading}>

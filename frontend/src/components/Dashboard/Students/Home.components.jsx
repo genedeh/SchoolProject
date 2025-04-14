@@ -13,10 +13,18 @@ const StudentHome = () => {
             <Container fluid className="dashboard">
                 <Row className="mb-4">
                     <Col md={12}>
-                        <Card className="p-3 mb-4 container-welcome" bg="primary" text='light' >
+                        <Card className="p-3 mb-4 mt-3 custom-btn" bg="" text='light' >
                             <Card.Body >
                                 <Card.Title>Welcome back, {username.replace('_', ' ')} 👋</Card.Title>
+                                <hr />
+                                <Card.Text>
+                                    <strong>This is your dashboard</strong>
+                                    <br />
+                                    <br />
+                                    <strong>Have a great day!</strong>
+                                </Card.Text>
                             </Card.Body>
+
                         </Card>
                         <FlipClock />
 

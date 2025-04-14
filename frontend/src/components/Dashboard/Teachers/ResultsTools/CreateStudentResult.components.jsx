@@ -34,7 +34,7 @@ export const CreateStudentResult = () => {
     const [page, setPage] = useState(1);
     const token = localStorage.getItem("token");
 
-    const { data: student, isLoading: studentLoading, error: studentError, refetch } = useQuery({
+    const { data: student, isLoading: studentLoading, error: studentError } = useQuery({
         queryKey: ["student", studentName],
         queryFn: async () => {
             const response = await axios.get(`/api/users/?username=${studentName}`, {
@@ -65,6 +65,7 @@ export const CreateStudentResult = () => {
     const {
         data: classroomsData,
         isLoading,
+        isFetching,
         isError,
         error,
     } = useQuery(["classrooms", page], fetchClassrooms, {
@@ -200,7 +201,8 @@ export const CreateStudentResult = () => {
                                                 }
                                             >
                                                 <option value="" disabled>
-                                                    {classroomLoading ? "Loading classrooms..." : "Select Classroom"}
+                                                    {isLoading && <CenteredSpinner caption="Fetching Classrooms..." />}
+                                                    {isFetching && <CenteredSpinner caption="Fetching Classrooms..." />}
                                                 </option>
                                                 {classroomsData?.results?.map((classroom) => (
                                                     <option key={classroom.id} value={classroom.id}>
@@ -214,6 +216,7 @@ export const CreateStudentResult = () => {
                                                 <Col className="d-flex justify-content-between">
                                                     <Button
                                                         variant="outline-primary"
+                                                        className="me-2 custom-btn"
                                                         size="sm"
                                                         disabled={!classroomsData?.previous}
                                                         onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
@@ -224,6 +227,7 @@ export const CreateStudentResult = () => {
                                                     <Button
                                                         variant="outline-primary"
                                                         size="sm"
+                                                        className="ms-2 custom-btn"
                                                         disabled={!classroomsData?.next}
                                                         onClick={() => setPage((prev) => prev + 1)}
                                                     >
@@ -232,7 +236,7 @@ export const CreateStudentResult = () => {
                                                 </Col>
                                             </Row>
 
-                                            {isLoading && <CenteredSpinner caption="Fetching Classrooms..." />}
+
                                         </Form.Group>
                                     </Col>
                                 </>
@@ -314,7 +318,7 @@ export const CreateStudentResult = () => {
 
                     {/* ✅ Submit Button */}
                     <div className="text-center mt-4">
-                        <Button type="submit" variant="primary" className="px-4 py-2 fw-semibold shadow-sm" disabled={posting}>
+                        <Button type="submit" variant="primary" className="px-4 py-2 fw-semibold shadow-sm custom-btn" disabled={posting}>
                             {posting ? <Spinner animation="border" size="sm" className="me-2" /> : "Create Result"}
                         </Button>
                     </div>
