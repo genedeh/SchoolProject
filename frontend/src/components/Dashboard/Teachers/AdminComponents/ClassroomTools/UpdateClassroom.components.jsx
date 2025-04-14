@@ -102,13 +102,16 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 required
+                                autoFocus
                             />
                         </Form.Group>
                         <br />
                         <Form.Group controlId="formAssignedTeacher">
                             <Form.Label>Assigned Teacher</Form.Label>
                             <br />
-                            <Button onClick={() => {
+                            <Button
+                                className='custom-btn'
+                                onClick={() => {
                                 setListShow(true)
                             }} variant="outline-primary">{assignedTeacher ? (assignedTeacher.username) : ('None')}</Button>
                         </Form.Group>
@@ -118,6 +121,7 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
                             <br />
                             <Button
                                 variant="outline-primary"
+                                className='custom-btn'
                                 onClick={() => {
                                     setListShow2(true)
                                 }}
@@ -128,7 +132,7 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
                                 {students.map(student => (
                                     <span key={student.id} className="m-2">
                                         {student.username.replace('_', ' ')}
-                                        <Button size="sm" className="m-1" variant="outline-danger"
+                                        <Button size="sm" className="ms-2" variant="outline-danger"
                                             onClick={() => {
                                                 setStudents(students.filter(s => {
                                                     if (s !== student) {
@@ -146,7 +150,9 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={(e) => {
+                    <Button variant="primary"
+                        className="custom-btn"
+                        onClick={(e) => {
                         setLoading(true);
                         handleUpdate(e);
                     }} disabled={loading} type='submit'>

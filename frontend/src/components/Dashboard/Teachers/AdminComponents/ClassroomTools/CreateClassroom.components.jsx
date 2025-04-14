@@ -120,6 +120,7 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
                                 onChange={handleNameChange}
                                 placeholder="Enter classroom name"
                                 required
+                                autoFocus
                             />
                         </Form.Group>
                         <br />
@@ -128,6 +129,7 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
                             <br />
                             <Button
                                 variant="outline-primary"
+                                className="custom-btn"
                                 required
                                 onClick={() => {
                                     setListShow(true)
@@ -139,7 +141,7 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
                             <br />
                             <Button
                                 variant="outline-primary"
-                                className="mb-1"
+                                className="mb-1 custom-btn"
                                 aria-required="true"
                                 onClick={() => {
                                     setListShow2(true)
@@ -149,7 +151,7 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
                                 {selectedStudents.map(student => (
                                     <span key={student.id} className="m-2">
                                         {student.username.replace('_', ' ')}
-                                        <Button size="sm" className="m-1" variant="outline-danger"
+                                        <Button size="sm" className="ms-2" variant="outline-danger"
                                             onClick={() => {
                                                 setSelectedStudents(selectedStudents.filter(s => {
                                                     if (s !== student) {
@@ -169,7 +171,9 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
                     {success && <Alert variant="success" dismissible onClose={() => setSuccess(null)}>{success}</Alert>}
                 </Modal.Body>
                 <Modal.Footer className="justify-content-bottom">
-                    <Button variant="primary" onClick={() => {
+                    <Button variant="primary"
+                        className="custom-btn"
+                        onClick={() => {
                         setLoading(true);
                         setError(null);
                         setSuccess(null);

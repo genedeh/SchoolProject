@@ -150,7 +150,7 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
                                 {selectedStudents.map(student => (
                                     <span key={student.id} className="m-2">
                                         {student.username.replace('_', ' ')}
-                                        <Button size="sm" className="ps-1 pe-1 ms-2 custom-btn5" variant="outline-danger"
+                                        <Button size="sm" className="ms-2" variant="outline-danger"
                                             onClick={() => {
                                                 setSelectedStudents(selectedStudents.filter(s => {
                                                     if (s !== student) {

@@ -1,6 +1,6 @@
 import { useUser } from "../../../../contexts/User.contexts";
 import useClassrooms from "../../../../contexts/Classrooms.contexts";
-import {  useState } from "react";
+import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { Button, Accordion, Card, ListGroup, InputGroup, Form } from "react-bootstrap";
 import { Search } from "react-bootstrap-icons";
@@ -64,15 +64,17 @@ export const Classrooms = () => {
                     <Form.Control className="me-auto " placeholder='Search...' value={searchTerm} onChange={(e) => {
                         setSearchTerm(e.target.value)
                     }} />
-                    <Button variant='outline-primary' onClick={() => {
-                        setTerm(searchTerm);
-                        handleSearch();
-                    }}>
+                    <Button variant='outline-primary'
+                        className="custom-btn"
+                        onClick={() => {
+                            setTerm(searchTerm);
+                            handleSearch();
+                        }}>
                         <Search className='me-2' />
                     </Button>
                 </InputGroup>
                 <div className="d-grid gap-2 m-2">
-                    <Button variant="outline-primary" size="lg" onClick={() => setShowCreateModal(true)} >
+                    <Button variant="outline-primary" size="lg" className="custom-btn2" onClick={() => setShowCreateModal(true)} >
                         New classroom <PlusCircleFill />
                     </Button>
                 </div>
@@ -93,8 +95,12 @@ export const Classrooms = () => {
                                         </div>
 
                                     </Accordion.Header>
-                                    <Button style={{ marginLeft: '20px', marginBottom: '10px' }} variant="outline-danger" onClick={() => handleDeleteClick(id)} ><Trash /></Button>
-                                    <Button style={{ marginLeft: '20px', marginBottom: '10px' }} variant="outline-info" onClick={() => handleUpdateClick(id)} ><Pencil /></Button>
+                                    <Button style={{ marginLeft: '20px', marginBottom: '10px' }}
+                                        className="custom-btn5 mt-2"
+                                        variant="outline-danger" onClick={() => handleDeleteClick(id)} ><Trash /></Button>
+                                    <Button style={{ marginLeft: '20px', marginBottom: '10px' }}
+                                        className="custom-btn2 mt-2"
+                                        variant="outline-info" onClick={() => handleUpdateClick(id)} ><Pencil /></Button>
                                     <Accordion.Body>
                                         <hr /><h5>Students</h5><hr />
                                         <ListGroup>

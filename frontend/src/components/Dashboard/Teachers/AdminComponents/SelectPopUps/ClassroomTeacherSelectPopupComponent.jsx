@@ -32,7 +32,7 @@ export const ClassRoomTeacherSelectPopUp = ({ show, handleClose, selectedTeacher
     const { data,
         isLoading,
         isError,
-        error, isFetching } = useQuery(['classroom-teachers', currentPage, show, searchTerm], () => fetchData(currentPage, searchTerm),
+        error } = useQuery(['classroom-teachers', currentPage, show, searchTerm], () => fetchData(currentPage, searchTerm),
             {
                 refetchOnWindowFocus: false, // Refetch when window is focused
                 retry: 3,                   // Retry fetching up to 3 times
@@ -52,7 +52,9 @@ export const ClassRoomTeacherSelectPopUp = ({ show, handleClose, selectedTeacher
                     <Form.Control className="me-auto " placeholder='Search...' value={tempSearchTerm} onChange={(e) => {
                         setTempSearchTerm(e.target.value)
                     }} />
-                    <Button variant='outline-primary' onClick={() => {
+                    <Button variant='outline-primary'
+                        className='custom-btn'
+                        onClick={() => {
                         setCurrentPage(1);
                         setSearchTerm(tempSearchTerm);
                     }}>
