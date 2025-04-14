@@ -65,7 +65,7 @@ export const Subjects = () => {
                     <Form.Control className="me-auto " placeholder='Search...' value={searchTerm} onChange={(e) => {
                         setSearchTerm(e.target.value)
                     }} />
-                    <Button variant='outline-primary' onClick={() => {
+                    <Button variant='outline-primary' className="custom-btn" onClick={() => {
                         setTerm(searchTerm);
                         handleSearch();
                     }}>
@@ -73,7 +73,7 @@ export const Subjects = () => {
                     </Button>
                 </InputGroup>
                 <div className="d-grid gap-2 m-2">
-                    <Button variant="outline-primary" size="lg" onClick={() => setShowCreateModal(true)} >
+                    <Button variant="outline-primary" className="custom-btn2" size="lg" onClick={() => setShowCreateModal(true)} >
                         New subject <PlusCircleFill />
                     </Button>
                 </div>
@@ -94,19 +94,19 @@ export const Subjects = () => {
                                         </div>
 
                                     </Accordion.Header>
-                                    <Button style={{ marginLeft: '20px', marginBottom: '10px' }} variant="outline-danger" onClick={() => handleDeleteClick(id)} ><Trash /></Button>
-                                    <Button style={{ marginLeft: '20px', marginBottom: '10px' }} variant="outline-info" onClick={() => handleUpdateClick(id)} ><Pencil /></Button>
+                                    <Button style={{ marginLeft: '20px', marginBottom: '10px' }} variant="outline-danger" className="custom-btn5 mt-2" onClick={() => handleDeleteClick(id)} ><Trash /></Button>
+                                    <Button style={{ marginLeft: '20px', marginBottom: '10px' }} variant="outline-info" className="custom-btn2 mt-2" onClick={() => handleUpdateClick(id)} ><Pencil /></Button>
                                     <Accordion.Body>
                                         <hr /><h5>Students</h5><hr />
                                         <ListGroup>
                                             {students_offering.length !== 0 ? (students_offering.map(({ id, username, gender, profile_picture_url }) => (
-                                                <ListGroup.Item key={id} className="container">
+                                                <ListGroup.Item key={id} className="d-flex justify-content-between align-items-center mt-2 shadow-sm border-2">
                                                     <div className="d-flex align-items-center">
                                                         <div className="me-3">
                                                             <img
                                                                 src={profile_picture_url == null ? ("https://via.placeholder.com/40") : (profile_picture_url)}
                                                                 className="rounded-circle"
-                                                                style={{ width: '40px', height: '40px' }}
+                                                                style={{ objectFit: 'cover', width: '40px', height: '40px' }}
                                                             />
                                                         </div>
                                                         <div>
@@ -131,11 +131,11 @@ export const Subjects = () => {
                     )}
                 </Accordion>
                 <div className="d-flex justify-content-between align-items-center my-4">
-                    <Button onClick={goToPrevPage} disabled={!prevPage || loading}>
+                    <Button onClick={goToPrevPage} disabled={!prevPage || loading} className="custom-btn">
                         Previous
                     </Button>
-                    <span>Page {currentPage}</span>
-                    <Button onClick={goToNextPage} disabled={!nextPage || loading}>
+                    <strong>Page {currentPage}</strong>
+                    <Button onClick={goToNextPage} disabled={!nextPage || loading} className="custom-btn">
                         Next
                     </Button>
                 </div>

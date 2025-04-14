@@ -1,0 +1,32 @@
+@import '../../../../../index.css';
+
+.user-card {
+    border: 1px solid var(--color-bg);
+    transition: all 0.3s ease;
+    border-radius: 0.75rem;
+    padding: 0.5rem;
+    display: flex;
+    margin-top: 3px 0;
+    align-items: center;
+    cursor: pointer;
+    background-color: #fff;
+    box-shadow: 0 0 5px var(--color-bg)
+}
+
+.user-card:hover {
+    box-shadow: 0 0 10px var(--color-dark);
+    transform: translateY(-2px);
+    border-color: var(--color-primary);
+}
+
+.user-card.selected {
+    border: 2px solid #002f86;
+    background-color: #f0f8ff;
+}
+
+.avatar img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    /* border: 2px solid #002f86; */
+}

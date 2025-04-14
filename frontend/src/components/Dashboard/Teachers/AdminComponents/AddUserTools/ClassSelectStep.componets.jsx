@@ -1,7 +1,7 @@
 import { useState } from "react";
-import  useClassrooms  from "../../../../../contexts/Classrooms.contexts";
-import { Button, Badge, Row, Col, Card, Alert, InputGroup, Form } from "react-bootstrap";
-import { Search } from "react-bootstrap-icons";
+import useClassrooms from "../../../../../contexts/Classrooms.contexts";
+import { Card, Col, Row, Button, Badge, Alert, InputGroup, Form } from 'react-bootstrap';
+import { FaChalkboardTeacher, FaSearch } from 'react-icons/fa';
 import { ErrorMessageHandling } from "../../../../../utils/ErrorHandler.utils";
 import { ErrorAlert } from "../../../../Alerts/ErrorAlert.components";
 import CenteredSpinner from "../../../../Loading/CenteredSpinner.components";
@@ -30,69 +30,72 @@ export const ClassSelectStep = ({ formData, updateFormData, nextStep, prevStep }
 
     return (
         <div className="p-4 bg-light rounded shadow-sm">
-            <h3 className="mb-4 text-center">Classroom List {`(${selectedClassRoomName})`}
+            <h3 className="mb-4 text-center">
+                Select Classroom <span className="text-primary">({selectedClassRoomName})</span>
             </h3>
-            <br />
+
             {selectionError && <Alert variant="danger" dismissible>{selectionError}</Alert>}
-            <InputGroup>
-                <Form.Control className="me-auto " placeholder='Search...' value={searchTerm} onChange={(e) => {
-                    setSearchTerm(e.target.value)
-                }} />
+
+            <InputGroup className="mb-3">
+                <Form.Control
+                    placeholder='Search...'
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
                 <Button variant='outline-primary' onClick={() => {
                     setTerm(searchTerm);
                     handleSearch();
                 }}>
-                    <Search className='me-2' />
+                    <FaSearch />
                 </Button>
             </InputGroup>
-            <hr />
-            <Row className="g-3">
+
+            <Row className="g-4">
                 {loading && <CenteredSpinner caption="Fetching Classrooms..." />}
-                {isError && <ErrorAlert heading="Error while fetching classrooms" message={ErrorMessageHandling(isError, error)} removable={true} />}
-                {!loading && !isError && classrooms.length === 0 && (
-                    <p>No classrooms found!</p>
-                )}
-                {!loading && !isError && classrooms.length > 0 && (
-                    classrooms?.map(({ id, students, assigned_teacher, name }) => (
-                        <Col key={id} md={12}>
-                            <Card
-                                key={id}
-                                onClick={() => toggleSelectClassroom(id)}
-                                className={`p-3 
-                            ${selectedClassRoom === id ? 'border-primary' : ''}`}
-                            >
-                                <Card.Body>
-                                    <Card.Title className="text-center">{name}</Card.Title>
-                                    <Card.Text>
-                                        Assigned Teacher : {assigned_teacher ? (assigned_teacher.username.replace('_', ' ')) : ("NO ASSIGNE TEACHER")}
-                                    </Card.Text>
-                                    <Card.Text>
-                                        No Of Students : <Badge bg="primary">{students.length}</Badge>
-                                    </Card.Text>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    ))
+                {isError && (
+                    <ErrorAlert
+                        heading="Error while fetching classrooms"
+                        message={ErrorMessageHandling(isError, error)}
+                        removable={true}
+                    />
                 )}
 
-                <div className="d-flex justify-content-between align-items-center my-4">
-                    <Button onClick={goToPrevPage} disabled={!prevPage}>
-                        Previous
-                    </Button>
-                    <span>Page {currentPage}</span>
-                    <Button onClick={goToNextPage} disabled={!nextPage}>
-                        Next
-                    </Button>
-                </div>
+                {!loading && !isError && classrooms.length === 0 && (
+                    <p className="text-center">No classrooms found!</p>
+                )}
+
+                {!loading && !isError && classrooms.map(({ id, name, assigned_teacher, students }) => (
+                    <Col md={4} key={id}>
+                        <Card
+                            className={`classroom-card text-center shadow-sm ${selectedClassRoom === id ? 'selected' : ''}`}
+                            onClick={() => toggleSelectClassroom(id)}
+                        >
+                            <Card.Body>
+                                <div className="icon-container">
+                                    <FaChalkboardTeacher size={30} className="mb-2" />
+                                </div>
+                                <Card.Title>{name}</Card.Title>
+                                <Card.Text>
+                                    <small>
+                                        <strong>Teacher:</strong> {assigned_teacher ? assigned_teacher.username.replace('_', ' ') : 'None'}
+                                    </small><br />
+                                    <strong>Students:</strong> <Badge bg="primary">{students.length}</Badge>
+                                </Card.Text>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                ))}
             </Row>
 
-            <div className="d-flex justify-content-between mt-4">
-                <Button variant="secondary" onClick={prevStep}>
-                    Back
-                </Button>
-                <Button variant="primary" onClick={handleSubmit}>
-                    Confirm
-                </Button>
+            <div className="d-flex justify-content-between align-items-center my-4">
+                <Button onClick={goToPrevPage} disabled={!prevPage} className="custom-btn">Previous</Button>
+                <span>Page {currentPage}</span>
+                <Button onClick={goToNextPage} disabled={!nextPage} className="custom-btn">Next</Button>
+            </div>
+
+            <div className="d-flex justify-content-between mt-4 footer">
+                <Button variant="secondary" onClick={prevStep} className="custom-btn2">Back</Button>
+                <Button variant="primary" onClick={handleSubmit} className="custom-btn">Confirm</Button>
             </div>
         </div>
     );

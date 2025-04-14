@@ -7,3 +7,4 @@ react-hook-form
 recharts
 jspdf
 html2canvas
+jspdf-autotable

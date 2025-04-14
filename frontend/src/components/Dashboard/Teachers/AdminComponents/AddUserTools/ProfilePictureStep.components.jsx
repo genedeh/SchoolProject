@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
-import { Image, Modal, Button, Form , ButtonGroup} from 'react-bootstrap';
-import { Trash, Pencil } from "react-bootstrap-icons";
+import { Image, Button, Modal } from "react-bootstrap";
+import { Pencil, Trash } from "react-bootstrap-icons";
+import './AddUser.styles.css';
+import NoProfilePicture from '../../../../../assets/NoProfilePicture.jpg';
 
 export const ProfilePictureStep = ({ formData, updateFormData, nextStep, prevStep }) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -22,6 +24,7 @@ export const ProfilePictureStep = ({ formData, updateFormData, nextStep, prevSte
         if (!selectedFile) return;
     };
 
+
     useEffect(() => {
         if (formData.profile_picture) {
             setSelectedFile(formData.profile_picture)
@@ -31,7 +34,7 @@ export const ProfilePictureStep = ({ formData, updateFormData, nextStep, prevSte
             };
             reader.readAsDataURL(formData.profile_picture);
         }
-    },[])
+    }, [])
 
     // Handle delete picture
     const handleDeletePicture = () => {
@@ -41,62 +44,64 @@ export const ProfilePictureStep = ({ formData, updateFormData, nextStep, prevSte
     };
 
     return (
-        <Form className="m-5" >
-            <div className="me-3">
-                <Image
-                    src={
-                        displayProfilePicture ||
-                        'http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg' // Default placeholder image
-                    }
-                    roundedCircle
-                    style={{ width: '200px', height: '200px', objectFit: 'cover' }}
-                    className="mb-5"
-                    alt="Profile"
-                />
-            </div>
+        <>
+            <div className="profile-container">
+                {/* Profile Picture Container */}
+                <div className="profile-picture-wrapper">
+                    <Image
+                        src={displayProfilePicture || NoProfilePicture}
+                        roundedCircle
+                        className="profile-image"
+                        alt="Profile"
+                    />
 
-            <ButtonGroup size="lg">
-                <Button variant="outline-primary" className="me-2" onClick={() => document.getElementById('fileInput').click()}>
-                    Change Profile Picture <Pencil />
-                </Button>
-                <Button variant="outline-danger" className="me-2" onClick={() => setShowDeleteModal(true)}>
-                    Remove Profile Picture <Trash />
-                </Button>
-                
+                    {/* Edit Icon */}
+                    <div className="edit-icon" onClick={() => document.getElementById("fileInput").click()}>
+                        <Pencil size={20} />
+                    </div>
+                </div>
 
+                {/* Hidden File Input */}
                 <input
                     type="file"
                     id="fileInput"
                     accept="image/*"
                     onChange={handleFileChange}
-                    style={{ display: 'none' }}
+                    style={{ display: "none" }}
                 />
-            </ButtonGroup>
 
-            {/* Delete confirmation modal */}
-            <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Delete Picture</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>Are you sure you want to delete your profile picture?</Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
-                        Cancel
-                    </Button>
-                    <Button variant="danger" onClick={handleDeletePicture}>
-                        Delete
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+                {/* Remove Button */}
+                <Button variant="outline-danger m-3" onClick={() => setShowDeleteModal(true)}>
+                    <Trash className="" />
+                </Button>
 
-            <div className="d-flex justify-content-between mt-4">
-                <Button variant="secondary" onClick={prevStep}>
+                {/* Delete Confirmation Modal */}
+                <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Delete Picture</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Are you sure you want to delete your profile picture?</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                            Cancel
+                        </Button>
+                        <Button variant="danger" onClick={handleDeletePicture}>
+                            Delete
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+
+            </div>
+            {/* Navigation Buttons */}
+            <div className="d-flex justify-content-between footer">
+                <Button variant="secondary" onClick={prevStep} className="custom-btn2">
                     Back
                 </Button>
-                <Button variant="primary" onClick={nextStep}>
+                <Button onClick={nextStep} className="custom-btn">
                     Next
                 </Button>
             </div>
-        </Form>
+        </ >
     );
 };

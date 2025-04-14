@@ -149,7 +149,7 @@ const UpdateStudentResult = () => {
                             <ResultUploadButton uploaded={formData?.uploaded} handleInputChange={handleInputChange} />
                             {/* ✅ Submit Button */}
                             <div className="text-center mt-4">
-                                <Button type="submit" variant="primary" className="px-4 py-2 fw-semibold shadow-sm" disabled={isLoading}>
+                                <Button type="submit" variant="primary" className="px-4 py-2 fw-semibold shadow-sm custom-btn" disabled={isLoading}>
                                     {isLoading ? <Spinner animation="border" size="sm" className="me-2" /> : "Update Result"}
                                 </Button>
                             </div>

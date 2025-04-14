@@ -1,87 +1,125 @@
-import { Nav, Navbar } from 'react-bootstrap';
-import { House, BarChart, PersonAdd, Calendar2Event, BookHalf, PersonCircle, SuitClub } from 'react-bootstrap-icons';
+import { Navbar, Nav, Container } from "react-bootstrap";
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
+import { HouseDoor, PersonCircle, PersonPlus, BarChart, Calendar2Event, Book, Building } from "react-bootstrap-icons";
+import { FiMenu, FiX } from "react-icons/fi";
 import './SideBar.styles.css'
 import { useUser } from '../../../contexts/User.contexts';
 
 export const StudentSidebar = () => {
+    const location = useLocation(); // Get current URL
+    const [isOpen, setIsOpen] = useState(false);
+
     return (
-        <Navbar collapseOnSelect expand="lg" fluid="true" className="d-flex flex-column  bg-light container" >
-            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-            <Navbar.Collapse id="responsive-navbar-nav">
-                <Nav className="flex-column" coll="true">
-                    <Navbar.Brand style={{ 'color': 'blue' }}>Dashboard</Navbar.Brand>
-                    <Nav.Item>
-                        <Nav.Link href='/dashboard/home'><House className="me-2" /> Home</Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                        <Nav.Link href='/dashboard/student-profile'><PersonCircle className="me-2" /> Profile</Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                        <Nav.Link href="/dashboard/student-results"><BarChart className="me-2" /> Results </Nav.Link>
-                    </Nav.Item>
+        <div className={`floating-navbar-container ${isOpen ? "open" : ""}`}>
+            {/* Toggle Button */}
+            <button className="toggle-btn" onClick={() => setIsOpen(!isOpen)}>
+                {isOpen ? <FiX className="close-icon" /> : <FiMenu className="menu-icon" />}
+            </button>
+
+            {/* Navbar Links */}
+            <div className={`floating-navbar ${isOpen ? "show" : "hide"}`}>
+                <Nav className="nav-links">
+                    <Nav.Link href="/dashboard/home" className={`nav-item ${location.pathname === "/dashboard/home" ? "active" : ""}`}>
+                        <HouseDoor className="icon" />
+                        <span>Home</span>
+                    </Nav.Link>
+                    <Nav.Link href="/dashboard/student-profile" className={`nav-item ${location.pathname === "/dashboard/student-profile" ? "active" : ""}`}>
+                        <PersonCircle className="icon" />
+                        <span>Profile</span>
+                    </Nav.Link>
+                    <Nav.Link href="/dashboard/student-results" className={`nav-item ${location.pathname === "/dashboard/student-results" ? "active" : ""}`}>
+                        <BarChart className="icon" />
+                        <span>Results</span>
+                    </Nav.Link>
                 </Nav>
-            </Navbar.Collapse>
-        </Navbar>
+            </div>
+        </div>
     );
 };
 
 export const TeacherSidebar = () => {
     const { currentUser } = useUser();
     const { is_superuser } = currentUser;
+    const [isOpen, setIsOpen] = useState(false);
+
+
+
+    const location = useLocation(); // Get current URL
+
     if (is_superuser) {
         return (
-            <Navbar collapseOnSelect expand="lg" fluid="true" className="d-flex flex-column  bg-light container" >
-                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                <Navbar.Collapse id="responsive-navbar-nav">
-                    <Nav className="flex-column" coll="true">
-                        <Navbar.Brand style={{ 'color': 'blue' }}>Dashboard</Navbar.Brand>
-                        <Nav.Item>
-                            <Nav.Link href='/dashboard/home'><House className="me-2" /> Home</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link href='/dashboard/teacher-profile'><PersonCircle className="me-2" /> Profile</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link href="/dashboard/add-user"><PersonAdd className="me-2" /> Add User  </Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link href="/dashboard/student-results"><BarChart className="me-2" /> Results  </Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link href="/dashboard/migrate-students"><Calendar2Event className="me-2" /> Migrate Students  </Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link href="/dashboard/subjects"><BookHalf className="me-2" /> Subjects  </Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link href="/dashboard/classrooms"><SuitClub className="me-2" /> ClassRooms </Nav.Link>
-                        </Nav.Item>
+            <div className={`floating-navbar-container ${isOpen ? "open" : ""}`}>
+                {/* Toggle Button */}
+                <button className="toggle-btn" onClick={() => setIsOpen(!isOpen)}>
+                    {isOpen ? <FiX className="close-icon" /> : <FiMenu className="menu-icon" />}
+                </button>
+
+                {/* Navbar Links */}
+                <div className={`floating-navbar ${isOpen ? "show" : "hide"}`}>
+                    <Nav className="nav-links">
+                        <Nav.Link href="/dashboard/home" className={`nav-item ${location.pathname === "/dashboard/home" ? "active" : ""}`}>
+                            <HouseDoor className="icon" />
+                            <span>Home</span>
+                        </Nav.Link>
+                        <Nav.Link href="/dashboard/teacher-profile" className={`nav-item ${location.pathname === "/dashboard/teacher-profile" ? "active" : ""}`}>
+                            <PersonCircle className="icon" />
+                            <span>Profile</span>
+                        </Nav.Link>
+                        <Nav.Link href="/dashboard/add-user" className={`nav-item ${location.pathname === "/dashboard/add-user" ? "active" : ""}`}>
+                            <PersonPlus className="icon" />
+                            <span>Add User</span>
+                        </Nav.Link>
+                        <Nav.Link href="/dashboard/student-results" className={`nav-item ${location.pathname === "/dashboard/student-results" ? "active" : ""}`}>
+                            <BarChart className="icon" />
+                            <span>Results</span>
+                        </Nav.Link>
+                        <Nav.Link href="/dashboard/subjects" className={`nav-item ${location.pathname === "/dashboard/subjects" ? "active" : ""}`}>
+                            <Book className="icon" />
+                            <span>Subjects</span>
+                        </Nav.Link>
+                        <Nav.Link href="/dashboard/classrooms" className={`nav-item ${location.pathname === "/dashboard/classrooms" ? "active" : ""}`}>
+                            <Building className="icon" />
+                            <span>Classrooms</span>
+                        </Nav.Link>
+                        <Nav.Link href="/dashboard/migrate-students" className={`nav-item ${location.pathname === "/dashboard/migrate-students" ? "active" : ""}`}>
+                            <Calendar2Event className="icon" />
+                            <span>Migrate</span>
+                        </Nav.Link>
                     </Nav>
-                </Navbar.Collapse>
-            </Navbar>
+                </div>
+            </div>
         );
     } else {
         return (
-            <Navbar collapseOnSelect expand="lg" fluid="true" className="d-flex flex-column  bg-light container" >
-                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                <Navbar.Collapse id="responsive-navbar-nav">
-                    <Nav className="flex-column" coll="true">
-                        <Navbar.Brand style={{ 'color': 'blue' }}>Dashboard</Navbar.Brand>
-                        <Nav.Item>
-                            <Nav.Link href='/dashboard/home'><House className="me-2" /> Home</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link href='/dashboard/teacher-profile'><PersonCircle className="me-2" /> Profile</Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link href="/dashboard/subjects"><BookHalf className="me-2" /> Subject  </Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item>
-                            <Nav.Link href="/dashboard/classrooms"><SuitClub className="me-1" /> Your ClassRoom </Nav.Link>
-                        </Nav.Item>
+            <div className={`floating-navbar-container ${isOpen ? "open" : ""}`}>
+                {/* Toggle Button */}
+                <button className="toggle-btn" onClick={() => setIsOpen(!isOpen)}>
+                    {isOpen ? <FiX className="close-icon" /> : <FiMenu className="menu-icon" />}
+                </button>
+
+                {/* Navbar Links */}
+                <div className={`floating-navbar ${isOpen ? "show" : "hide"}`}>
+                    <Nav className="nav-links">
+                        <Nav.Link href="/dashboard/home" className={`nav-item ${location.pathname === "/dashboard/home" ? "active" : ""}`}>
+                            <HouseDoor className="icon" />
+                            <span>Home</span>
+                        </Nav.Link>
+                        <Nav.Link href="/dashboard/teacher-profile" className={`nav-item ${location.pathname === "/dashboard/teacher-profile" ? "active" : ""}`}>
+                            <PersonCircle className="icon" />
+                            <span>Profile</span>
+                        </Nav.Link> 
+                        <Nav.Link href="/dashboard/subjects" className={`nav-item ${location.pathname === "/dashboard/subjects" ? "active" : ""}`}>
+                            <Book className="icon" />
+                            <span>Subjects</span>
+                        </Nav.Link>
+                        <Nav.Link href="/dashboard/classrooms" className={`nav-item ${location.pathname === "/dashboard/classrooms" ? "active" : ""}`}>
+                            <Building className="icon" />
+                            <span>Classrooms</span>
+                        </Nav.Link>
                     </Nav>
-                </Navbar.Collapse>
-            </Navbar>
+                </div>
+            </div>
         );
     }
 

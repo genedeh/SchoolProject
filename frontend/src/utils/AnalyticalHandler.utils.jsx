@@ -1,26 +1,5 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, CartesianGrid, AreaChart, Legend } from "recharts";
-const COLORS = [
-    "#FF5733", // Bright Red-Orange
-    "#33FF57", // Bright Green
-    "#3357FF", // Bright Blue
-    "#FF33A1", // Pink
-    "#33FFF6", // Cyan
-    "#FFC300", // Yellow-Gold
-    "#C70039", // Deep Red
-    "#900C3F", // Dark Magenta
-    "#581845", // Dark Purple
-    "#8E44AD", // Purple
-    "#2ECC71", // Emerald Green
-    "#3498DB", // Sky Blue
-    "#F1C40F", // Sunflower Yellow
-    "#E67E22", // Carrot Orange
-    "#1ABC9C", // Teal
-    "#D35400", // Dark Orange
-    "#7D3C98", // Amethyst
-    "#16A085", // Greenish-Blue
-    "#2980B9", // Strong Blue
-    "#27AE60", // Medium Green
-];
+
 
 // Function to determine WAEC-style grades
 export const getGrade = (score) => {
@@ -41,9 +20,9 @@ export const GradeDistributionComponent = ({ gradeDistribution }) => {
         <ResponsiveContainer width="100%" height={250}>
             <BarChart data={Object.keys(gradeDistribution).map(grade => ({ grade, count: gradeDistribution[grade] }))}>
                 <XAxis dataKey="grade" />
-                <YAxis />
+                <YAxis/>
                 <Tooltip />
-                <Bar dataKey="count" fill={COLORS[Math.floor(Math.random() * COLORS.length)]} />
+                <Bar dataKey="count" fill={"var(--color-primary)"} />
             </BarChart>
         </ResponsiveContainer>
     )

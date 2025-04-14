@@ -32,9 +32,11 @@ const MigrateStudents = () => {
                             value={session}
                             required
                             onChange={(e) => setSession(e.target.value)}
+                            autoFocus
+                            autoComplete="off"
                         />
                     </Form.Group>
-                    <Button type="submit" disabled={migrateStudents.isLoading} className="mt-3">
+                    <Button type="submit" disabled={migrateStudents.isLoading} className="mt-3 custom-btn">
                         {migrateStudents.isLoading ? <Spinner animation="border" size="sm" /> : "Migrate"}
                     </Button>
                 </Form>
@@ -60,7 +62,7 @@ const MigrateStudents = () => {
                                 <Row>
                                     {migrateStudents.data.failed_students.map((student, index) => (
                                         <Col md={4} key={index} className="mb-3">
-                                            <Card bg="danger" text="white">
+                                            <Card bg="danger" text="white" className="custom-btn5">
                                                 <Card.Body className="d-flex align-items-center">
                                                     {/* Profile Picture */}
                                                     <img
@@ -96,7 +98,7 @@ const MigrateStudents = () => {
                                 <Row>
                                     {migrateStudents.data.failed_transfers.map((subject, index) => (
                                         <Col md={4} key={index} className="mb-3">
-                                            <Card bg="danger" text="white">
+                                            <Card bg="danger" text="white" className="custom-btn5 shadow-lg">
                                                 <Card.Body className="d-flex align-items-center">
 
                                                     <div>

@@ -69,10 +69,12 @@ export const StudentsSelectPopUp = ({ show, handleClose, selectedStudents, setSe
                     <Form.Control className="me-auto " placeholder='Search...' value={tempSearchTerm} onChange={(e) => {
                         setTempSearchTerm(e.target.value)
                     }} />
-                    <Button variant='outline-primary' onClick={() => {
-                        setCurrentPage(1);
-                        setSearchTerm(tempSearchTerm);
-                    }}>
+                    <Button variant='outline-primary'
+                        className='custom-btn'
+                        onClick={() => {
+                            setCurrentPage(1);
+                            setSearchTerm(tempSearchTerm);
+                        }}>
                         <Search className='me-2' />
                     </Button>
                 </InputGroup>

@@ -1,5 +1,6 @@
 import { Card, Container, Row, Col } from 'react-bootstrap';
 import { useUser } from '../../../contexts/User.contexts';
+import { QuoteCarousel, FunFactCarousel, FlipClock } from '../HomeTools/HomeCards.components';
 import { Navigate } from 'react-router-dom';
 import { Schedule } from "../HomeTools/HomeTools.components";
 
@@ -8,24 +9,39 @@ const StudentHome = () => {
     const { username } = currentUser;
     if (currentUser.is_student_or_teacher && currentUser) {
         return (
-            
-            <Container fluid className="p-4 container">
+
+            <Container fluid className="dashboard">
                 <Row className="mb-4">
                     <Col md={12}>
-                        <Card className="p-3 mb-4 container-welcome" bg="primary" text='light' >
+                        <Card className="p-3 mb-4 mt-3 custom-btn" bg="" text='light' >
                             <Card.Body >
                                 <Card.Title>Welcome back, {username.replace('_', ' ')} 👋</Card.Title>
+                                <hr />
                                 <Card.Text>
-                                    You've learned 70% of your goal this week! Keep it up and improve your progress.
+                                    <strong>This is your dashboard</strong>
+                                    <br />
+                                    <br />
+                                    <strong>Have a great day!</strong>
                                 </Card.Text>
                             </Card.Body>
+
                         </Card>
-                        <Row>
-                            <Col md={12}>
-                                <Schedule />
-                            </Col>
-                        </Row>
+                        <FlipClock />
+
+                        <hr />
+                        <Schedule />
+                        <hr />
+                        <h2 className='text-center'>Inspirational Quotes</h2>
+                        <hr />
+                        <QuoteCarousel />
+
+                        <hr />
+                        <h2 className='text-center'>Fun Facts</h2>
+                        <hr />
+                        <FunFactCarousel />
+
                     </Col>
+
                 </Row>
             </Container>
         );

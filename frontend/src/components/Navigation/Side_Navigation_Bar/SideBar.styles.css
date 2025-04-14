@@ -1,5 +1,153 @@
-.sidebar {
-    height: 100vh;
+@import '../../../index.css';
+
+/* Floating Navbar Container */
+.floating-navbar-container {
     position: fixed;
+    top: 50%;
+    left: 20px;
+    /* Adjust the position to your preference */
+    transform: translateY(-50%);
+    z-index: 1000;
 }
 
+/* Toggle Button */
+.toggle-btn {
+    background: var(--color-bg);
+    border: none;
+    padding: 12px;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px var(--color-dark);
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+
+.toggle-btn:hover {
+    transform: scale(1.1);
+}
+
+.menu-icon,
+.close-icon {
+    font-size: 24px;
+    color: var(--color-dark);
+}
+
+/* Floating Navbar */
+.floating-navbar {
+    background: var(--color-bg);
+    box-shadow: 3px 4px 10px var(--color-dark);
+    border-radius: 12px;
+    padding: 15px;
+    position: absolute;
+    top: 50%;
+    left: 50px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    /* Vertical layout */
+    align-items: center;
+    gap: 15px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hide Navbar Initially */
+.floating-navbar.hide {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-50%) translateX(-10px);
+}
+
+/* Show Navbar */
+.floating-navbar.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(0);
+}
+
+
+/* Navigation Links */
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    /* Vertical alignment */
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    text-decoration: none;
+    font-size: clamp(12px, 2vw, 16px);
+    /* Responsive text size */
+    color: var(--color-primary);
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: transform 0.2s ease-in-out, background 0.2s ease-in-out;
+}
+/* Active Link */
+.nav-item.active {
+    color: var(--color-primary);
+    font-weight: bold;
+    /* Blue Color */
+    background: rgba(0, 26, 255, 0.16);
+}
+/* Float-Up Animation on Hover */
+.nav-item:hover {
+    transform: translateY(-5px);
+    background: rgba(0, 123, 255, 0.1);
+}
+
+/* Icon Styles */
+.icon {
+    font-size: clamp(18px, 3vw, 24px);
+    /* Responsive icon size */
+    margin-bottom: 5px;
+}
+
+/* Responsive Vertical Size Adjustment */
+@media (max-width: 1024px) {
+    .floating-navbar {
+        padding: 10px;
+        /* Reduce padding */
+        gap: 12px;
+        /* Reduce spacing between items */
+    }
+}
+
+@media (max-width: 768px) {
+    .floating-navbar {
+        padding: 8px;
+        gap: 10px;
+    }
+
+    .nav-item {
+        padding: 6px 10px;
+        /* Reduce nav item padding */
+    }
+
+    .icon {
+        font-size: 20px;
+        /* Decrease icon size */
+    }
+}
+
+@media (max-width: 480px) {
+    .floating-navbar {
+        padding: 6px;
+        gap: 8px;
+    }
+
+    .nav-item {
+        padding: 4px 8px;
+        font-size: 12px;
+        /* Reduce font size */
+    }
+
+    .icon {
+        font-size: 16px;
+        /* Reduce icon size further */
+    }
+}

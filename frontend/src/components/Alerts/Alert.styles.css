@@ -1,6 +1,8 @@
+@import '../../index.css';
+
 /* Modal styling */
 .custom-alert-modal .modal-content {
-  background-color: #292727;
+  background-color: var(--color-bg);
   color: white;
   border-radius: 12px;
   padding: 20px;
@@ -11,7 +13,7 @@
 
 .custom-alert-modal .modal-backdrop {
   backdrop-filter: blur(6px);
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--color-dark);
 }
 
 
@@ -31,18 +33,18 @@
 
 .alert-icon-danger {
   font-size: 40px;
-  color: #ff4c4c;
+  color: var(--color-secondary);
   animation: bounce 1s infinite alternate;
 }
 
 .alert-text-danger h5 {
   font-weight: bold;
-  color: #ff4c4c;
+  color: var(--color-secondary);
   margin-bottom: 5px;
 }
 
 .alert-text p {
-  color: #f1f1f1;
+  color: var(--color-dark);
   margin: 0;
 }
 
@@ -58,13 +60,13 @@
 
 .alert-icon-warning {
   font-size: 40px;
-  color: #ffed4c;
+  color: var(--color-accent);
   animation: bounce 1s infinite alternate;
 }
 
 .alert-text-warning h5 {
   font-weight: bold;
-  color: #ffed4c;
+  color: var(--color-accent);
   margin-bottom: 5px;
 }
 

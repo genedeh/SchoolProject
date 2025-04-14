@@ -18,7 +18,7 @@ export const ResultTermModal = ({ showOverlay, setShowOverlay,  studentResult })
                 {/* Modal Background Blur Effect */}
                 <div className="modal-backdrop-blur"></div>
 
-                <Modal.Header className="bg-secondary text-white" closeButton>
+                <Modal.Header className="text-white" closeButton>
                     <Modal.Title>📜 Available Terms</Modal.Title>
                 </Modal.Header>
 
@@ -29,7 +29,7 @@ export const ResultTermModal = ({ showOverlay, setShowOverlay,  studentResult })
                                 const term = termArray[0]; // Get first term object
                                 if (!term.uploaded) return (
                                     <ListGroup.Item key={termName} className="border-0 text-center">
-                                        <Button variant="outline-secondary" className="w-100 fw-bold" onClick={() => {
+                                        <Button variant="outline-secondary" className="w-100 fw-bold custom-btn4" onClick={() => {
                                             setSelectedTerm(termArray)
                                             setShowResultModal(true)
                                         }}>
@@ -40,7 +40,7 @@ export const ResultTermModal = ({ showOverlay, setShowOverlay,  studentResult })
 
                                 return (
                                     <ListGroup.Item key={termName} className="border-0 text-center">
-                                        <Button variant="dark" className="w-100 fw-bold" onClick={() => {
+                                        <Button variant="dark" className="w-100 fw-bold custom-btn2" onClick={() => {
                                             setSelectedTerm(termArray)
                                             setShowResultModal(true)
                                         }}>

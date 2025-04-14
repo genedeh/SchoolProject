@@ -11,17 +11,20 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-.container {
-  border-radius: 1rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin-top: 1rem;
-  padding: 10px;
-}
+
+
+
 .container-input {
   margin-top: 1rem;
 }
-.container-welcome {
-  border-radius: 1rem;
-  box-shadow: 0 0 10px rgba(9, 2, 215, 0.815);
-  margin-top: 1rem;
+
+
+:root {
+  --color-primary: #002F86;
+  --color-secondary: #D71920;
+  --color-accent: #FFD600;
+  --color-bg: #FFFFFF;
+  --color-dark: #030f24;
+  --color-success: #2ECC71;
+  --color-grey: #BDC3C7;
 }

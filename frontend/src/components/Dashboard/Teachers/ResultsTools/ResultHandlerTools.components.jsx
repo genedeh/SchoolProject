@@ -8,6 +8,7 @@ export const ResultViewHandlerButton = ({ queryKeys, refetch, setSelectedStudent
         <Button
             size="sm"
             variant="outline-dark"
+            className="custom-btn2"
             onClick={() => {
                 setSelectedStudent({ ...queryKeys });
                 // Show loading spinner before fetching
@@ -31,7 +32,8 @@ export const ResultCreationHandlerButton = ({ studentName, classroomID = null, a
         <>
             < Button
                 size="sm"
-                variant="outline-success"
+                variant="success"
+                className="custom-btn3"
                 onClick={() => {
                     if (admin) {
                         const url = `/dashboard/create-student-result/?student_id=${studentId}&studentName=${studentName}`; // Admin can create result for any student
@@ -43,7 +45,6 @@ export const ResultCreationHandlerButton = ({ studentName, classroomID = null, a
                     const url = `/dashboard/create-student-result/?student_id=${studentId}&studentName=${studentName}&classroom_id=${classroomID}`;
                     window.open(url, "_blank"); // Open in new tab
                 }}
-                className="me-2"
             > <PlusCircleFill className="me-1" /> Add Result</Button >
         </>
     );
@@ -195,9 +196,8 @@ export const ResultUploadButton = ({ uploaded, handleInputChange }) => {
     return (
         <div className="text-center mt-4">
             <Button
-                variant={uploaded ? "success" : "primary"}
                 onClick={() => handleInputChange("uploaded", !uploaded)}
-                className="px-5 py-3 fw-bold shadow-lg rounded-pill d-flex align-items-center gap-2"
+                className={`px-5 py-3 fw-bold shadow-lg rounded-pill align-items-center gap-2 ${uploaded ? "custom-btn3" : "custom-btn4"}`}
                 size="lg"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
@@ -208,11 +208,11 @@ export const ResultUploadButton = ({ uploaded, handleInputChange }) => {
             >
                 {uploaded ? (
                     <>
-                        <FaCheckCircle className="text-white" /> Uploaded
+                        <FaCheckCircle className="text-white me-2" /> Uploaded
                     </>
                 ) : (
                     <>
-                        <FaUpload className="text-white" /> Upload Result
+                        <FaUpload className="text-white me-2" /> Upload Result
                     </>
                 )}
             </Button>

@@ -1,4 +1,4 @@
-import  useSubjects  from "../../../../../contexts/Subjects.contexts";
+import useSubjects from "../../../../../contexts/Subjects.contexts";
 import { useState } from "react";
 import axios from "axios";
 import { Modal, Button, Alert, Form } from 'react-bootstrap'
@@ -118,14 +118,18 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
                                 onChange={handleNameChange}
                                 placeholder="Enter subject name"
                                 required
+                                maxLength={1000}
+                                className="mb-2"
+                                autoFocus
                             />
                         </Form.Group>
                         <br />
                         <Form.Group controlId="subjectTeacher">
-                            <Form.Label>Assign Teacher</Form.Label>
+                            <Form.Label>Assigned Teacher</Form.Label>
                             <br />
                             <Button
                                 variant="outline-primary"
+                                className="mb-1 custom-btn"
                                 onClick={() => {
                                     setListShow(true)
                                 }}
@@ -137,7 +141,7 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
                             <br />
                             <Button
                                 variant="outline-primary"
-                                className="mb-1"
+                                className="mb-1 custom-btn"
                                 onClick={() => {
                                     setListShow2(true)
                                 }}
@@ -146,7 +150,7 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
                                 {selectedStudents.map(student => (
                                     <span key={student.id} className="m-2">
                                         {student.username.replace('_', ' ')}
-                                        <Button size="sm" className="m-1" variant="outline-danger"
+                                        <Button size="sm" className="ms-2" variant="outline-danger"
                                             onClick={() => {
                                                 setSelectedStudents(selectedStudents.filter(s => {
                                                     if (s !== student) {
@@ -160,8 +164,8 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
                         </Form.Group>
                         <br />
                     </Form>
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    {success && <Alert variant="success">{success}</Alert>}
+                    {error && <Alert variant="danger" className='custom-btn5'>{error}</Alert>}
+                    {success && <Alert variant="success" className='custom-btn3'>{success}</Alert>}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="primary" onClick={() => {

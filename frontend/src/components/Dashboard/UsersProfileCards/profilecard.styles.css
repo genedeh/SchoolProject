@@ -1,0 +1,76 @@
+.profile-card {
+    background: #fff;
+    border-radius: 12px;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.profile-img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border: 3px solid #f0f0f0;
+}
+
+
+
+.profile-action-btn {
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.profile-action-btn:hover {
+    background-color: #f0f0f0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-card {
+        padding: 15px;
+    }
+
+    .profile-img {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+
+.grid-input .form-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.grid-input .input-group-text {
+    background-color: #f1f1f1;
+    border-right: none;
+    font-size: 1.2rem;
+    color: #007bff;
+}
+
+.grid-input .form-control,
+.grid-input .form-select {
+    border-left: none;
+}
+
+.save-btn {
+    transition: all 0.3s ease;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.save-btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}

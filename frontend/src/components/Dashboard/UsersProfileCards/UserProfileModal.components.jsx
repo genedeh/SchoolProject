@@ -1,10 +1,58 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Button, Image, Badge, Card, Alert, Form } from "react-bootstrap";
-import { useUser } from "../../../contexts/User.contexts";
-import { FaPencilAlt } from "react-icons/fa";
+import { Modal, Button, Form, InputGroup, Row, Col, Image, Badge, Card } from 'react-bootstrap';
+import {
+    FaUser,
+    FaEnvelope,
+    FaLock,
+    FaMapMarkerAlt,
+    FaPhone,
+    FaBirthdayCake,
+    FaCity,
+    FaFlag,
+    FaPrayingHands,
+    FaTint,
+    FaVial,
+    FaAccessibleIcon,
+    FaSchool,
+    FaIdBadge,
+    FaVenusMars,
+    FaUserShield,
+    FaUserFriends,
+    FaPencilAlt,
+} from "react-icons/fa"; import { useUser } from "../../../contexts/User.contexts";
 import { useMutation, useQueryClient } from "react-query";
 import { CenteredSpinner } from '../../Loading/CenteredSpinner.components';
+import { ErrorAlert } from '../../Alerts/ErrorAlert.components';
+import { ErrorMessageHandling } from '../../../utils/ErrorHandler.utils'
+import { STATESWITHLGAs } from '../../../utils/predefinedInformation.utils'
+import NoProfilePicture from '../../../assets/NoProfilePicture.jpg'
 import axios from "axios";
+
+const iconMap = {
+    first_name: <FaUser />,
+    last_name: <FaUser />,
+    email: <FaEnvelope />,
+    password: <FaLock />,
+    address: <FaMapMarkerAlt />,
+    phone_number: <FaPhone />,
+    birth_date: <FaBirthdayCake />,
+    admission_number: <FaIdBadge />,
+    parent_guardian_name: <FaUserFriends />,
+    parent_guardian_phone: <FaPhone />,
+    parent_guardian_email: <FaEnvelope />,
+    home_town: <FaCity />,
+    state_of_origin: <FaMapMarkerAlt />,
+    local_government_area: <FaMapMarkerAlt />,
+    nationality: <FaFlag />,
+    religion: <FaPrayingHands />,
+    blood_group: <FaTint />,
+    genotype: <FaVial />,
+    disability_status: <FaAccessibleIcon />,
+    boarding_status: <FaSchool />,
+    nin: <FaIdBadge />,
+    gender: <FaVenusMars />,
+};
+
 
 
 export const ProfileModal = ({ user, show, handleClose, className, classroomName }) => {
@@ -16,10 +64,10 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [formData, setFormData] = useState({ ...user, });
-    const [error, setError] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedState, setSelectedState] = useState(formData.state_of_origin || '');
+    const [localGovernments, setLocalGovernments] = useState([]);
     const [displayProfilePicture, setDisplayProfilePicture] = useState(null);
-    console.log(user)
 
 
     if (!token) {
@@ -28,11 +76,55 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
 
     const toggleEditMode = () => {
         setIsEditMode(!isEditMode);
-        setError(null);
     };
 
+
+    const renderInputGroup = (label, name, type = "text", as = "input", options = []) => (
+        <Form.Group className="mb-3 grid-input">
+            <Form.Label>{label}</Form.Label>
+            <InputGroup>
+                <InputGroup.Text>{iconMap[name]}</InputGroup.Text>
+                {as === 'input' && type === "password" && (
+                    <Form.Control
+                        type={type}
+                        name={name}
+                        value={formData[name]}
+                        onChange={handleInputChange}
+                        disabled={!isEditMode}
+                    />
+                )}
+                {as === "input" && type !== "password" && (
+                    <Form.Control
+                        type={type}
+                        name={name}
+                        value={formData[name]}
+                        onChange={handleInputChange}
+                        disabled={!isEditMode}
+                        required
+                    />
+                )}
+                {as === "select" && (
+                    <Form.Select
+                        name={name}
+                        value={formData[name]}
+                        onChange={handleInputChange}
+                        disabled={!isEditMode}
+                        required
+                    >
+                        <option value="">Select {label}</option>
+                        {options.map((option) => (
+                            <option key={option} value={option}>
+                                {option}
+                            </option>
+                        ))}
+                    </Form.Select>
+                )}
+            </InputGroup>
+        </Form.Group>
+    );
+
     // Mutation for updating user
-    const { mutate: updateUser, isLoading: isUpdating } = useMutation(
+    const { mutate: updateUser, isLoading: isUpdating, error, isError } = useMutation(
         async (updatedData) => {
             const response = await axios.put(`/api/users/${user.id}/`, updatedData,
                 {
@@ -49,15 +141,12 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                 queryClient.invalidateQueries(["users"]); // Refresh user data
                 setIsEditMode(false);
                 handleClose(); // Close modal on success
-            },
-            onError: (err) => {
-                setError(err.response?.data?.message || "Failed to update user");
-            },
+            }
         }
     );
 
     // Mutation for deleting user
-    const { mutate: deleteUser, isLoading: isDeleting } = useMutation(
+    const { mutate: deleteUser, isLoading: isDeleting, isError: isErrorDeleting, error: deletingError } = useMutation(
         async () => {
             await axios.delete(`/api/users/${user.id}/`,
                 {
@@ -69,9 +158,6 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
             onSuccess: () => {
                 queryClient.invalidateQueries(["users"]); // Refresh user data
                 handleClose(); // Close modal on success
-            },
-            onError: (err) => {
-                setError(err.response?.data?.message || "Failed to delete user");
             },
         }
     );
@@ -96,7 +182,7 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
     };
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        if (name == "password" && value.length == 0) {
+        if (name === "password" && value.length === 0) {
             console.log("Gone")
             delete formData["password"]
         }
@@ -108,6 +194,11 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
     useEffect(() => {
         setFormData({ ...formData, 'username': `${formData.first_name}_${formData.last_name}` })
     }, [formData.first_name, formData.last_name])
+    useEffect(() => {
+        // Reset local government area when state changes
+        setLocalGovernments(STATESWITHLGAs[formData.state_of_origin] || []);
+    }
+        , [formData.state_of_origin]);
 
 
     const handleSave = (e) => {
@@ -120,11 +211,15 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
         delete formData["profile_picture_url"]
         delete formData["is_student_or_teacher"]
         delete formData["is_superuser"]
-        if (validatePhoneNumber(formData.phone_number)) {
-            updateUser(formData);
-        } else {
-            setError("Invalid Nigerian Phone Number")
-        }
+        updateUser(formData);
+
+    };
+
+    // Handle state change and update LGAs
+    const handleStateChange = (e) => {
+        const state = e.target.value;
+        setSelectedState(state);
+        handleInputChange(e);
     };
 
     const handleDelete = () => {
@@ -134,206 +229,242 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
     };
 
     return (
-        <Modal show={show} onHide={() => {
-            handleClose();
-            setIsEditMode();
-        }} centered size="lg" style={{ 'borderRadius': '1rem' }}>
-            <Modal.Header closeButton>
-                <Modal.Title>{isEditMode ? "Edit User" : "User Profile"}</Modal.Title>
+        <Modal
+            show={show}
+            onHide={() => {
+                handleClose();
+                setIsEditMode();
+            }}
+            centered
+            size="lg"
+            className="rounded-modal"
+        >
+            <Modal.Header closeButton className="bg-light border-0 rounded-top">
+                <Modal.Title className="fw-bold">{isEditMode ? "Edit User" : "User Profile"}</Modal.Title>
             </Modal.Header>
-            <Modal.Body className="text-center" style={{ backgroundColor: 'white' }}>
-                <div className="position-relative d-inline-block">
-                    <Image
-                        src={isEditMode ? (!displayProfilePicture ? profile_picture_url : displayProfilePicture) : (profile_picture_url)}
-                        roundedCircle
-                        style={{ width: '150px', height: '150px', objectFit: 'cover' }}
-                        className="mb-3" />
-                    {isEditMode && (
-                        <>
-                            <Button
-                                variant="light"
-                                className="position-absolute top-50 start-50 translate-middle"
-                                style={{
-                                    width: "40px",
-                                    height: "40px",
-                                    borderRadius: "50%",
-                                    padding: "0",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    backgroundColor: "#ffffff",
-                                    boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-                                }}
-                                onClick={() => document.getElementById('fileInput').click()}
+            <Modal.Body className="p-4 bg-white rounded-bottom">
+                <div className="text-center mb-4 position-relative">
+                    {isError && <ErrorAlert heading="User Update Error" message={ErrorMessageHandling(isError, error)} />}
+                    {isErrorDeleting && <ErrorAlert heading="User Deletion Error" message={ErrorMessageHandling(isErrorDeleting, deletingError)} />}
 
-                            >
-                                <FaPencilAlt color="#007bff" />
-                            </Button>
-                            <input
-                                type="file"
-                                id="fileInput"
-                                accept="image/*"
-                                onChange={handleFileChange}
-                                style={{ display: 'none' }}
-
-                            />
-                        </>
-                    )}
-                </div>
-                <h4>{username.replace('_', ' ')}</h4>
-                <h5 className="text-muted">{is_student_or_teacher ? (
-                    <Badge bg="primary">Student</Badge>
-                ) :
-                    (is_superuser ? <Badge bg="success">Admin</Badge>
-                        : <Badge bg="danger">Teacher</Badge>)}</h5>
-                <h4 className="text-muted fw-bold">Age • {current_date.getFullYear() - Number(birth_date.split('-')[0])}</h4>
-                <p className='fw-bold text-muted'>{is_student_or_teacher ? (`Class • ${className}`) : (`Assigned Class • ${classroomName}`)}</p>
-                <Card className="mb-4 border-1 border-primary">
-                    <Card.Body>
-                        <Card.Title>{is_student_or_teacher ? ("Offering Subjects") : ('Teaching Subjects')}</Card.Title>
-                        {subjects.length !== 0 ? (
-                            subjects.map(({ name, id }) => (
-                                <Badge pill bg="primary" key={id} className="me-2 mb-2" >
-                                    {name.replace(`'`, '').replace(`'`, '')}
-                                </Badge>
-                            ))) : (
-                            subject.map(({ name, id }) => (
-                                <Badge pill bg="primary" key={id} className="me-2 mb-2" >
-                                    {name.replace(`'`, '').replace(`'`, '')}
-                                </Badge>
-                            ))
+                    <div className="position-relative d-inline-block">
+                        <Image
+                            src={
+                                isEditMode
+                                    ? (!displayProfilePicture
+                                        ? profile_picture_url.includes('null') ? NoProfilePicture : profile_picture_url
+                                        : displayProfilePicture)
+                                    : (profile_picture_url.includes('null') ? NoProfilePicture : profile_picture_url)
+                            }
+                            roundedCircle
+                            className="shadow"
+                            style={{ width: '150px', height: '150px', objectFit: 'cover', border: '4px solid #0d6efd' }}
+                        />
+                        {isEditMode && (
+                            <>
+                                <Button
+                                    variant="light"
+                                    className="position-absolute top-50 start-50 translate-middle"
+                                    style={{
+                                        width: "42px",
+                                        height: "42px",
+                                        borderRadius: "50%",
+                                        padding: "0",
+                                        backgroundColor: "#fff",
+                                        boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
+                                    }}
+                                    onClick={() => document.getElementById('fileInput').click()}
+                                >
+                                    <FaPencilAlt color="#0d6efd" />
+                                </Button>
+                                <input
+                                    type="file"
+                                    id="fileInput"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                    style={{ display: 'none' }}
+                                />
+                            </>
                         )}
+                    </div>
+
+                    <h4 className="mt-3 fw-bold">{username.replace('_', ' ')}</h4>
+                    <h5 className="text-muted">
+                        {is_student_or_teacher ? (
+                            <Badge bg="primary">Student</Badge>
+                        ) : is_superuser ? (
+                            <Badge bg="success">Admin</Badge>
+                        ) : (
+                            <Badge bg="danger">Teacher</Badge>
+                        )}
+                    </h5>
+                    <div className="mt-2 text-muted fw-semibold">Age • {current_date.getFullYear() - Number(birth_date.split('-')[0])}</div>
+                    <div className="fw-semibold text-muted">
+                        {is_student_or_teacher ? `Class • ${className}` : `Assigned Class • ${classroomName}`}
+                    </div>
+                </div>
+
+                <Card className="mb-4 border-primary shadow-sm">
+                    <Card.Body>
+                        <Card.Title className="fw-bold mb-3">
+                            {is_student_or_teacher ? "Offering Subjects" : "Teaching Subjects"}
+                        </Card.Title>
+                        {(subjects.length !== 0 ? subjects : subject).map(({ name, id }) => (
+                            <Badge pill bg="primary" key={id} className="me-2 mb-2">
+                                {name.replace(/'/g, '')}
+                            </Badge>
+                        ))}
                     </Card.Body>
                 </Card>
-                <hr />
+
                 {isUpdating || isDeleting ? (
                     <CenteredSpinner caption="Loading" />
                 ) : (
                     <Form onSubmit={handleSave}>
-                        <Form.Group className="mb-3">
-                            <Form.Label>First Name</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="first_name"
-                                value={formData.first_name}
-                                onChange={handleInputChange}
-                                disabled={!isEditMode}
-                                required
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Last Name</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="last_name"
-                                value={formData.last_name}
-                                onChange={handleInputChange}
-                                disabled={!isEditMode}
-                                required
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleInputChange}
-                                disabled={!isEditMode}
-                                required
-                            />
-                        </Form.Group>
+                        <Row>
+                            <Col md={6}>
+                                {renderInputGroup("First Name", "first_name")}
+                                {renderInputGroup("Last Name", "last_name")}
+                                {renderInputGroup("Email", "email", "email")}
+                                {isEditMode && renderInputGroup("Password", "password", "password")}
+                                {renderInputGroup("Address", "address")}
+                                <Form.Group className="mb-3 grid-input">
+                                    <Form.Label>Phone Number</Form.Label>
+                                    <InputGroup>
+                                        <InputGroup.Text>{iconMap.phone_number}</InputGroup.Text>
+                                        <Form.Control
+                                            type="text"
+                                            name="phone_number"
+                                            value={formData.phone_number}
+                                            pattern="^(070|080|081|090|091)\d{8}$"
+                                            isInvalid={!validatePhoneNumber(formData.phone_number)}
+                                            onChange={handleInputChange}
+                                            disabled={!isEditMode}
+                                            required
+                                        />
+                                    </InputGroup>
+                                </Form.Group>
+                                {renderInputGroup("Date of Birth", "birth_date", "date")}
+                                {formData.is_student_or_teacher && (
+                                    <>
+                                        {renderInputGroup("Admission Number", "admission_number")}
+                                        {renderInputGroup("Parent Guardian Name", "parent_guardian_name")}
+                                        <Form.Group className="mb-3 grid-input">
+                                            <Form.Label>Parent Guardian Phone Number</Form.Label>
+                                            <InputGroup>
+                                                <InputGroup.Text>{iconMap.parent_guardian_phone}</InputGroup.Text>
+                                                <Form.Control
+                                                    type="text"
+                                                    name="parent_guardian_phone"
+                                                    value={formData.parent_guardian_phone}
+                                                    pattern="^(070|080|081|090|091)\d{8}$"
+                                                    isInvalid={!validatePhoneNumber(formData.parent_guardian_phone)}
+                                                    onChange={handleInputChange}
+                                                    disabled={!isEditMode}
+                                                    required
+                                                />
+                                            </InputGroup>
+                                        </Form.Group>
+                                        {renderInputGroup("Parent Guardian Email", "parent_guardian_email", "email")}
+                                    </>
+                                )}
+                            </Col>
+
+                            <Col md={6}>
+                                {renderInputGroup("Home Town", "home_town")}
+                                <Form.Group className="mb-3 grid-input">
+                                    <Form.Label>State Of Origin</Form.Label>
+                                    <InputGroup>
+                                        <InputGroup.Text>{iconMap.state_of_origin}</InputGroup.Text>
+                                        <Form.Select
+                                            name="state_of_origin"
+                                            value={selectedState}
+                                            onChange={handleStateChange}
+                                            disabled={!isEditMode}
+                                            required
+                                        >
+                                            <option value="">Select a State</option>
+                                            {Object.keys(STATESWITHLGAs).map((state) => (
+                                                <option key={state} value={state}>
+                                                    {state}
+                                                </option>
+                                            ))}
+                                        </Form.Select>
+                                    </InputGroup>
+                                </Form.Group>
+                                <Form.Group className="mb-3 grid-input">
+                                    <Form.Label>Local Government Area</Form.Label>
+                                    <InputGroup>
+                                        <InputGroup.Text>{iconMap.local_government_area}</InputGroup.Text>
+                                        <Form.Select
+                                            name="local_government_area"
+                                            value={formData.local_government_area}
+                                            onChange={handleInputChange}
+                                            required
+                                            disabled={!isEditMode || !selectedState}
+                                        >
+                                            <option value="">Select LGA</option>
+                                            {localGovernments.map((lga) => (
+                                                <option key={lga} value={lga}>
+                                                    {lga}
+                                                </option>
+                                            ))}
+                                        </Form.Select>
+                                    </InputGroup>
+                                </Form.Group>
+                                {renderInputGroup("Nationality", "nationality")}
+                                {renderInputGroup("Religion", "religion")}
+                                {renderInputGroup("Blood Group", "blood_group", "text", "select", [
+                                    "A+",
+                                    "A-",
+                                    "B+",
+                                    "B-",
+                                    "AB+",
+                                    "AB-",
+                                    "O+",
+                                    "O-",
+                                ])}
+                                {renderInputGroup("Genotype", "genotype", "text", "select", [
+                                    "AA",
+                                    "AS",
+                                    "SS",
+                                    "AC",
+                                    "SC",
+                                ])}
+                                {renderInputGroup("Disability Status", "disability_status")}
+                                {renderInputGroup("Boarding Status", "boarding_status", "text", "select", [
+                                    "Day",
+                                    "Boarding",
+                                ])}
+                                {renderInputGroup("NIN", "nin")}
+                                {renderInputGroup("Gender", "gender", "text", "select", ["male", "female"])}
+                            </Col>
+                        </Row>
                         {isEditMode && (
-                            <Form.Group className="mb-3">
-                                <Form.Label>Password</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    name="password"
-                                    placeholder="Enter new password"
-                                    onChange={handleInputChange}
-                                />
-                            </Form.Group>
-                        )}
-                        <Form.Group className="mb-3">
-                            <Form.Label>Address</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="address"
-                                value={formData.address}
-                                onChange={handleInputChange}
-                                disabled={!isEditMode}
-                                required
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Phone Number</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="phone_number"
-                                value={formData.phone_number}
-                                onChange={handleInputChange}
-                                disabled={!isEditMode}
-                                required
-                            />
-                            <hr />
-                            {error && <Alert variant="danger">{error}</Alert>}
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Date of Birth</Form.Label>
-                            <Form.Control
-                                type="date"
-                                name="birth_date"
-                                value={formData.birth_date}
-                                onChange={handleInputChange}
-                                disabled={!isEditMode}
-                                required
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3">
-                            <Form.Label>Gender</Form.Label>
-                            <Form.Select
-                                name="gender"
-                                value={formData.gender}
-                                onChange={handleInputChange}
-                                disabled={!isEditMode}
-                                required
-                            >
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                            </Form.Select>
-                        </Form.Group>
-                        <div className="d-grid gap-2 m-4">
-                            {isEditMode &&
-                                <Button variant="success" className="lg" type="submit" disabled={isUpdating}>
+                            <div className="text-center mt-4">
+                                <Button variant="success" size="lg" type="submit" className="save-btn w-100">
                                     Save Changes
-                                </Button>}
-                        </div>
+                                </Button>
+                            </div>
+                        )}
                     </Form>
                 )}
-
-                <hr />
             </Modal.Body>
-            <Modal.Footer>
-                {!currentUser.is_student_or_teacher ?
-                    (
-                        currentUser.user_class === className || currentUser.is_superuser ? (
-                            <>
-                                {!isEditMode &&
-                                    <Button onClick={toggleEditMode}>
-                                        Edit
-                                    </Button>
-                                }
-                                <Button variant="danger" onClick={handleDelete} disabled={isDeleting}>
-                                    Delete
-                                </Button>
-                            </>
-                        ) : ('')
-                    )
-                    : ('')}
-                <Button variant="secondary" onClick={() => {
-                    handleClose();
-                    setIsEditMode();
-                }}>
+
+            <Modal.Footer className="bg-light justify-content-between">
+                {(!currentUser.is_student_or_teacher && (currentUser.user_class === className || currentUser.is_superuser)) && (
+                    <>
+                        {!isEditMode && (
+                            <Button onClick={toggleEditMode} variant="outline-primary">
+                                Edit
+                            </Button>
+                        )}
+                        <Button variant="outline-danger" onClick={handleDelete} disabled={isDeleting}>
+                            Delete
+                        </Button>
+                    </>
+                )}
+                <Button variant="secondary" onClick={() => { handleClose(); setIsEditMode(); }}>
                     Close
                 </Button>
             </Modal.Footer>

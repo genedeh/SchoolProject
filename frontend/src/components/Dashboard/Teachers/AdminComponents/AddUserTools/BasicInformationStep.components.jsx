@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { Form, Button, Container } from "react-bootstrap";
+import { Container, Form, Button, InputGroup } from "react-bootstrap";
+import { FaUser, FaEnvelope } from "react-icons/fa";
+
 import './AddUser.styles.css';
 import axios from "axios";
 export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormData }) => {
@@ -74,35 +76,70 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
         }
     }
     return (
-        <Container fluid={true}>
-            <Form onSubmit={handleSubmit} className="box mt-4">
-                <div className="header">
-                    <h1 className="title">Fill In Needed Information</h1>
-                </div>
-                <Form.Group controlId="formFirstname">
-                    <Form.Control type="text" required placeholder="Enter firstname" value={firstName} onChange={(e) => setFirstname(e.target.value)} isInvalid={!!error.username} />
+        // <Container fluid className="form-container">
+        <Form onSubmit={handleSubmit} className="mt-4">
+            <hr />
+            <h2 className="form-title">Fill In Needed Information</h2>
+            <hr />
+
+                {/* First Name Field */}
+                <Form.Group controlId="formFirstname" className="mb-3">
+                    <InputGroup>
+                        <InputGroup.Text><FaUser /></InputGroup.Text>
+                        <Form.Control
+                            type="text"
+                            required
+                            placeholder="Enter First Name"
+                            value={firstName}
+                            onChange={(e) => setFirstname(e.target.value)}
+                            isInvalid={!!error.username}
+                        />
+                    </InputGroup>
                     <Form.Control.Feedback type="invalid">{error.username}</Form.Control.Feedback>
                 </Form.Group>
-                <br />
-                <Form.Group controlId="formLastname">
-                    <Form.Control type="text" required placeholder="Enter lastname" value={lastName} onChange={(e) => setLastname(e.target.value)} isInvalid={!!error.username} />
+
+                {/* Last Name Field */}
+                <Form.Group controlId="formLastname" className="mb-3">
+                    <InputGroup>
+                        <InputGroup.Text><FaUser /></InputGroup.Text>
+                        <Form.Control
+                            type="text"
+                            required
+                            placeholder="Enter Last Name"
+                            value={lastName}
+                            onChange={(e) => setLastname(e.target.value)}
+                            isInvalid={!!error.username}
+                        />
+                    </InputGroup>
                     <Form.Control.Feedback type="invalid">{error.username}</Form.Control.Feedback>
                 </Form.Group>
-                <br />
-                <Form.Group controlId="formEmail">
-                    <Form.Control type="email" required placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} isInvalid={!!error.email} />
+
+                {/* Email Field */}
+                <Form.Group controlId="formEmail" className="mb-3">
+                    <InputGroup>
+                        <InputGroup.Text><FaEnvelope /></InputGroup.Text>
+                        <Form.Control
+                            type="email"
+                            required
+                            placeholder="Enter Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            isInvalid={!!error.email}
+                        />
+                    </InputGroup>
                     <Form.Control.Feedback type="invalid">{error.email}</Form.Control.Feedback>
                 </Form.Group>
-                <br />
-                <div className="d-flex justify-content-between footer">
-                    <Button variant="secondary" onClick={prevStep}>
+
+                {/* Navigation Buttons */}
+                <div className="d-flex justify-content-between footer mt-5">
+                    <Button variant="secondary" onClick={prevStep} className="custom-btn2">
                         Back
                     </Button>
-                    <Button variant="primary" type="submit"   >
+                    <Button type="submit" className="custom-btn">
                         Next
                     </Button>
                 </div>
             </Form>
-        </Container>
+        // </Container>
     )
 }

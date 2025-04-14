@@ -102,6 +102,9 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 required
+                                maxLength={1000}
+                                className="mb-2"
+                                autoFocus
                             />
                         </Form.Group>
                         <br />
@@ -110,7 +113,7 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                             <br />
                             <Button onClick={() => {
                                 setListShow(true)
-                            }} variant="outline-primary">{assignedTeacher ? (assignedTeacher.username) : ('None')}</Button>
+                            }} variant="outline-primary" className='custom-btn'>{assignedTeacher ? (assignedTeacher.username) : ('None')}</Button>
                         </Form.Group>
                         <br />
                         <Form.Group controlId="formStudents">
@@ -118,6 +121,7 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                             <br />
                             <Button
                                 variant="outline-primary"
+                                className='custom-btn'
                                 onClick={() => {
                                     setListShow2(true)
                                 }}
@@ -128,7 +132,7 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                                 {students.map(student => (
                                     <span key={student.id} className="m-2">
                                         {student.username.replace('_', ' ')}
-                                        <Button size="sm" className="m-1" variant="outline-danger"
+                                        <Button size="sm" className="pe-1 ps-1 ms-2 custom-btn5" variant="outline-danger"
                                             onClick={() => {
                                                 setStudents(students.filter(s => {
                                                     if (s !== student) {
@@ -143,11 +147,11 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
 
                     </Form>
                     <hr />
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    {success && <Alert variant="success">{success}</Alert>}
+                    {error && <Alert variant="danger" className='custom-btn5'>{error}</Alert>}
+                    {success && <Alert variant="success" className='custom-btn3'>{success}</Alert>}
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="primary" onClick={(e) => {
+                    <Button variant="primary" className='custom-btn' onClick={(e) => {
                         setLoading(true);
                         handleUpdate(e);
                     }} disabled={loading} type='submit'>

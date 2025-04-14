@@ -27,7 +27,7 @@ export const LoadingOverlay = ({ loading, message = "Please wait...", timeout = 
                     <div className="hexagon hex5"><i className="bi bi-check2"></i></div>
                     <div className="hexagon hex6"><i className="bi bi-check2"></i></div>
                 </div>
-                <h5 style={{"color": "black"}}>{message}</h5>
+                <h5 >{message}</h5>
                 <div className="progress-bar">
                     <div className="progress-bar-inner"></div>
                 </div>
