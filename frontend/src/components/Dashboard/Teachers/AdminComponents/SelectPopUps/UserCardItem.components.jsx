@@ -1,5 +1,6 @@
 import { ListGroup } from "react-bootstrap";
 import { BsPersonCircle, BsGenderAmbiguous } from 'react-icons/bs';
+import NoProfilePicture from '../../../../../assets/NoProfilePicture.jpg'
 import './selectpopups.styles.css';
 
 export const UserCardItemComponent = ({ user, clickHandler, selectedDisplay, children }) => (
@@ -14,7 +15,7 @@ export const UserCardItemComponent = ({ user, clickHandler, selectedDisplay, chi
             {children}
             <div className="avatar">
                 <img
-                    src={user.profile_picture_url || 'https://via.placeholder.com/40'}
+                    src={user.profile_picture || NoProfilePicture}
                     className="rounded-circle"
                     alt={user.username}
                 />

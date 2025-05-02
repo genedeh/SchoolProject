@@ -1,5 +1,6 @@
 import { Stack, Form, Image, Button, InputGroup } from 'react-bootstrap'
 import { useUser } from '../../contexts/User.contexts';
+import NoProfilePicture from '../../assets/NoProfilePicture.jpg'
 import { useState } from 'react';
 import { Search } from 'react-bootstrap-icons';
 import logo from '../../assets/logo512.png'
@@ -49,9 +50,9 @@ const TopLevel = ({ searchHandler, term }) => {
 
                 <Image
                     src={
-                        profile_picture
+                        !profile_picture.endsWith('null')
                             ? profile_picture
-                            : 'http://127.0.0.1:8000/media/default_profile_images/default_image.jpeg'
+                            : NoProfilePicture
                     }
                     roundedCircle
                     width="50"

@@ -12,6 +12,7 @@ import logo from "../../../../assets/logo512.png";
 
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import NoProfilePicture from "../../../../assets/NoProfilePicture.jpg";
 
 // Grade calculator
 const calculateGrade = (total) => {
@@ -225,7 +226,6 @@ export const ResultModal = ({ show, handleClose, result }) => {
         }
     }, [isSuccess]);
     if (!result) return null;
-
     const { assigned_student, session, term, created_at, updated_at, scores, general_remarks, comments, classroom } = result[0];
 
 
@@ -315,7 +315,10 @@ export const ResultModal = ({ show, handleClose, result }) => {
                     <Card className="mb-4 border-0 rounded-4 shadow-sm bg-white">
                         <Card.Body className="d-flex flex-column flex-md-row align-items-center gap-3">
                             <Image
-                                src={assigned_student["profile_picture"]}
+                                src={
+                                !assigned_student["profile_picture"].endsWith('null')
+                            ? assigned_student["profile_picture"]
+                            : NoProfilePicture}
                                 roundedCircle
                                 width={150}
                                 height={150}
