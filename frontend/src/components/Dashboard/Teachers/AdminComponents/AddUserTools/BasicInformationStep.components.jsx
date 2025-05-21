@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Container, Form, Button, InputGroup } from "react-bootstrap";
+import { Form, Button, InputGroup } from "react-bootstrap";
 import { FaUser, FaEnvelope } from "react-icons/fa";
 
 import './AddUser.styles.css';
@@ -18,12 +18,12 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
             if (!regex.test(email)) {
                 setError((prevData) => ({
                     ...prevData,
-                    ['email']: 'Invalid Email',
+                    'email': 'Invalid Email',
                 }))
             } else {
                 setError((prevData) => ({
                     ...prevData,
-                    ['email']: null,
+                    'email': null,
                 }))
             }
         }
@@ -42,12 +42,12 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
                     if (response.data.results.length > 0 && response.data.results[0]['is_student_or_teacher'] === formData['is_student_or_teacher']) {
                         setError((prevData) => ({
                             ...prevData,
-                            ['username']: 'Username already exists.',
+                            'username': 'Username already exists.',
                         }))
                     } else {
                         setError((prevData) => ({
                             ...prevData,
-                            ['username']: null,
+                            'username': null,
                         }))
                     }
                 })
@@ -59,7 +59,7 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
         if (firstName !== '' && lastName !== '' && email !== '') {
             setError((prevData) => ({
                 ...prevData,
-                ['required']: null,
+                'required': null,
             }))
             if (error.email === null && error.username === null) {
                 nextStep()
@@ -71,7 +71,7 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
         } else {
             setError((prevData) => ({
                 ...prevData,
-                ['required']: 'All fields are required',
+                'required': 'All fields are required',
             }))
         }
     }

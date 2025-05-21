@@ -70,7 +70,7 @@ const useUsers = () => {
         setTerm,
         handleSearch,
         refetchNewData,
-    }), [data, currentPage, isLoading, isFetching, isError]);
+    }), [data, currentPage, isLoading, isFetching, isError, error, goToNextPage, goToPrevPage, setTerm, handleSearch, refetchNewData]);
 };
 
 export default useUsers;

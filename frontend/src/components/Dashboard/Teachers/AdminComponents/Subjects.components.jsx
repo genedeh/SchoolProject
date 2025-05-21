@@ -105,6 +105,7 @@ export const Subjects = () => {
                                                         <div className="me-3">
                                                             <img
                                                                 src={profile_picture_url == null ? ("https://via.placeholder.com/40") : (profile_picture_url)}
+                                                                alt={username}
                                                                 className="rounded-circle"
                                                                 style={{ objectFit: 'cover', width: '40px', height: '40px' }}
                                                             />

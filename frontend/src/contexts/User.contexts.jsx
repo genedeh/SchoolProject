@@ -48,7 +48,7 @@ export const UserProvider = ({ children }) => {
         error,
         setError,
         fetching,
-    }), [currentUser, error]);
+    }), [currentUser, error, fetching]);
 
     return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };

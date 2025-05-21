@@ -330,7 +330,7 @@ export const Schedule = () => {
 
     useEffect(() => {
         localStorage.setItem(`${id}_scheduleTasks1`, JSON.stringify(tasks));
-    }, [tasks]);
+    }, [tasks, id]);
 
     useEffect(() => {
         if ("Notification" in window) {

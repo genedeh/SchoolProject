@@ -33,7 +33,7 @@ export const StudentsSelectPopUp = ({ show, handleClose, selectedStudents, setSe
     const { data,
         isLoading,
         isError,
-        error, isFetching } = useQuery(['classroom-students', currentPage, show, searchTerm], () => fetchData(currentPage, searchTerm),
+        error } = useQuery(['classroom-students', currentPage, show, searchTerm], () => fetchData(currentPage, searchTerm),
             {
                 refetchOnWindowFocus: false, // Refetch when window is focused
                 retry: 3,                   // Retry fetching up to 3 times
@@ -46,7 +46,7 @@ export const StudentsSelectPopUp = ({ show, handleClose, selectedStudents, setSe
             setSelectedOptions(StudentIds)
         }
 
-    }, [show]);
+    }, [show, selectedStudents]);
 
     return (
         <Modal show={show} size="lg" fullscreen scrollable onHide={handleClose}>

@@ -1,4 +1,4 @@
-import { Modal, Button } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import { ExclamationCircleFill } from 'react-bootstrap-icons';
 import './Alert.styles.css';
 import { useState } from 'react';

@@ -75,6 +75,7 @@ export const AssignedSubjects = () => {
                                                         <div className="me-3">
                                                             <img
                                                                 src={profile_picture_url == null ? ("https://via.placeholder.com/40") : (profile_picture_url)}
+                                                                alt="Profile"
                                                                 className="rounded-circle"
                                                                 style={{ width: '40px', height: '40px' }}
                                                             />

@@ -34,7 +34,7 @@ export const ResultSessionModal = ({ show, handleClose, result, student, isLoadi
         }
     }, [show]);
 
-    const { data: studentResultData, isFetching: isFetchingResult, isError, error, refetch } = useQuery(
+    const { isFetching: isFetchingResult, isError, error, refetch } = useQuery(
         ["selected-student-result", selectedSession, student?.id],
         fetchStudentResults,
         {

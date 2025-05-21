@@ -30,7 +30,7 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
                 setStudents(classroom.students);
             }
         }
-    }, [show]);
+    }, [show, classroom]);
 
     const updateClassroomCloseHandler = () => {
         setLoading(false)

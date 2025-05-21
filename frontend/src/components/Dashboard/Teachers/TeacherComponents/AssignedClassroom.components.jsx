@@ -1,5 +1,5 @@
 import { useUser } from "../../../../contexts/User.contexts";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useQuery } from "react-query";
 import { Navigate } from "react-router-dom";
 import { Button, Card, ListGroup, Spinner } from "react-bootstrap";

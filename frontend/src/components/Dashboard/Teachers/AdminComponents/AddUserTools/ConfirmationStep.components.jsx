@@ -118,7 +118,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
             };
             reader.readAsDataURL(profile_picture);
         }
-    }, [])
+    }, [classes, fetchClassSubjects, fetchClassroom, is_student_or_teacher, profile_picture, subjects, token, is_superuser]);
 
 
     return (

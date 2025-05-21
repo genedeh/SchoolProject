@@ -49,7 +49,7 @@ const MigrateStudents = () => {
                         <h5 className="mt-4">Migration Results</h5>
 
                         {/* Success Message */}
-                        {migrateStudents.data?.failed_students == 0 &&
+                        {migrateStudents.data?.failed_students === 0 &&
                             <SuccessAlert heading="Students migration Success" message={`Successfully migrated ${migrateStudents.data.migrated} students for session ${migrateStudents.data.session}.`} />
                         }
                         {migrateStudents.data?.failed_students.length > 0 &&

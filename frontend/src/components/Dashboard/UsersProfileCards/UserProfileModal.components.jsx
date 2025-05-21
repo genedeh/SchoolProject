@@ -16,7 +16,6 @@ import {
     FaSchool,
     FaIdBadge,
     FaVenusMars,
-    FaUserShield,
     FaUserFriends,
     FaPencilAlt,
 } from "react-icons/fa"; import { useUser } from "../../../contexts/User.contexts";
@@ -193,7 +192,7 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
 
     useEffect(() => {
         setFormData({ ...formData, 'username': `${formData.first_name}_${formData.last_name}` })
-    }, [formData.first_name, formData.last_name])
+    }, [formData])
     useEffect(() => {
         // Reset local government area when state changes
         setLocalGovernments(STATESWITHLGAs[formData.state_of_origin] || []);

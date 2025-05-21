@@ -72,7 +72,7 @@ const useSubjects = () => {
         handleSearch,
         setCurrentPage,
         refetchNewData,
-    }), [data, currentPage, isLoading, isFetching, isError]);
+    }), [data, currentPage, isLoading, isFetching, isError, error, goToNextPage, goToPrevPage, setTerm, handleSearch, refetchNewData]);
 };
 
 export default useSubjects;

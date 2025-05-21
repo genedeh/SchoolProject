@@ -47,7 +47,7 @@ export const ClassroomStudentsSelectPopUp = ({ show, handleClose, selectedStuden
             setSelectedOptions(StudentIds)
         }
 
-    }, [show]);
+    }, [show, selectedStudents]);
 
     return (
         <Modal show={show} size="lg" fullscreen scrollable onHide={handleClose}>

@@ -34,7 +34,7 @@ export const ProfilePictureStep = ({ formData, updateFormData, nextStep, prevSte
             };
             reader.readAsDataURL(formData.profile_picture);
         }
-    }, [])
+    }, [formData.profile_picture]);
 
     // Handle delete picture
     const handleDeletePicture = () => {

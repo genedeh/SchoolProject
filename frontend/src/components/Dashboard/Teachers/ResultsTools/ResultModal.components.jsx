@@ -4,7 +4,7 @@ import { useMutation } from "react-query";
 import { CenteredSpinner } from "../../../Loading/CenteredSpinner.components"
 import { ErrorAlert } from "../../../Alerts/ErrorAlert.components"
 import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils"
-import { Modal, Table, Card, Image, Alert, Row, Col, Button, Spinner } from "react-bootstrap";
+import { Modal, Table, Card, Image, Alert, Row, Col, Button } from "react-bootstrap";
 import { FaUser, FaCalendarAlt, FaBook, FaComments, FaStar, FaChartPie, FaFileDownload, FaUserGraduate, FaPencilAlt, FaTrashAlt } from "react-icons/fa";
 import { PieChart, Pie, Tooltip, BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import axios from "axios";
@@ -224,7 +224,7 @@ export const ResultModal = ({ show, handleClose, result }) => {
             alert("Result Deleted Successfully");
             handleClose();
         }
-    }, [isSuccess]);
+    }, [isSuccess, handleClose]);
     if (!result) return null;
     const { assigned_student, session, term, created_at, updated_at, scores, general_remarks, comments, classroom } = result[0];
 

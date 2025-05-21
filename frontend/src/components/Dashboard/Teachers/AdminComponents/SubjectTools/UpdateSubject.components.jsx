@@ -30,7 +30,7 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                 setStudents(subject.students_offering);
             }
         }
-    }, [show]);
+    }, [show, subject]);
 
     const updateSubjectCloseHandler = () => {
         setLoading(false)
