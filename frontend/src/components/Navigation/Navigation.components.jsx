@@ -35,11 +35,11 @@ const MainContent = ({ searchTerm, users, totalUsers, currentPage, prevPage, nex
                 ) : null}
 
                 <div className="d-flex justify-content-between align-items-center my-4">
-                    <Button onClick={goToPrevPage} disabled={!prevPage || loading}>
+                    <Button onClick={goToPrevPage} disabled={!prevPage || loading} className="custom-btn">
                         Previous
                     </Button>
                     <span>Page {currentPage}</span>
-                    <Button onClick={goToNextPage} disabled={!nextPage || loading}>
+                    <Button onClick={goToNextPage} disabled={!nextPage || loading} className="custom-btn">
                         Next
                     </Button>
                 </div>

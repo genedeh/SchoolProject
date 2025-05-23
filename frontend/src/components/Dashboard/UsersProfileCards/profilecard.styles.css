@@ -23,17 +23,6 @@
     border: 3px solid #f0f0f0;
 }
 
-
-
-.profile-action-btn {
-    border-radius: 8px;
-    transition: 0.3s;
-}
-
-.profile-action-btn:hover {
-    background-color: #f0f0f0;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
     .profile-card {

@@ -60,7 +60,7 @@ const SearchedProfileCard = ({ user }) => {
                             <Badge bg={badgeColor}>{badgeLabel}</Badge>
                         </div>
                     </div>
-                    <Button variant="outline-dark" className="profile-action-btn" onClick={handleShow}>
+                    <Button variant="outline-dark" onClick={handleShow}>
                         <BsThreeDots />
                     </Button>
                 </div>
