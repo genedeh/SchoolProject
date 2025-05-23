@@ -35,17 +35,15 @@ export const generateResultPDF = async (result, overallPercentage) => {
     const classroom = result.classroom;
     const comments = result.comments;
 
-    // Load local image
-    // const logoBase64 = await getImageBase64("../../"); // Replace with actual path
 
     // 1. Header: School Info
     if (logo) {
         pdf.addImage(logo, "PNG", 14, 10, 20, 23);
     }
     pdf.setFontSize(16);
-    pdf.text("Ogunboyejo Adeola Memorail Schools", 38, 18);
+    pdf.text("Ogunboyejo Adeola Memorial Schools", 38, 18);
     pdf.setFontSize(10);
-    const contactText = "4,6 & 8 Akpofure Street, Off Araromi Road, Adamo, Ikorodu, Lagos.\nTel: 0802 501 9519, 0806 215 6593\nE-mail: ogunboyejoadeolaschools@gmail.com";
+    const contactText = "4,6 & 8 Akpofure Street, Off Araromi Road, Adamo, Ikorodu, Lagos.\nTel: 0802 501 9519, 0806 215 6593\nE-mail: ogunboyejoadeolaschools25@gmail.com";
 
     const lines = contactText.split("\n");
     let startY = 24;
@@ -462,12 +460,14 @@ export const ResultModal = ({ show, handleClose, result }) => {
                                         <Alert
                                             style={{
                                                 color: "var(--color-dark)",
+                                                textTransform: "capitalize",
+                                                textWrap: "wrap",
                                             }}
                                             variant="warning border border-3 border-dark"
                                             className="d-flex align-items-center justify-content-between"
                                         >
                                             <div>
-                                                <strong>{remark.toUpperCase()}:</strong>
+                                                <strong>{remark.replace("_", " ")}:</strong>
                                             </div>
                                             <div>{renderStars(rating)}</div>
                                         </Alert>
@@ -489,10 +489,12 @@ export const ResultModal = ({ show, handleClose, result }) => {
                                     <Col key={comment_type}>
                                         <Alert style={{
                                             color: "var(--color-dark)",
+                                            textTransform: "capitalize",
+                                            textWrap: "wrap",
                                         }}
                                             variant="primary border border-3 border-dark"
                                             className="d-flex ">
-                                            <strong>{comment_type.toUpperCase()}:</strong> {comment}
+                                            <strong >{comment_type.replace('_', ' ')} : </strong> <span>{comment}</span>
                                         </Alert>
                                     </Col>
                                 ))}
