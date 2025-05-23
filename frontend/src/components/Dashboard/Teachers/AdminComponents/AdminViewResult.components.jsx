@@ -99,7 +99,6 @@ export const AdminViewResult = () => {
             {studentsError && <ErrorAlert heading="Error While Fetching Students" message={ErrorMessageHandling(studentsError, studentsError)} />}
 
             {/* Student List */}
-            {/* Student List */}
             {!studentsLoading && !studentsError && students?.results?.length > 0 ? (
                 students.results.map((student) => (
                     <UserCardItemComponent

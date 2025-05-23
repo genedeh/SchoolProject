@@ -11,8 +11,6 @@ const SearchedProfileCard = ({ user }) => {
 
     const className = useMemo(() => (classes?.length ? classes[0].name : 'None'), [classes]);
     const classroomName = useMemo(() => (classrooms?.name ? classrooms.name : 'None'), [classrooms]);
-    // const profilePictureUrl = useMemo(() => (profile_picture_url?.includes('null') ? NoProfilePicture : profile_picture_url), [profile_picture_url]);
-    const isStudentOrTeacher = useMemo(() => (is_student_or_teacher ? 'Student' : 'Teacher'), [is_student_or_teacher]);
     const displayName = useMemo(() => (username?.includes('_') ? username?.replace('_', ' ') : username), [username]);
 
     const optimizedImageUrl = useMemo(() => {
