@@ -58,7 +58,7 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
     const token = localStorage.getItem("token")
     const queryClient = useQueryClient()
     const { currentUser } = useUser();
-    const { username, is_student_or_teacher, profile_picture_url, subjects, subject, birth_date, is_superuser } = user;
+    const { username, is_student_or_teacher, profile_picture_url, subjects, subject, birth_date, is_superuser } = user
     const current_date = new Date();
 
     const [isEditMode, setIsEditMode] = useState(false);
@@ -96,6 +96,7 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                     <Form.Control
                         type={type}
                         name={name}
+                        placeholder={label ? `Enter ${label === "Disability Status" ? `Enter ${label} (None if not recorded)` : label}` : ""}
                         value={formData[name]}
                         onChange={handleInputChange}
                         disabled={!isEditMode}
@@ -234,8 +235,8 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                 handleClose();
                 setIsEditMode();
             }}
-            centered
-            size="lg"
+
+            fullscreen
             className="rounded-modal"
         >
             <Modal.Header closeButton className="bg-light border-0 rounded-top">
@@ -255,6 +256,11 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                                         : displayProfilePicture)
                                     : (profile_picture_url.includes('null') ? NoProfilePicture : profile_picture_url)
                             }
+                            loading="lazy"
+                            onError={(e) => {
+                                e.target.onerror = null; // Prevent infinite loop
+                                e.target.src = NoProfilePicture; // Fallback image
+                            }}
                             roundedCircle
                             className="shadow"
                             style={{ width: '150px', height: '150px', objectFit: 'cover', border: '4px solid #0d6efd' }}
@@ -309,8 +315,8 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                             {is_student_or_teacher ? "Offering Subjects" : "Teaching Subjects"}
                         </Card.Title>
                         {(subjects.length !== 0 ? subjects : subject).map(({ name, id }) => (
-                            <Badge pill bg="primary" key={id} className="me-2 mb-2">
-                                {name.replace(/'/g, '')}
+                            <Badge pill bg="primary" key={id} className="me-2 mb-2 ">
+                                {name.replace('_', ' ')}
                             </Badge>
                         ))}
                     </Card.Body>
@@ -336,6 +342,7 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                                             name="phone_number"
                                             value={formData.phone_number}
                                             pattern="^(070|080|081|090|091)\d{8}$"
+                                            placeholder='Enter Phone Number'
                                             isInvalid={!validatePhoneNumber(formData.phone_number)}
                                             onChange={handleInputChange}
                                             disabled={!isEditMode}
@@ -347,6 +354,10 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                                 {formData.is_student_or_teacher && (
                                     <>
                                         {renderInputGroup("Admission Number", "admission_number")}
+                                        {renderInputGroup("Boarding Status", "boarding_status", "text", "select", [
+                                            "Day",
+                                            "Boarding",
+                                        ])}
                                         {renderInputGroup("Parent Guardian Name", "parent_guardian_name")}
                                         <Form.Group className="mb-3 grid-input">
                                             <Form.Label>Parent Guardian Phone Number</Form.Label>
@@ -357,7 +368,8 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                                                     name="parent_guardian_phone"
                                                     value={formData.parent_guardian_phone}
                                                     pattern="^(070|080|081|090|091)\d{8}$"
-                                                    isInvalid={!validatePhoneNumber(formData.parent_guardian_phone)}
+                                                    placeholder='Enter Parent Guardian Phone Number'
+                                                    isInvalid={!validatePhoneNumber(formData.parent_guardian_phone) || !formData.parent_guardian_phone.length === 0}
                                                     onChange={handleInputChange}
                                                     disabled={!isEditMode}
                                                     required
@@ -431,11 +443,23 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                                     "SC",
                                 ])}
                                 {renderInputGroup("Disability Status", "disability_status")}
-                                {renderInputGroup("Boarding Status", "boarding_status", "text", "select", [
-                                    "Day",
-                                    "Boarding",
-                                ])}
-                                {renderInputGroup("NIN", "nin")}
+                                <Form.Group className="mb-3 grid-input">
+                                    <Form.Label>NIN</Form.Label>
+                                    <InputGroup>
+                                        <InputGroup.Text>{iconMap.nin}</InputGroup.Text>
+                                        <Form.Control
+                                            type="text"
+                                            name="nin"
+                                            value={formData.nin}
+                                            placeholder='Enter NIN'
+                                            isInvalid={!formData.nin || !formData.nin?.length > 11}
+                                            hint="NIN should be 11 digits"
+                                            onChange={handleInputChange}
+                                            disabled={!isEditMode}
+                                            required
+                                        />
+                                    </InputGroup>
+                                </Form.Group>
                                 {renderInputGroup("Gender", "gender", "text", "select", ["male", "female"])}
                             </Col>
                         </Row>
