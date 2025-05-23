@@ -26,6 +26,7 @@ const TopLevel = ({ searchHandler, term }) => {
                         src={logo} // Replace with the actual path to your logo
                         alt="Logo"
                         className="logo-image"
+                        loading="lazy"
                         width="50"
                         height="45"
                         style={{
@@ -56,10 +57,15 @@ const TopLevel = ({ searchHandler, term }) => {
                     }
                     roundedCircle
                     width="50"
+                    loading="lazy"
                     height="45"
                     className="me-2"
                     style={{ objectFit: 'cover', border: '2px solid var(--color-primary)' }}
                     alt="Profile Picture"
+                    onError={(e) => {
+                        e.target.onerror = null; // Prevent infinite loop
+                        e.target.src = NoProfilePicture; // Fallback image
+                    }}
                 />
 
                 <div>
