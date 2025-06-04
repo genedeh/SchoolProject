@@ -117,7 +117,7 @@ const LoginForm = () => {
                                 fluid
                                 className="login-image"
                             />
-                            <h2>Welcome to <br /><span>Student Portal</span></h2>
+                            <h2>Welcome to <br /><span>School Portal</span></h2>
                             <p>Login to access your account</p>
                         </div>
                     </Col>
