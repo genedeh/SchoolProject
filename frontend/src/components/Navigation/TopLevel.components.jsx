@@ -50,23 +50,21 @@ const TopLevel = ({ searchHandler, term }) => {
                 </InputGroup>
 
                 <Image
-                    src={
-                        !profile_picture.endsWith('null')
-                            ? profile_picture
-                            : NoProfilePicture
-                    }
-                    roundedCircle
-                    width="50"
+                    src={!profile_picture.endsWith('null') ? profile_picture : NoProfilePicture}
                     loading="lazy"
-                    height="45"
-                    className="me-2"
-                    style={{ objectFit: 'cover', border: '2px solid var(--color-primary)' }}
+                    className="me-2 responsive-profile-img"
                     alt="Profile Picture"
                     onError={(e) => {
-                        e.target.onerror = null; // Prevent infinite loop
-                        e.target.src = NoProfilePicture; // Fallback image
+                        e.target.onerror = null;
+                        e.target.src = NoProfilePicture;
+                    }}
+                    style={{
+                        objectFit: 'cover',
+                        border: '2px solid var(--color-primary)',
+                        borderRadius: '50%',
                     }}
                 />
+
 
                 <div>
                     <Button onClick={logoutHandler} size="sm" variant="outline-primary" className="custom-btn">
