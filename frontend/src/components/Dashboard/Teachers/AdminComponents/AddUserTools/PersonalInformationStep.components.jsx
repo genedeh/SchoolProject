@@ -106,6 +106,8 @@ export const PersonalInfromationStep = ({ formData, updateFormData, nextStep, pr
                             type="text"
                             name="nin"
                             placeholder="Enter your NIN"
+                            isInvalid={!!formData.nin && (!/^\d{11}$/.test(formData.nin))
+                            }
                             value={formData.nin}
                             onChange={handleInputChange}
                             required
