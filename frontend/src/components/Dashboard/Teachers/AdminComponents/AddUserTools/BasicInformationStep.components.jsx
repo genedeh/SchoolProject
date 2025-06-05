@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Form, Button, InputGroup } from "react-bootstrap";
+import { Form, Button, InputGroup, Spinner } from "react-bootstrap";
 import { FaUser, FaEnvelope } from "react-icons/fa";
 
 import './AddUser.styles.css';
@@ -7,12 +7,14 @@ import axios from "axios";
 export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormData }) => {
     const [firstName, setFirstname] = useState(formData.first_name);
     const [lastName, setLastname] = useState(formData.last_name);
+    const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState(formData.email);
     const [error, setError] = useState({
         'username': '',
         'email': '',
     });
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const token = localStorage.getItem("token");
     useEffect(() => {
         if (email !== '') {
             if (!regex.test(email)) {
@@ -27,18 +29,24 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
                 }))
             }
         }
-        const token = localStorage.getItem("token");
 
         if (!token) {
             throw new Error("Authentication token is missing!");
         }
+
+    }, [firstName, lastName, email])
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setLoading(true);
         if (firstName !== '' && lastName !== '') {
-            axios.get(`api/users/?username=${firstName}_${lastName}`,
+            await axios.get(`api/users/?username=${firstName}_${lastName}`,
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
             )
                 .then(response => {
+                    console.log(response, firstName, lastName)
                     if (response.data.results.length > 0 && response.data.results[0]['is_student_or_teacher'] === formData['is_student_or_teacher']) {
                         setError((prevData) => ({
                             ...prevData,
@@ -49,30 +57,15 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
                             ...prevData,
                             'username': null,
                         }))
+                        nextStep();
+                        updateFormData('first_name', firstName)
+                        updateFormData('last_name', lastName)
+                        updateFormData('email', email)
+                        updateFormData('username', `${firstName}_${lastName}`);
                     }
+                }).finally(() => {
+                    setLoading(false);
                 })
-        }
-    }, [firstName, lastName, email])
-
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        if (firstName !== '' && lastName !== '' && email !== '') {
-            setError((prevData) => ({
-                ...prevData,
-                'required': null,
-            }))
-            if (error.email === null && error.username === null) {
-                nextStep()
-                updateFormData('first_name', firstName);
-                updateFormData('last_name', lastName);
-                updateFormData('username', `${firstName}_${lastName}`);
-                updateFormData('email', email);
-            }
-        } else {
-            setError((prevData) => ({
-                ...prevData,
-                'required': 'All fields are required',
-            }))
         }
     }
     return (
@@ -82,64 +75,84 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
             <h2 className="form-title">Fill In Needed Information</h2>
             <hr />
 
-                {/* First Name Field */}
-                <Form.Group controlId="formFirstname" className="mb-3">
-                    <InputGroup>
-                        <InputGroup.Text><FaUser /></InputGroup.Text>
-                        <Form.Control
-                            type="text"
-                            required
-                            placeholder="Enter First Name"
-                            value={firstName}
-                            onChange={(e) => setFirstname(e.target.value)}
-                            isInvalid={!!error.username}
-                        />
-                    </InputGroup>
-                    <Form.Control.Feedback type="invalid">{error.username}</Form.Control.Feedback>
-                </Form.Group>
+            {/* First Name Field */}
+            <Form.Group controlId="formFirstname" className="mb-3">
+                <Form.Label> <b> First Name</b></Form.Label>
+                <InputGroup>
+                    <InputGroup.Text><FaUser /></InputGroup.Text>
+                    <Form.Control
+                        type="text"
+                        placeholder="Enter your first name"
+                        value={firstName}
+                        onChange={(e) => setFirstname(e.target.value)}
+                        isInvalid={!!error.username}
+                        required
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {error.username}
+                    </Form.Control.Feedback>
+                </InputGroup>
+            </Form.Group>
 
-                {/* Last Name Field */}
-                <Form.Group controlId="formLastname" className="mb-3">
-                    <InputGroup>
-                        <InputGroup.Text><FaUser /></InputGroup.Text>
-                        <Form.Control
-                            type="text"
-                            required
-                            placeholder="Enter Last Name"
-                            value={lastName}
-                            onChange={(e) => setLastname(e.target.value)}
-                            isInvalid={!!error.username}
-                        />
-                    </InputGroup>
-                    <Form.Control.Feedback type="invalid">{error.username}</Form.Control.Feedback>
-                </Form.Group>
+            {/* Last Name Field */}
+            <Form.Group controlId="formLastname" className="mb-3">
+                <Form.Label> <b> Last Name</b></Form.Label>
+                <InputGroup>
+                    <InputGroup.Text><FaUser /></InputGroup.Text>
+                    <Form.Control
+                        type="text"
+                        placeholder="Enter your last name"
+                        value={lastName}
+                        onChange={(e) => setLastname(e.target.value)}
+                        isInvalid={!!error.username}
+                        required
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {error.username}
+                    </Form.Control.Feedback>
+                </InputGroup>
+            </Form.Group>
 
-                {/* Email Field */}
-                <Form.Group controlId="formEmail" className="mb-3">
-                    <InputGroup>
-                        <InputGroup.Text><FaEnvelope /></InputGroup.Text>
-                        <Form.Control
-                            type="email"
-                            required
-                            placeholder="Enter Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            isInvalid={!!error.email}
-                        />
-                    </InputGroup>
-                    <Form.Control.Feedback type="invalid">{error.email}</Form.Control.Feedback>
-                </Form.Group>
+            {/* Email Field */}
+            <Form.Group controlId="formEmail" className="mb-3">
+                <Form.Label> <b> Email Address</b></Form.Label>
+                <InputGroup>
+                    <InputGroup.Text><FaEnvelope /></InputGroup.Text>
+                    <Form.Control
+                        type="email"
+                        placeholder="Enter your email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        isInvalid={!!error.email}
+                        required
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {error.email}
+                    </Form.Control.Feedback>
+                </InputGroup>
+            </Form.Group>
 
-                {/* Navigation Buttons */}
-                <div className="d-flex justify-content-between footer mt-5">
-                    <Button variant="secondary" onClick={prevStep} className="custom-btn2">
-                        Back
-                    </Button>
-                    <Button type="submit" className="custom-btn">
-                        Next
-                    </Button>
-                </div>
-            </Form>
+
+            {/* Navigation Buttons */}
+            <div className="d-flex justify-content-between footer mt-5">
+                <Button variant="secondary" onClick={prevStep} className="custom-btn2">
+                    Back
+                </Button>
+                <Button type="submit" className="custom-btn" disabled={!!loading}>
+                    {loading &&
+                        <Spinner
+                            as="span"
+                            animation="grow"
+                            size="sm"
+                            className="ml-2"
+                            role="status"
+                            aria-hidden="true"
+                        />
+                    }
+                    Next
+                </Button>
+            </div>
+        </Form>
         // </Container>
     )
 }

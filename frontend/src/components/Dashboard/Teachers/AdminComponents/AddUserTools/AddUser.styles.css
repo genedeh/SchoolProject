@@ -36,12 +36,12 @@
 }
 
 .step-item.active {
-    background: var(--color-accent);
+    background: var(--color-grey);
     font-weight: bold;
 }
 
 .step-item.completed {
-    color: var(--color-accent);
+    color: var(--color-primary);
 }
 
 /* Content Area */
