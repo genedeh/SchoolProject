@@ -369,7 +369,10 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                                                     value={formData.parent_guardian_phone}
                                                     pattern="^(070|080|081|090|091)\d{8}$"
                                                     placeholder='Enter Parent Guardian Phone Number'
-                                                    isInvalid={!validatePhoneNumber(formData.parent_guardian_phone) || !formData.parent_guardian_phone.length === 0}
+                                                    isInvalid={
+                                                        formData.parent_guardian_phone.length > 0 &&
+                                                        !validatePhoneNumber(formData.parent_guardian_phone)
+                                                    }
                                                     onChange={handleInputChange}
                                                     disabled={!isEditMode}
                                                     required
@@ -452,7 +455,8 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                                             name="nin"
                                             value={formData.nin}
                                             placeholder='Enter NIN'
-                                            isInvalid={!formData.nin || !formData.nin?.length > 11}
+                                            isInvalid={!!formData.nin && (!/^\d{11}$/.test(formData.nin))
+                                            }
                                             hint="NIN should be 11 digits"
                                             onChange={handleInputChange}
                                             disabled={!isEditMode}
