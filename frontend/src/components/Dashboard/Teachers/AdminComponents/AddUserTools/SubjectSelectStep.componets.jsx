@@ -39,20 +39,23 @@ export const SubjectSelectStep = ({ formData, updateFormData, nextStep, prevStep
             throw new Error("Authentication token is missing!");
         }
         handleSearch();
-        await axios.get(`/api/classrooms/${formData.classes[0]}`,
+        await axios.get(`/api/classrooms/11`,
             {
                 headers: { Authorization: `Bearer ${token}` },
             }
         )
             .then(async response => {
                 const classroomName = response.data["name"]
-                setTerm(classroomName);
+                setTerm("JSS1B");
                 handleSearch();
+            }).catch(error => {
+                setSelectionError("An error occured while fetch for classroom data")
             })
     }
     useEffect(() => {
         fetchClassSubject();
-    }, [fetchClassSubject])
+    }, [])
+    console.log(subjects)
     return (
         <div className="p-4 bg-light rounded shadow-sm">
             <h3 className="mb-4 text-center">Select Subjects</h3>
