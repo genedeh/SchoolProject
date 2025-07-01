@@ -11,6 +11,7 @@ import { ErrorMessageHandling } from "../../../../../utils/ErrorHandler.utils";
 export const SubjectSelectStep = ({ formData, updateFormData, nextStep, prevStep }) => {
     const { subjects, goToPrevPage, goToNextPage, currentPage, nextPage, prevPage, setTerm, handleSearch, loading, isError, error } = useSubjects();
     const [selectionError, setSelectionError] = useState(null);
+    const [classroomName, setClassroomName] = useState("");
     const [classSubjects, setClassSubjects] = useState(formData.subjects || []);
 
     const toggleSelectSubject = (id) => {
@@ -39,14 +40,14 @@ export const SubjectSelectStep = ({ formData, updateFormData, nextStep, prevStep
             throw new Error("Authentication token is missing!");
         }
         handleSearch();
-        await axios.get(`/api/classrooms/11`,
+        await axios.get(`/api/classrooms/${formData?.classes[0]}`,
             {
                 headers: { Authorization: `Bearer ${token}` },
             }
         )
             .then(async response => {
-                const classroomName = response.data["name"]
-                setTerm("JSS1B");
+                setClassroomName(response.data["name"])
+                setTerm(classroomName);
                 handleSearch();
             }).catch(error => {
                 setSelectionError("An error occured while fetch for classroom data")
@@ -54,8 +55,7 @@ export const SubjectSelectStep = ({ formData, updateFormData, nextStep, prevStep
     }
     useEffect(() => {
         fetchClassSubject();
-    }, [])
-    console.log(subjects)
+    }, [classroomName])
     return (
         <div className="p-4 bg-light rounded shadow-sm">
             <h3 className="mb-4 text-center">Select Subjects</h3>
