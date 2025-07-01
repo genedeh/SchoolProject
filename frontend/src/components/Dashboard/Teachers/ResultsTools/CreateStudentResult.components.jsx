@@ -128,7 +128,6 @@ export const CreateStudentResult = () => {
     };
 
     const handleInputChange = (field, value) => {
-        console.log(field, value)
         setFormData((prev) => ({
             ...prev,
             [field]: value
@@ -137,7 +136,6 @@ export const CreateStudentResult = () => {
     // Form submission
     const onSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
         createResult();
     };
 

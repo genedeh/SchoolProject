@@ -62,7 +62,6 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                 )
                     .then(() => {
                         setSuccess('Subject updated successfully.');
-                        console.log(success);
                         setUpdated(true);
                         setLoading(false);
                         updateSubjectCloseHandler();

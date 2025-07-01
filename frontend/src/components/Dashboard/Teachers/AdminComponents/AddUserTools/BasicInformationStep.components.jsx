@@ -62,6 +62,11 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
                         updateFormData('email', email)
                         updateFormData('username', `${firstName}_${lastName}`);
                     }
+                }).catch(error => {
+                    setError((prevData) => ({
+                        ...prevData,
+                        'username': 'An Error Occured.',
+                    }))
                 }).finally(() => {
                     setLoading(false);
                 })

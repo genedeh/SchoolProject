@@ -183,7 +183,6 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         if (name === "password" && value.length === 0) {
-            console.log("Gone")
             delete formData["password"]
         }
         else {

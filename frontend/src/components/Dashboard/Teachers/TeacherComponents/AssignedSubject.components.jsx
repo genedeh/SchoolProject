@@ -15,7 +15,6 @@ export const AssignedSubjects = () => {
 
     const fetchSubjects = async () => {
         const token = localStorage.getItem("token");
-        // console.log({ "subject_ids": currentUser["teaching_subjects_id"] })
 
         if (!token) {
             throw new Error("Authentication token is missing!");

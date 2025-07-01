@@ -62,7 +62,6 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
                 )
                     .then(() => {
                         setSuccess('Classroom updated successfully.');
-                        console.log(success);
                         setUpdated(true);
                         setLoading(false);
                         updateClassroomCloseHandler();

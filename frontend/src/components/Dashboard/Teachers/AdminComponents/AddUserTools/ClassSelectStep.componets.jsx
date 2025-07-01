@@ -38,7 +38,7 @@ export const ClassSelectStep = ({ formData, updateFormData, nextStep, prevStep }
 
             <InputGroup className="mb-3">
                 <Form.Control
-                    placeholder='Search...'
+                    placeholder='Search for classroom note (SEARCHING IS CASE SENSITIVE)...'
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />

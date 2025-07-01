@@ -74,7 +74,6 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
                             })
                             .catch(error => {
                                 setError("Failed to create classroom.");
-                                console.log(error)
                                 setLoading(false);
                             });
                     }
@@ -85,7 +84,6 @@ export const CreateClassroomModal = ({ show, handleClose }) => {
                         setError('Select a teacher to be assigned to the classroom.');
                     } else {
                         setError('Failed to create classroom.');
-                        console.log(error)
                     }
                 });
         } else {

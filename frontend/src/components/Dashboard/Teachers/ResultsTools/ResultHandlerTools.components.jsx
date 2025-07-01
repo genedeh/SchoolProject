@@ -38,10 +38,8 @@ export const ResultCreationHandlerButton = ({ studentName, classroomID = null, a
                     if (admin) {
                         const url = `/dashboard/create-student-result/?student_id=${studentId}&studentName=${studentName}`; // Admin can create result for any student
                         window.open(url, "_blank"); // Open in new tab
-                        console.log("Admin")
                         return;
                     }
-                    console.log("not admin")
                     const url = `/dashboard/create-student-result/?student_id=${studentId}&studentName=${studentName}&classroom_id=${classroomID}`;
                     window.open(url, "_blank"); // Open in new tab
                 }}

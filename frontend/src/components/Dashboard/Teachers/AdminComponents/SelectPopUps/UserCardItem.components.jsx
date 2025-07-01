@@ -17,7 +17,6 @@ export const UserCardItemComponent = ({ user, clickHandler, selectedDisplay, chi
         < ListGroup.Item
             className={`user-card d-flex justify-content-between align-items-center mt-2 ${selectedDisplay}`}
             onClick={() => {
-                console.log(`clicked ${username}`);
                 clickHandler(user);
             }}
         >

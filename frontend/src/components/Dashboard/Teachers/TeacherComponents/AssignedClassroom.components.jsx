@@ -118,7 +118,6 @@ export const AssignedClassrooms = () => {
       staleTime: 1000 * 60 * 5,
       cacheTime: 1000 * 60 * 10,
       onSuccess: () => {
-        console.log("Classroom Performance Fetched Successfully!");
       },
     }
   );
@@ -186,7 +185,6 @@ export const AssignedClassrooms = () => {
                 variant="outline-success"
                 onClick={() => {
                   setClassroomId(data[0].id);
-                  console.log(data[0].id);
                 }}
                 disabled={isPerfFetching || isPerfLoading}
               >

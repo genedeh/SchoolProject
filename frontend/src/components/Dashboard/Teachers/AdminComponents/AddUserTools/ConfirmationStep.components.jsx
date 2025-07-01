@@ -16,7 +16,6 @@ const useCreateUser = (userData) => {
         throw new Error("Authentication token is missing!");
     }
     const formData = new FormData();
-    console.log(userData)
     // Append normal fields
     for (const key in userData) {
         if (Array.isArray(userData[key])) {
@@ -29,7 +28,6 @@ const useCreateUser = (userData) => {
         }
     }
 
-    console.log(formData)
 
     // Send POST request
     return axios.post("/api/users/", formData, {
