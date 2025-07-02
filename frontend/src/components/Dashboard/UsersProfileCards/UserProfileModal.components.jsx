@@ -449,25 +449,27 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                                     "AC",
                                     "SC",
                                 ])}
-                                {renderInputGroup("Disability Status", "disability_status")}
-                                <Form.Group className="mb-3 grid-input">
-                                    <Form.Label>NIN</Form.Label>
-                                    <InputGroup>
-                                        <InputGroup.Text>{iconMap.nin}</InputGroup.Text>
-                                        <Form.Control
-                                            type="text"
-                                            name="nin"
-                                            value={formData.nin}
-                                            placeholder='Enter NIN'
-                                            isInvalid={!!formData.nin && (!/^\d{11}$/.test(formData.nin))
-                                            }
-                                            hint="NIN should be 11 digits"
-                                            onChange={handleInputChange}
-                                            disabled={!isEditMode}
-                                            required
-                                        />
-                                    </InputGroup>
-                                </Form.Group>
+                                    {renderInputGroup("Disability Status", "disability_status")}
+                                    {currentUser.is_superuser &&
+                                        <Form.Group className="mb-3 grid-input">
+                                            <Form.Label>NIN</Form.Label>
+                                            <InputGroup>
+                                                <InputGroup.Text>{iconMap.nin}</InputGroup.Text>
+                                                <Form.Control
+                                                    type="text"
+                                                    name="nin"
+                                                    value={formData.nin}
+                                                    placeholder='Enter NIN'
+                                                    isInvalid={!!formData.nin && (!/^\d{11}$/.test(formData.nin))
+                                                    }
+                                                    hint="NIN should be 11 digits"
+                                                    onChange={handleInputChange}
+                                                    disabled={!isEditMode}
+                                                    required
+                                                />
+                                            </InputGroup>
+                                        </Form.Group>
+                                    }
                                 {renderInputGroup("Gender", "gender", "text", "select", ["male", "female"])}
                             </Col>
                         </Row>
