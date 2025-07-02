@@ -63,6 +63,7 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [formData, setFormData] = useState({ ...user, });
+    const [profilePicture, setProfilePicture] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [selectedState, setSelectedState] = useState(formData.state_of_origin || '');
     const [localGovernments, setLocalGovernments] = useState([]);
@@ -126,7 +127,7 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
     // Mutation for updating user
     const { mutate: updateUser, isLoading: isUpdating, error, isError } = useMutation(
         async (updatedData) => {
-            const response = await axios.put(`/api/users/${user.id}/`, updatedData,
+            const response = await axios.put(`/api/users/${user.id}/`, { ...updatedData, "profile_picture": profilePicture },
                 {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -169,7 +170,7 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
             const reader = new FileReader();
             reader.onload = () => {
                 setDisplayProfilePicture(reader.result); // Display selected image
-                setFormData({ ...formData, 'profile_picture': file });
+                setProfilePicture(file)
             };
             reader.readAsDataURL(file);
         }
@@ -306,7 +307,7 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                             <Badge bg="danger">Teacher</Badge>
                         )}
                     </h5>
-                    <div className="mt-2 text-muted fw-semibold">Age • {current_date.getFullYear() - Number( birth_date && birth_date?.split('-')[0])}</div>
+                    <div className="mt-2 text-muted fw-semibold">Age • {current_date.getFullYear() - Number(birth_date && birth_date?.split('-')[0])}</div>
                     <div className="fw-semibold text-muted">
                         {is_student_or_teacher ? `Class • ${className}` : `Assigned Class • ${classroomName}`}
                     </div>
