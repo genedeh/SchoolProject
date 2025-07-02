@@ -251,9 +251,13 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                             src={
                                 isEditMode
                                     ? (!displayProfilePicture
-                                        ? profile_picture_url.includes('null') ? NoProfilePicture : profile_picture_url
+                                        ? (!profile_picture_url || profile_picture_url === "null" || profile_picture_url.includes('null')
+                                            ? NoProfilePicture
+                                            : profile_picture_url)
                                         : displayProfilePicture)
-                                    : (profile_picture_url.includes('null') ? NoProfilePicture : profile_picture_url)
+                                    : (!profile_picture_url || profile_picture_url === "null" || profile_picture_url.includes('null')
+                                        ? NoProfilePicture
+                                        : profile_picture_url)
                             }
                             loading="lazy"
                             onError={(e) => {
@@ -302,7 +306,7 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                             <Badge bg="danger">Teacher</Badge>
                         )}
                     </h5>
-                    <div className="mt-2 text-muted fw-semibold">Age • {current_date.getFullYear() - Number(birth_date.split('-')[0])}</div>
+                    <div className="mt-2 text-muted fw-semibold">Age • {current_date.getFullYear() - Number( birth_date && birth_date?.split('-')[0])}</div>
                     <div className="fw-semibold text-muted">
                         {is_student_or_teacher ? `Class • ${className}` : `Assigned Class • ${classroomName}`}
                     </div>

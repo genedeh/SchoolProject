@@ -14,10 +14,12 @@ const SearchedProfileCard = ({ user }) => {
     const displayName = useMemo(() => (username?.includes('_') ? username?.replace('_', ' ') : username), [username]);
 
     const optimizedImageUrl = useMemo(() => {
-        if (!profile_picture_url || profile_picture_url.includes("null")) return NoProfilePicture;
+        if (!profile_picture_url || profile_picture_url === "null" || profile_picture_url === null) return NoProfilePicture;
 
         // Example of Cloudinary transformation: q_auto, f_auto, w_100, h_100, c_fill for auto quality, format, size, and crop
+        if (!profile_picture_url) return NoProfilePicture;
         const [baseUrl, publicId] = profile_picture_url.split('/upload/');
+        if (!baseUrl || !publicId) return NoProfilePicture;
         return `${baseUrl}/upload/q_auto,f_auto,w_100,h_100,c_fill/${publicId}`;
     }, [profile_picture_url]);
 

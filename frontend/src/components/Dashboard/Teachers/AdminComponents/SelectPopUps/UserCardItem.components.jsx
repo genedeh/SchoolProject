@@ -7,7 +7,7 @@ import './selectpopups.styles.css';
 export const UserCardItemComponent = ({ user, clickHandler, selectedDisplay, children }) => {
     const { profile_picture_url, username, gender } = user;
     const optimizedImageUrl = useMemo(() => {
-        if (!profile_picture_url || profile_picture_url.includes("null")) return NoProfilePicture;
+        if (!profile_picture_url || profile_picture_url === null || profile_picture_url.includes("null")) return NoProfilePicture;
 
         // Example of Cloudinary transformation: q_auto, f_auto, w_100, h_100, c_fill for auto quality, format, size, and crop
         const [baseUrl, publicId] = profile_picture_url.split('/upload/');
