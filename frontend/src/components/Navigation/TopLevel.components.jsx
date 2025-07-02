@@ -50,7 +50,7 @@ const TopLevel = ({ searchHandler, term }) => {
                 </InputGroup>
 
                 <Image
-                    src={!profile_picture.endsWith('null') ? profile_picture : NoProfilePicture}
+                    src={profile_picture && !profile_picture.endsWith('null') ? profile_picture : NoProfilePicture}
                     loading="lazy"
                     className="me-2 responsive-profile-img"
                     alt="Profile Picture"
