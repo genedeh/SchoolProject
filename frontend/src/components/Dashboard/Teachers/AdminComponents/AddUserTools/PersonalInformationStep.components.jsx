@@ -23,13 +23,18 @@ export const PersonalInfromationStep = ({ formData, updateFormData, nextStep, pr
         updateFormData(name, value);
         // Validate phone number if the field is being modified
         if (name === 'phone_number') {
+            const isStudentOrTeacher = formData.is_student_or_teacher;
+
             setErrors({
                 ...errors,
-                phoneNumber: validatePhoneNumber(value)
-                    ? ''
-                    : 'Invalid Nigerian phone number format.',
+                phoneNumber:
+                    isStudentOrTeacher && value.trim() === ''
+                        ? ''
+                        : validatePhoneNumber(value)
+                            ? ''
+                            : 'Invalid Nigerian phone number format.',
             });
-        }
+        }        
         if (name === 'parent_guardian_phone') {
             setErrors({
                 ...errors,
@@ -44,12 +49,21 @@ export const PersonalInfromationStep = ({ formData, updateFormData, nextStep, pr
     // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (errors.phoneNumber) {
+        const phoneValid =
+            formData.is_student_or_teacher && formData.phone_number.trim() === ''
+                ? true
+                : validatePhoneNumber(formData.phone_number);
+
+        const ninValid =
+            formData.is_student_or_teacher
+                ? true
+                : /^\d{11}$/.test(formData.nin); // only validate if not student/teacher
+
+        if (!phoneValid || !ninValid) {
             alert('Please correct the errors before submitting the form.');
         } else {
             nextStep();
         }
-
     };
 
     // Handle state change and update LGAs
@@ -110,7 +124,7 @@ export const PersonalInfromationStep = ({ formData, updateFormData, nextStep, pr
                             }
                             value={formData.nin}
                             onChange={handleInputChange}
-                            required
+                            required={!formData.is_student_or_teacher || formData.is_superuser}
                         />
                     </Form.Group>
                 </Col>
@@ -199,7 +213,7 @@ export const PersonalInfromationStep = ({ formData, updateFormData, nextStep, pr
                                 value={formData.phone_number}
                                 onChange={handleInputChange}
                                 isInvalid={!!errors.phoneNumber}
-                                required
+                                required={!formData.is_student_or_teacher || formData.is_superuser}
                             />
                             <Form.Control.Feedback type="invalid">{errors.phoneNumber}</Form.Control.Feedback>
                         </InputGroup>
@@ -281,7 +295,7 @@ export const PersonalInfromationStep = ({ formData, updateFormData, nextStep, pr
                             name="blood_group"
                             value={formData.blood_group}
                             onChange={handleInputChange}
-                            required
+                            required={!formData.is_student_or_teacher || formData.is_superuser}
                         >
                             <option value="">Select Blood Group</option>
                             <option value="A+">A+</option>
@@ -303,7 +317,7 @@ export const PersonalInfromationStep = ({ formData, updateFormData, nextStep, pr
                             name="genotype"
                             value={formData.genotype}
                             onChange={handleInputChange}
-                            required
+                            required={!formData.is_student_or_teacher || formData.is_superuser}
                         >
                             <option value="">Select Genotype</option>
                             <option value="AA">AA</option>

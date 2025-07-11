@@ -20,8 +20,8 @@ import StudentViewResult from './components/Dashboard/Students/Results/StudentVi
 import MigrateStudents from './components/Dashboard/Teachers/AdminComponents/MigrateStudents.components';
 import { AdminViewResult } from './components/Dashboard/Teachers/AdminComponents/AdminViewResult.components';
 import NotFound from './components/Routes/PageNotFound.components';
-axios.defaults.baseURL = 'https://schoolproject-6io4.onrender.com';
-// axios.defaults.baseURL = 'http://127.0.0.1:8000/';
+// axios.defaults.baseURL = 'https://schoolproject-6io4.onrender.com';
+axios.defaults.baseURL = 'http://127.0.0.1:8000/';
 
 function App() {
   return (

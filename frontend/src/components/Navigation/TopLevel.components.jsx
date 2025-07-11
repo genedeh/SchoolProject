@@ -50,7 +50,9 @@ const TopLevel = ({ searchHandler, term }) => {
                 </InputGroup>
 
                 <Image
-                    src={profile_picture && !profile_picture.endsWith('null') ? profile_picture : NoProfilePicture}
+                    src={!profile_picture || profile_picture === 'null' || profile_picture.endsWith('null')
+                        ? NoProfilePicture
+                        : profile_picture}
                     loading="lazy"
                     className="me-2 responsive-profile-img"
                     alt="Profile Picture"
@@ -59,7 +61,7 @@ const TopLevel = ({ searchHandler, term }) => {
                         e.target.src = NoProfilePicture;
                     }}
                     style={{
-                        objectFit: 'cover',
+                        objectFit: 'contain',
                         border: '2px solid var(--color-primary)',
                         borderRadius: '50%',
                     }}

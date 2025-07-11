@@ -6,9 +6,9 @@ const ProfilePicture = ({ profilePicture, width = "120px", height = "120px" }) =
         <div style={{ position: "relative", display: "inline-block", width, height }} className="m-3">
             {/* Profile Image */}
             <Image
-                src={!profilePicture && !profilePicture.endsWith('null')
-                            ? profilePicture
-                            : NoProfilePicture}
+                src={!profilePicture || profilePicture === 'null' || profilePicture.endsWith('null')
+                    ? NoProfilePicture
+                    : profilePicture}                
                 roundedCircle
                 style={{
                     width,

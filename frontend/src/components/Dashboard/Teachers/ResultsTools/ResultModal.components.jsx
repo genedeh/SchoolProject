@@ -313,10 +313,9 @@ export const ResultModal = ({ show, handleClose, result }) => {
                     <Card className="mb-4 border-0 rounded-4 shadow-sm bg-white">
                         <Card.Body className="d-flex flex-column flex-md-row align-items-center gap-3">
                             <Image
-                                src={ !assigned_student["profile_picture"] &&
-                                !assigned_student["profile_picture"].endsWith('null')
-                            ? assigned_student["profile_picture"]
-                            : NoProfilePicture}
+                                src={!assigned_student["profile_picture"] || assigned_student["profile_picture"] === 'null' || assigned_student["profile_picture"].endsWith('null')
+                                    ? NoProfilePicture
+                                    : assigned_student["profile_picture"]}
                                 roundedCircle
                                 width={150}
                                 height={150}

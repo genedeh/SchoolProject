@@ -42,7 +42,6 @@ const iconMap = {
     home_town: <FaCity />,
     state_of_origin: <FaMapMarkerAlt />,
     local_government_area: <FaMapMarkerAlt />,
-    nationality: <FaFlag />,
     religion: <FaPrayingHands />,
     blood_group: <FaTint />,
     genotype: <FaVial />,
@@ -430,7 +429,6 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                                         </Form.Select>
                                     </InputGroup>
                                 </Form.Group>
-                                {renderInputGroup("Nationality", "nationality")}
                                 {renderInputGroup("Religion", "religion")}
                                 {renderInputGroup("Blood Group", "blood_group", "text", "select", [
                                     "A+",

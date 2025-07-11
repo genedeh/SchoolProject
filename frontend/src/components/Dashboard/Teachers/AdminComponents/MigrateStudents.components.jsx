@@ -6,6 +6,8 @@ import { Navigate } from "react-router-dom";
 import { SuccessAlert } from "../../../Alerts/SuccessAlert.components";
 import { WarningAlert } from "../../../Alerts/WarningAlert.components";
 import { ErrorAlert } from "../../../Alerts/ErrorAlert.components";
+import { numberToWords } from "../../../../utils/numberToWords";
+
 import CenteredSpinner from "../../../Loading/CenteredSpinner.components";
 
 const MigrateStudents = () => {
@@ -49,11 +51,24 @@ const MigrateStudents = () => {
                         <h5 className="mt-4">Migration Results</h5>
 
                         {/* Success Message */}
-                        {migrateStudents.data?.failed_students === 0 &&
-                            <SuccessAlert heading="Students migration Success" message={`Successfully migrated ${migrateStudents.data.migrated} students for session ${migrateStudents.data.session}.`} />
+                        {migrateStudents.data?.failed_students.length === 0 && migrateStudents.data?.migrated >= 1 && migrateStudents.data?.failed_transfers.length === 0 &&
+
+                            <SuccessAlert
+                                heading="Student Migration Successful"
+                                message={`Successfully migrated ${numberToWords(migrateStudents.data.migrated)} student${migrateStudents.data.migrated.length > 1 ? 's' : ''} for the ${migrateStudents.data.session} session.`}
+                            />
+
                         }
-                        {migrateStudents.data?.failed_students.length > 0 &&
-                            <WarningAlert heading="Students migration Warning" message={` Successfully migrated ${migrateStudents.data.migrated} and ${migrateStudents.data.failed_students.length} failed students for session ${migrateStudents.data.session}.`} />
+                        {migrateStudents.data?.failed_students.length > 0 || migrateStudents.data?.failed_transfers.length > 0 &&
+                            <WarningAlert
+                                heading="Student Migration Warning"
+                                message={`Successfully migrated ${numberToWords(migrateStudents.data?.migrated)} student${migrateStudents.data.migrated !== 1 ? 's' : ''}, with ${numberToWords(migrateStudents.data.failed_students.length || migrateStudents.data.failed_transfers.length)} failed student${(migrateStudents.data.failed_students.length || migrateStudents.data.failed_transfers.length) !== 1 ? 's' : ''} or subject transfer${(migrateStudents.data.failed_students.length || migrateStudents.data.failed_transfers.length) !== 1 ? 's' : ''} for the ${migrateStudents.data.session} session.`}
+                            />                        }
+                        {migrateStudents.data?.failed_students.length === 0 && migrateStudents.data?.failed_transfers.length === 0 && migrateStudents.data?.migrated === 0 &&
+                            <WarningAlert
+                                heading="Student Migration Warning"
+                                message="No students were migrated for this session."
+                            />
                         }
                         {/* Failed Students */}
                         {migrateStudents.data.failed_students.length > 0 && (
@@ -105,7 +120,7 @@ const MigrateStudents = () => {
                                                         <Card.Title>{subject.student?.replace("_", " ")}</Card.Title>
                                                         <Card.Text>
                                                             <strong>Classroom:</strong> {subject.classroom || "N/A"} <br />
-                                                            <strong>Failed Subject:</strong> {subject.failed_subject|| "N/A"} <br />
+                                                            <strong>Failed Subject:</strong> {subject.failed_subject || "N/A"} <br />
                                                             <strong>Issue:</strong> {subject.reason} <br />
                                                         </Card.Text>
                                                     </div>

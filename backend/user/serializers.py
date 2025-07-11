@@ -45,7 +45,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
                   'is_student_or_teacher', 'birth_date', 'address', 'is_superuser',
                   'phone_number', 'gender', 'classes',  'subjects', "admission_number",  "parent_guardian_name",
                   "parent_guardian_phone", "parent_guardian_email", "home_town",
-                  "local_government_area", "nationality", "religion", "blood_group",
+                  "local_government_area",  "religion", "blood_group",
                   "genotype", "disability_status", "boarding_status", "nin", "state_of_origin"
                   ]
 
@@ -92,7 +92,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
                   'birth_date', 'address',
                   'phone_number', 'gender', "admission_number",  "parent_guardian_name",
                   "parent_guardian_phone", "parent_guardian_email", "home_town",
-                  "local_government_area", "nationality", "religion", "blood_group",
+                  "local_government_area",  "religion", "blood_group",
                   "genotype", "disability_status", "boarding_status", "nin", "state_of_origin"
                   ]
 
@@ -125,8 +125,6 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             'home_town', instance.home_town)
         instance.local_government_area = validated_data.get(
             'local_government_area', instance.local_government_area)
-        instance.nationality = validated_data.get(
-            'nationality', instance.nationality)
         instance.religion = validated_data.get('religion', instance.religion)
         instance.blood_group = validated_data.get(
             'blood_group', instance.blood_group)
@@ -159,7 +157,7 @@ class UserListSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 'profile_picture_url', 'is_student_or_teacher',
                   'birth_date', 'address', 'is_superuser', 'phone_number', 'gender', 'classes',  'subjects', 'classrooms', 'subject', "admission_number",  "parent_guardian_name",
                   "parent_guardian_phone", "parent_guardian_email", "home_town",
-                  "local_government_area", "nationality", "religion", "blood_group",
+                  "local_government_area", "religion", "blood_group",
                   "genotype", "disability_status", "boarding_status", "nin", "state_of_origin"
                   ]
 
@@ -179,7 +177,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "is_superuser", "user_class", "offering_subjects", "teaching_subjects", "teaching_subjects_id",
             "admission_number", "migrated_sessions", "parent_guardian_name",
             "parent_guardian_phone", "parent_guardian_email", "home_town",
-            "local_government_area", "nationality", "religion", "blood_group",
+            "local_government_area", "religion", "blood_group",
             "genotype", "disability_status", "boarding_status", "previous_classes", "nin", "state_of_origin"
         ]
 

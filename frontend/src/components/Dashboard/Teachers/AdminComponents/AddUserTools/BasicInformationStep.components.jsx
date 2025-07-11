@@ -128,7 +128,7 @@ export const BasicInformationStep = ({ formData, nextStep, prevStep, updateFormD
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         isInvalid={!!error.email}
-                        required
+                        required={!formData.is_student_or_teacher || formData.is_superuser}
                     />
                     <Form.Control.Feedback type="invalid">
                         {error.email}

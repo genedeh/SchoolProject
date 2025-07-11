@@ -10,6 +10,7 @@ import { CreateClassroomModal } from "./ClassroomTools/CreateClassroom.component
 import { UpdateClassroomModal } from "./ClassroomTools/UpdateClassroom.components";
 import { ErrorAlert } from "../../../Alerts/ErrorAlert.components";
 import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
+import NoProfilePicture from '../../../../assets/NoProfilePicture.jpg'
 import { CenteredSpinner } from "../../../Loading/CenteredSpinner.components";
 
 export const Classrooms = () => {
@@ -109,7 +110,9 @@ export const Classrooms = () => {
                                                     <div className="d-flex align-items-center">
                                                         <div className="me-3">
                                                             <img
-                                                                src={profile_picture_url == null ? ("https://via.placeholder.com/40") : (profile_picture_url)}
+                                                                src={!profile_picture_url || profile_picture_url === 'null' || profile_picture_url.endsWith('null')
+                                                                    ? NoProfilePicture
+                                                                    : profile_picture_url}                                                                
                                                                 alt="Profile"
                                                                 className="rounded-circle"
                                                                 style={{ width: '40px', height: '40px' }}

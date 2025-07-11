@@ -164,9 +164,9 @@ class QuickUserViewList(generics.ListAPIView):
         """
         if filters.get('is_student_or_teacher') is True:
             if 'classes' in filters:
-                return "No teachers found without a classroom."
-            elif 'classrooms' in filters:
                 return "No students found without a classroom."
+            elif 'classrooms' in filters:
+                return "No teachers found without a classroom."
             return "No users found matching the specified teacher/student filter."
         elif filters.get('is_student_or_teacher') is False:
             return "No users found who are not students or teachers."

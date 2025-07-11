@@ -1,5 +1,5 @@
 import { Card, Badge, Table, ListGroup, Row, Col, Button, Alert, Spinner } from 'react-bootstrap';
-import { FaUser,  FaEnvelope, FaPhone, FaMapMarkedAlt, FaBirthdayCake, FaTransgender, FaSchool,  FaBook, FaCheckCircle } from 'react-icons/fa'; import { useState, useEffect } from 'react';
+import { FaUser, FaEnvelope, FaPhone, FaMapMarkedAlt, FaBirthdayCake, FaTransgender, FaSchool, FaBook, FaCheckCircle } from 'react-icons/fa'; import { useState, useEffect } from 'react';
 import { useMutation } from 'react-query';
 import { ErrorAlert } from '../../../../Alerts/ErrorAlert.components';
 import { ErrorMessageHandling } from '../../../../../utils/ErrorHandler.utils'
@@ -44,7 +44,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
     const { username, first_name, last_name, password, email, address, birth_date,
         is_student_or_teacher, is_superuser, phone_number, profile_picture, classes, gender, subjects,
         parent_guardian_name, parent_guardian_phone, parent_guardian_email, home_town, admission_number,
-        local_government_area, nationality, religion, blood_group, genotype, disability_status,
+        local_government_area,religion, blood_group, genotype, disability_status,
         boarding_status, nin, state_of_origin
     } = formData;
     const current_date = new Date();
@@ -91,32 +91,35 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                 }
             })
     }
+    // 1. Determine and set the user type
     useEffect(() => {
-
         if (is_student_or_teacher) {
             setUserType('Student');
-            if (subjects.length !== 0 && classes.length !== 0) {
-                fetchClassSubjects(subjects)
-                fetchClassroom(classes[0])
-
-            }
         } else {
-            if (is_superuser) {
-                setUserType('Admin');
-            } else {
-                setUserType('Teacher');
-            }
+            setUserType(is_superuser ? 'Admin' : 'Teacher');
         }
+    }, [is_student_or_teacher, is_superuser]);
 
+    // 2. Fetch class subjects and classroom only when subjects or classes change (and user is student/teacher)
+    useEffect(() => {
+        if (is_student_or_teacher && subjects.length !== 0 && classes.length !== 0) {
+            fetchClassSubjects(subjects);
+            fetchClassroom(classes[0]);
+        }
+    }, [subjects, classes, is_student_or_teacher]);
 
+    // 3. Load profile picture
+    useEffect(() => {
         if (profile_picture) {
             const reader = new FileReader();
             reader.onload = () => {
-                setDisplayProfilePicture(reader.result); // Display selected image
+                setDisplayProfilePicture(reader.result);
             };
             reader.readAsDataURL(profile_picture);
         }
-    }, [classes, fetchClassSubjects, fetchClassroom, is_student_or_teacher, profile_picture, subjects, token, is_superuser]);
+    }, [profile_picture]);
+    console.log(email)
+
 
 
     return (
@@ -173,23 +176,22 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                                 <ListGroup.Item><FaUser className="me-2" /> <strong>LastName:</strong> {last_name}</ListGroup.Item>
                                 <ListGroup.Item><FaCheckCircle className="me-2" /> <strong>Password:</strong> {password}</ListGroup.Item>
                                 <ListGroup.Item><FaTransgender className="me-2" /> <strong>Gender:</strong> {gender.toUpperCase()}</ListGroup.Item>
-                                <ListGroup.Item><FaEnvelope className="me-2" /> <strong>Email:</strong> {email}</ListGroup.Item>
-                                <ListGroup.Item><FaPhone className="me-2" /> <strong>Phone:</strong> {phone_number}</ListGroup.Item>
+                                <ListGroup.Item><FaEnvelope className="me-2" /> <strong>Email:</strong> {email !== '' ? email : 'None'}</ListGroup.Item>
+                                <ListGroup.Item><FaPhone className="me-2" /> <strong>Phone:</strong> {phone_number !== '' ? phone_number : 'None'}</ListGroup.Item>
                                 <ListGroup.Item><FaMapMarkedAlt className="me-2" /> <strong>Address:</strong> {address}</ListGroup.Item>
                                 <ListGroup.Item><FaBirthdayCake className="me-2" /> <strong>DOB:</strong> {birth_date} | <strong>Age:</strong> {birth_date && current_date.getFullYear() - Number(birth_date.split('-')[0])}</ListGroup.Item>
-                                <ListGroup.Item><strong>Admission No:</strong> {admission_number}</ListGroup.Item>
-                                <ListGroup.Item><strong>Guardian Name:</strong> {parent_guardian_name}</ListGroup.Item>
-                                <ListGroup.Item><strong>Guardian Phone:</strong> {parent_guardian_phone}</ListGroup.Item>
-                                <ListGroup.Item><strong>Guardian Email:</strong> {parent_guardian_email}</ListGroup.Item>
+                                <ListGroup.Item><strong>Admission No:</strong> {admission_number !== '' ? admission_number : 'None'}</ListGroup.Item>
+                                <ListGroup.Item><strong>Guardian Name:</strong> {parent_guardian_name !== '' ? parent_guardian_name : 'None'}</ListGroup.Item>
+                                <ListGroup.Item><strong>Guardian Phone:</strong> {parent_guardian_phone !== '' ? parent_guardian_phone : 'None'}</ListGroup.Item>
+                                <ListGroup.Item><strong>Guardian Email:</strong> {parent_guardian_email !== '' ? parent_guardian_email : 'None'}</ListGroup.Item>
                                 <ListGroup.Item><strong>Home Town:</strong> {home_town}</ListGroup.Item>
                                 <ListGroup.Item><strong>LGA:</strong> {local_government_area}</ListGroup.Item>
-                                <ListGroup.Item><strong>Nationality:</strong> {nationality}</ListGroup.Item>
                                 <ListGroup.Item><strong>Religion:</strong> {religion}</ListGroup.Item>
-                                <ListGroup.Item><strong>Blood Group:</strong> {blood_group}</ListGroup.Item>
-                                <ListGroup.Item><strong>Genotype:</strong> {genotype}</ListGroup.Item>
-                                <ListGroup.Item><strong>Disability:</strong> {disability_status}</ListGroup.Item>
+                                <ListGroup.Item><strong>Blood Group:</strong> {blood_group !== '' ? blood_group : 'None'}</ListGroup.Item>
+                                <ListGroup.Item><strong>Genotype:</strong>{genotype !== '' ? genotype : 'None'}</ListGroup.Item>
+                                <ListGroup.Item><strong>Disability:</strong> {disability_status !== '' ? disability_status : 'None'}</ListGroup.Item>
                                 <ListGroup.Item><strong>Boarding:</strong> {boarding_status}</ListGroup.Item>
-                                <ListGroup.Item><strong>NIN:</strong> {nin}</ListGroup.Item>
+                                <ListGroup.Item><strong>NIN:</strong> {nin !== '' ? nin : 'None'}</ListGroup.Item>
                                 <ListGroup.Item><strong>State Of Origin:</strong> {state_of_origin}</ListGroup.Item>
                             </ListGroup>
                         </Card.Body>
@@ -259,7 +261,6 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                             "parent_guardian_email": "",
                             "home_town": "",
                             "local_government_area": "",
-                            "nationality": "",
                             "religion": "",
                             "blood_group": "",
                             "genotype": "",

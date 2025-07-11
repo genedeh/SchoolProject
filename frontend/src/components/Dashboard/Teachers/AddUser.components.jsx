@@ -48,7 +48,6 @@ export const AddUser = () => {
         "parent_guardian_email": "",
         "home_town": "",
         "local_government_area": "",
-        "nationality": "",
         "religion": "",
         "blood_group": "",
         "genotype": "",

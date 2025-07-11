@@ -18,7 +18,7 @@ class User(AbstractUser, models.Model):
     is_student_or_teacher = models.BooleanField(default=False)
     birth_date = models.DateField(null=True)
     address = models.CharField(max_length=150, blank=True)
-    email = models.EmailField()
+    email = models.EmailField(blank=True, null=True, default=None)
     phone_number = models.CharField(max_length=11, blank=True)
     gender = models.CharField(
         max_length=20, choices=GENDER_CHOICES, default='male')
@@ -26,7 +26,7 @@ class User(AbstractUser, models.Model):
     migrated_sessions = models.JSONField(default=list,blank=True)
     nin = models.CharField(max_length=11, unique=True, null=True, blank=True)
     admission_number = models.CharField(
-        max_length=20, unique=True, null=True, blank=True)
+        max_length=20, null=True, blank=True)
     parent_guardian_name = models.CharField(max_length=255, blank=True)
     parent_guardian_phone = models.CharField(max_length=15,blank=True)
     parent_guardian_email = models.EmailField(blank=True, null=True)
@@ -34,7 +34,6 @@ class User(AbstractUser, models.Model):
     state_of_origin = models.CharField(max_length=100, blank=True, null=True)
     local_government_area = models.CharField(
         max_length=100, blank=True, null=True)
-    nationality = models.CharField(max_length=50, default="Nigerian")
     religion = models.CharField(max_length=50, blank=True, null=True)
 
     blood_group = models.CharField(max_length=3, blank=True, null=True)

@@ -8,7 +8,7 @@ const StudentProfile = () => {
     const { first_name, last_name, address, profile_picture, user_class, teaching_subjects, offering_subjects,
         admission_number,
         birth_date, blood_group, boarding_status, disability_status, email, gender, genotype, home_town, local_government_area, migrated_sessions,
-        nationality, parent_guardian_name, parent_guardian_email, parent_guardian_phone, phone_number, religion, is_student_or_teacher, is_superuser
+         parent_guardian_name, parent_guardian_email, parent_guardian_phone, phone_number, religion, is_student_or_teacher, is_superuser
     } = currentUser;
 
     if (currentUser.is_student_or_teacher && currentUser) {
@@ -21,7 +21,7 @@ const StudentProfile = () => {
                             <ProfileHeader profile_picture={profile_picture} first_name={first_name} last_name={last_name} address={address} user_class={user_class} />
                             <hr />
                             <InfoCard admission_number={admission_number} birth_date={birth_date} blood_group={blood_group} boarding_status={boarding_status} disability_status={disability_status} email={email}
-                                gender={gender} genotype={genotype} home_town={home_town} local_government_area={local_government_area} nationality={nationality} parent_guardian_email={parent_guardian_email}
+                                gender={gender} genotype={genotype} home_town={home_town} local_government_area={local_government_area}  parent_guardian_email={parent_guardian_email}
                                 parent_guardian_name={parent_guardian_name} parent_guardian_phone={parent_guardian_phone} phone_number={phone_number} religion={religion} is_student_or_teacher={is_student_or_teacher} is_superuser={is_superuser}
                             />
                             <hr />

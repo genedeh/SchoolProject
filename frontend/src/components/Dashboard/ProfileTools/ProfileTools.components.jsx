@@ -25,7 +25,7 @@ export const ProfileHeader = ({ profile_picture, first_name, last_name, address,
 };
 
 // Info Card Component
-export const InfoCard = ({ admission_number, birth_date, blood_group, boarding_status, disability_status, email, gender, genotype, home_town, local_government_area, nationality, parent_guardian_name, parent_guardian_email, parent_guardian_phone, phone_number, religion, is_student_or_teacher, is_superuser }) => {
+export const InfoCard = ({ admission_number, birth_date, blood_group, boarding_status, disability_status, email, gender, genotype, home_town, local_government_area, parent_guardian_name, parent_guardian_email, parent_guardian_phone, phone_number, religion, is_student_or_teacher, is_superuser }) => {
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString("en-US", {
             year: "numeric",
@@ -46,7 +46,6 @@ export const InfoCard = ({ admission_number, birth_date, blood_group, boarding_s
                 <ListGroup.Item><strong>Gender:</strong> {gender.toLocaleUpperCase()}</ListGroup.Item>
                 <ListGroup.Item><strong>Home Town:</strong> {home_town || "No record"}</ListGroup.Item>
                 <ListGroup.Item><strong>LGA:</strong> {local_government_area || "No record"}</ListGroup.Item>
-                <ListGroup.Item><strong>Nationality:</strong> {nationality || "No record"}</ListGroup.Item>
                 <ListGroup.Item><strong>Religion:</strong> {religion || "No record"}</ListGroup.Item>
                 {is_student_or_teacher &&
                     <>
