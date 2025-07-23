@@ -61,7 +61,7 @@ const TopLevel = ({ searchHandler, term }) => {
                         e.target.src = NoProfilePicture;
                     }}
                     style={{
-                        objectFit: 'contain',
+                        objectFit: 'cover',
                         border: '2px solid var(--color-primary)',
                         borderRadius: '50%',
                     }}
