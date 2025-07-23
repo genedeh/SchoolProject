@@ -51,7 +51,14 @@ export const ClassRoomTeacherSelectPopUp = ({ show, handleClose, selectedTeacher
                     </Form.Select>
                     <Form.Control className="me-auto " placeholder='Search...' value={tempSearchTerm} onChange={(e) => {
                         setTempSearchTerm(e.target.value)
-                    }} />
+                    }}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                setCurrentPage(1);
+                                setSearchTerm(tempSearchTerm);
+                            }
+                        }}
+                    />
                     <Button variant='outline-primary'
                         className='custom-btn'
                         onClick={() => {

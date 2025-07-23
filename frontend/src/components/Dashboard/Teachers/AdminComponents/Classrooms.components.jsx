@@ -64,7 +64,14 @@ export const Classrooms = () => {
                 <InputGroup>
                     <Form.Control className="me-auto " placeholder='Search...' value={searchTerm} onChange={(e) => {
                         setSearchTerm(e.target.value)
-                    }} />
+                    }}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                setTerm(searchTerm);
+                                handleSearch();
+                            }
+                        }}
+                    />
                     <Button variant='outline-primary'
                         className="custom-btn"
                         onClick={() => {

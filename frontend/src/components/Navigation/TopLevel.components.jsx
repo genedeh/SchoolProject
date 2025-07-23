@@ -43,6 +43,11 @@ const TopLevel = ({ searchHandler, term }) => {
                         placeholder="Enter Student Or Teacher Username..."
                         value={searchTerm}
                         onChange={changeSearchTerm}
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                searchHandler(searchTerm)
+                            }
+                        }}
                     />
                     <Button variant="outline-primary" className="custom-btn" onClick={() => searchHandler(searchTerm)}>
                         <Search className="me-2" />
