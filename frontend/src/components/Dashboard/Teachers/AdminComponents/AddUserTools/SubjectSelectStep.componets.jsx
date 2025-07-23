@@ -54,7 +54,9 @@ export const SubjectSelectStep = ({ formData, updateFormData, nextStep, prevStep
             })
     }
     useEffect(() => {
-        fetchClassSubject();
+        if (formData?.classes[0]) {
+            fetchClassSubject();
+        }
     }, [classroomName])
     return (
         <div className="p-4 bg-light rounded shadow-sm">

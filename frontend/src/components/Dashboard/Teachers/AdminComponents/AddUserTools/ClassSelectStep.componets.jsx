@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useClassrooms from "../../../../../contexts/Classrooms.contexts";
 import { Card, Col, Row, Button, Badge, Alert, InputGroup, Form } from 'react-bootstrap';
 import { FaChalkboardTeacher, FaSearch } from 'react-icons/fa';
 import { ErrorMessageHandling } from "../../../../../utils/ErrorHandler.utils";
 import { ErrorAlert } from "../../../../Alerts/ErrorAlert.components";
 import CenteredSpinner from "../../../../Loading/CenteredSpinner.components";
+import { useUser } from "../../../../../contexts/User.contexts";
 
 export const ClassSelectStep = ({ formData, updateFormData, nextStep, prevStep }) => {
     const { classrooms, goToPrevPage, goToNextPage, currentPage, nextPage, prevPage, setTerm, loading, isError, error, handleSearch } = useClassrooms();
+    const { currentUser } = useUser();
+    const { user_class } = currentUser;
     const [searchTerm, setSearchTerm] = useState("");
     const [selectionError, setSelectionError] = useState(null);
     const [selectedClassRoom, setSelectedClassRoom] = useState(formData.classes[0]);
@@ -18,7 +21,11 @@ export const ClassSelectStep = ({ formData, updateFormData, nextStep, prevStep }
             (classrooms.filter(classroom => classroom.id === id)[0].name))
         updateFormData('classes', [id])
     };
-
+    useEffect(() => {
+        if (!currentUser.is_superuser && !currentUser.is_student_or_teacher && user_class) {
+            setTerm(user_class)
+        }
+    }, [user_class])
     const handleSubmit = (e) => {
         if (formData.classes.length !== 0) {
             setSelectionError(null);
@@ -41,11 +48,13 @@ export const ClassSelectStep = ({ formData, updateFormData, nextStep, prevStep }
                     placeholder='Search for classroom note (SEARCHING IS CASE SENSITIVE)...'
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
+                    disabled={!currentUser.is_superuser && !currentUser.is_student_or_teacher}
+                    
                 />
                 <Button variant='outline-primary' onClick={() => {
                     setTerm(searchTerm);
                     handleSearch();
-                }}>
+                }} disabled={!currentUser.is_superuser && !currentUser.is_student_or_teacher}>
                     <FaSearch />
                 </Button>
             </InputGroup>

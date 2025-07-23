@@ -121,198 +121,210 @@ export const AssignedClassrooms = () => {
       },
     }
   );
+  
 
   if (
     !currentUser.is_student_or_teacher &&
     currentUser &&
     !currentUser.is_superuser
   ) {
-    return (
-      <div>
-        <center>
-          <hr />
-          <h3 className="text-primary fw-bold">📚 Assigned Classrooms</h3>
-          <hr />
-        </center>
+    if (!currentUser.user_class) {
+      return (
+        <div>
+          <center>
+            <hr />
+            <h3 className="text-primary fw-bold">📚 Assigned Classrooms</h3>
+            <hr />
+            <p className="text-muted">You currently have no assigned classroom.</p>
+          </center>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <center>
+            <hr />
+            <h3 className="text-primary fw-bold">📚 Assigned Classrooms</h3>
+            <hr />
+          </center>
 
-        {isLoading && (
-          <CenteredSpinner caption="Fetching Assigned Classrooms..." />
-        )}
-        {isError && (
-          <ErrorAlert
-            heading="Error while fetching assigned classrooms"
-            message={ErrorMessageHandling(isError, error)}
-            removable
-          />
-        )}
+          {isLoading && (
+            <CenteredSpinner caption="Fetching Assigned Classrooms..." />
+          )}
 
-        {!isLoading && !isError && data.length === 0 && (
-          <p className="text-center text-muted">
-            No Assigned Classrooms found!
-          </p>
-        )}
+          {isError && (
+            <ErrorAlert
+              heading="Error while fetching assigned classrooms"
+              message={ErrorMessageHandling(isError, error)}
+              removable
+            />
+          )}
 
-        {isPerfError && (
-          <ErrorAlert
-            heading="Error fetching classroom performance"
-            message={ErrorMessageHandling(isPerfError, perfError)}
-            removable
-          />
-        )}
+          {!isLoading && !isError && Array.isArray(data) && data.length === 0 && (
+            <p className="text-center text-muted">
+              No Assigned Classrooms found!
+            </p>
+          )}
 
-        {!isLoading && !isError && data.length > 0 && (
-          <>
-            {/* Add User Button */}
-            <div className="d-grid gap-2 m-4">
-              <Button
-                size="lg"
-                variant="outline-primary"
-                href="/dashboard/add-user"
-                className="mb-3 custom-btn"
-              >
-                <PersonFillAdd className="me-2" /> Add New Student (Ensure To
-                only Select Your Class)
-              </Button>
-            </div>
+          {isPerfError && (
+            <ErrorAlert
+              heading="Error fetching classroom performance"
+              message={ErrorMessageHandling(isPerfError, perfError)}
+              removable
+            />
+          )}
 
-            {performanceData && (
-              <ClassroomPerformance performanceData={performanceData} />
-            )}
-            <div className="m-4">
-              <Button
-                size="lg"
-                className="mb-3 custom-btn3"
-                variant="outline-success"
-                onClick={() => {
-                  setClassroomId(data[0].id);
-                }}
-                disabled={isPerfFetching || isPerfLoading}
-              >
-                <BookmarkDashFill className="me-2" /> View Classroom Performance{" "}
-                {isPerfFetching || isPerfLoading ? (
-                  <Spinner animation="border" size="sm" className="ml-2" />
-                ) : (
-                  ""
-                )}
-              </Button>
-            </div>
+          {!isLoading && !isError && Array.isArray(data) && data.length > 0 && (
+            <>
+              <div className="d-grid gap-2 m-4">
+                <Button
+                  size="lg"
+                  variant="outline-primary"
+                  href="/dashboard/add-user"
+                  className="mb-3 custom-btn"
+                >
+                  <PersonFillAdd className="me-2" /> Add New Student (Ensure To
+                  only Select Your Class)
+                </Button>
+              </div>
 
-            <div>
-              {data.map(({ id: classId, name, students }) => (
-                <div key={classId} className="mb-4">
-                  <Card className="border-0">
-                    {/* Classroom Header with Gradient */}
-                    <div
-                      className="p-3 text-light fw-bold bg-primary"
-                      style={{
-                        borderTopLeftRadius: "8px",
-                        borderTopRightRadius: "8px",
-                      }}
-                    >
-                      <h5 className="mb-0">{name.replace("_", " ")}</h5>
-                    </div>
+              {performanceData && (
+                <ClassroomPerformance performanceData={performanceData} />
+              )}
 
-                    <Card.Body className="bg-white">
-                      <h6 className="fw-bold text-secondary mb-3">
-                        👩‍🎓 Students
-                      </h6>
+              <div className="m-4">
+                <Button
+                  size="lg"
+                  className="mb-3 custom-btn3"
+                  variant="outline-success"
+                  onClick={() => {
+                    setClassroomId(data[0].id);
+                  }}
+                  disabled={isPerfFetching || isPerfLoading}
+                >
+                  <BookmarkDashFill className="me-2" /> View Classroom Performance{" "}
+                  {isPerfFetching || isPerfLoading ? (
+                    <Spinner animation="border" size="sm" className="ml-2" />
+                  ) : (
+                    ""
+                  )}
+                </Button>
+              </div>
 
-                      <ListGroup variant="flush">
-                        {students.length !== 0 ? (
-                          students.map(
-                            ({ id, username, profile_picture_url }) => (
-                              <ListGroup.Item
-                                key={id}
-                                className="d-flex align-items-center justify-content-between border-0"
-                                style={{
-                                  background: "#f8f9fa",
-                                  borderRadius: "8px",
-                                  marginBottom: "5px",
-                                  padding: "10px",
-                                }}
-                              >
-                                <div className="d-flex align-items-center">
-                                  {/* Student Image */}
-                                  <img
-                                    src={
-                                      profile_picture_url ||
-                                      "https://via.placeholder.com/40"
-                                    }
-                                    className="rounded-circle border"
-                                    style={{ width: "40px", height: "40px" }}
-                                    alt="Profile"
-                                  />
-                                  <div className="ms-3">
-                                    <div className="fw-semibold">
-                                      {username.replace("_", " ")}
+              <div>
+                {data.map(({ id: classId, name, students }) => (
+                  <div key={classId} className="mb-4">
+                    <Card className="border-0">
+                      <div
+                        className="p-3 text-light fw-bold bg-primary"
+                        style={{
+                          borderTopLeftRadius: "8px",
+                          borderTopRightRadius: "8px",
+                        }}
+                      >
+                        <h5 className="mb-0">{name.replace("_", " ")}</h5>
+                      </div>
+
+                      <Card.Body className="bg-white">
+                        <h6 className="fw-bold text-secondary mb-3">
+                          👩‍🎓 Students
+                        </h6>
+
+                        <ListGroup variant="flush">
+                          {students.length !== 0 ? (
+                            students.map(
+                              ({ id, username, profile_picture_url }) => (
+                                <ListGroup.Item
+                                  key={id}
+                                  className="d-flex align-items-center justify-content-between border-0"
+                                  style={{
+                                    background: "#f8f9fa",
+                                    borderRadius: "8px",
+                                    marginBottom: "5px",
+                                    padding: "10px",
+                                  }}
+                                >
+                                  <div className="d-flex align-items-center">
+                                    <img
+                                      src={
+                                        profile_picture_url ||
+                                        "https://via.placeholder.com/40"
+                                      }
+                                      className="rounded-circle border"
+                                      style={{ width: "40px", height: "40px" }}
+                                      alt="Profile"
+                                    />
+                                    <div className="ms-3">
+                                      <div className="fw-semibold">
+                                        {username.replace("_", " ")}
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
 
-                                {/* Gender & View Button */}
-                                      <div className="d-flex gap-3">
-                                          <ResultCreationHandlerButton
-                                              studentName={username}
-                                              classroomID={classId}
-                                              studentId={id}
-                                          />
+                                  <div className="d-flex gap-3">
+                                    <ResultCreationHandlerButton
+                                      studentName={username}
+                                      classroomID={classId}
+                                      studentId={id}
+                                    />
 
-                                          <ResultViewHandlerButton
-                                              queryKeys={{
-                                                  studentId: id,
-                                                  classroomId: classId,
-                                              }}
-                                              refetch={refetch}
-                                              setSelectedStudent={setSelectedStudent}
-                                              selectedStudent={selectedStudent}
-                                              id={id}
-                                              loading={{
-                                                  isFetchingResult,
-                                                  isLoadingResult,
-                                              }}
-                                          />
-                                      </div>
-
-                              </ListGroup.Item>
+                                    <ResultViewHandlerButton
+                                      queryKeys={{
+                                        studentId: id,
+                                        classroomId: classId,
+                                      }}
+                                      refetch={refetch}
+                                      setSelectedStudent={setSelectedStudent}
+                                      selectedStudent={selectedStudent}
+                                      id={id}
+                                      loading={{
+                                        isFetchingResult,
+                                        isLoadingResult,
+                                      }}
+                                    />
+                                  </div>
+                                </ListGroup.Item>
+                              )
                             )
-                          )
-                        ) : (
-                          <p className="text-muted">No Students Available</p>
-                        )}
-                      </ListGroup>
-                    </Card.Body>
-                  </Card>
-                </div>
-              ))}
-              {/* Show error if fetching student results fails */}
-              {isResultError && (
-                <div className="mt-3">
-                  <ErrorAlert
-                    heading="Error fetching student results"
-                    message={ErrorMessageHandling(isResultError, resultError)}
-                    removable
-                  />
-                </div>
-              )}
+                          ) : (
+                            <p className="text-muted">No Students Available</p>
+                          )}
+                        </ListGroup>
+                      </Card.Body>
+                    </Card>
+                  </div>
+                ))}
 
-              {/* Show fetched student result (for now, just logging it) */}
-              {studentResult && (
-                <div className="mt-4 text-center">
-                  <h5 className="text-success">
-                    Result Loaded Successfully ✅
-                  </h5>
-                </div>
-              )}
-              <ResultTermModal
-                showOverlay={showOverlay}
-                setShowOverlay={setShowOverlay}
-                studentResult={studentResult}
-              />
-            </div>
-          </>
-        )}
-      </div>
-    );
+                {isResultError && (
+                  <div className="mt-3">
+                    <ErrorAlert
+                      heading="Error fetching student results"
+                      message={ErrorMessageHandling(isResultError, resultError)}
+                      removable
+                    />
+                  </div>
+                )}
+
+                {studentResult && (
+                  <div className="mt-4 text-center">
+                    <h5 className="text-success">
+                      Result Loaded Successfully ✅
+                    </h5>
+                  </div>
+                )}
+
+                <ResultTermModal
+                  showOverlay={showOverlay}
+                  setShowOverlay={setShowOverlay}
+                  studentResult={studentResult}
+                />
+              </div>
+            </>
+          )}
+        </div>
+      );
+    }
   }
+
   return <Navigate to="/dashboard/home" />;
 };

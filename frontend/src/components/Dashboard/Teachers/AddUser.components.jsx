@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useUser } from "../../../contexts/User.contexts";
-import { Container, Row, Col,  ProgressBar } from "react-bootstrap";
+import { Container, Row, Col, ProgressBar } from "react-bootstrap";
 import { FaUser, FaLock, FaImage, FaCheck, FaBook, FaGraduationCap } from "react-icons/fa";
 import { Navigate } from "react-router-dom";
 import { SelectUserTypeStep } from "./AdminComponents/AddUserTools/SelectUserTypeStep.components";
@@ -25,7 +25,7 @@ const steps = [
 
 export const AddUser = () => {
     const { currentUser } = useUser();
-    const [step, setStep] = useState(1);
+    const [step, setStep] = useState(6);
     const [selectedOption, setSelectedOption] = useState(1);
     const [formData, setFormData] = useState({
         "username": "",
@@ -174,31 +174,37 @@ export const AddUser = () => {
         }
 
     };
-    return (
-        <Container fluid className="add">
-            <Row className="h-100">
-                {/* Sidebar - Steps Panel */}
-                <Col md={4} className="sidebar d-flex flex-column align-items-center">
-                    <h4 className="mt-4">Create User</h4>
-                    <hr className="w-75" />
-                    <ul className="step-list">
-                        {steps.map(({ id, title, icon }) => (
-                            <li key={id} className={`step-item ${id === step ? "active" : id < step ? "completed" : ""}`}>
-                                <span className="icon">{icon}</span>
-                                <span className="title">{title}</span>
-                            </li>
-                        ))}
-                    </ul>
-                    <ProgressBar now={(step / steps.length) * 100} className="mt-3 w-75" />
-                </Col>
+    if (currentUser.is_superuser || !currentUser.is_student_or_teacher) {
+        if (currentUser.user_class) {
+            return (
+                <Container fluid className="add">
+                    <Row className="h-100">
+                        {/* Sidebar - Steps Panel */}
+                        <Col md={4} className="sidebar d-flex flex-column align-items-center">
+                            <h4 className="mt-4">Create User</h4>
+                            <hr className="w-75" />
+                            <ul className="step-list">
+                                {steps.map(({ id, title, icon }) => (
+                                    <li key={id} className={`step-item ${id === step ? "active" : id < step ? "completed" : ""}`}>
+                                        <span className="icon">{icon}</span>
+                                        <span className="title">{title}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                            <ProgressBar now={(step / steps.length) * 100} className="mt-3 w-75" />
+                        </Col>
 
-                {/* Step Content - Right Panel */}
-                <Col md={8}>
-                    {renderStepComponent()}
-                </Col>
-            </Row>
-        </Container>
-    );
+                        {/* Step Content - Right Panel */}
+                        <Col md={8}>
+                            {renderStepComponent()}
+                        </Col>
+                    </Row>
+                </Container>
+            );
+        } else {
+            return <Navigate to="/dashboard/home" />;
+        }
+    }
 
     // Default redirection for unexpected cases
     // return <Navigate to="/dashboard/home" />;
