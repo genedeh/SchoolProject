@@ -30,7 +30,7 @@ export const UserCardItemComponent = ({ user, clickHandler, selectedDisplay, chi
                     />
                 </div>
                 <div className="flex-grow-1">
-                    <div className="fw-bold d-flex align-items-center gap-1">
+                    <div className="fw-bold d-flex align-items-center gap-1 text-capitalize">
                         <BsPersonCircle className="text-primary" />
                         {username}
                     </div>
