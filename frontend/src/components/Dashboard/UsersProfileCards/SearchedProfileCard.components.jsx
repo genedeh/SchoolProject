@@ -52,7 +52,7 @@ const SearchedProfileCard = ({ user }) => {
                             borderRadius: '50%',
                         }}
                     />
-                    <h6 className="fw-bold mb-1">{displayName}</h6>
+                    <h6 className="fw-bold mb-1 text-capitalize">{displayName}</h6>
                     <p className="text-muted mb-1">{classroomName || className || "No class"}</p>
                     <div className="my-2">
                         {is_student_or_teacher ? (

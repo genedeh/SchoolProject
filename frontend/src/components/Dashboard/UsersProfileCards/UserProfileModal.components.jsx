@@ -296,7 +296,7 @@ export const ProfileModal = ({ user, show, handleClose, className, classroomName
                         )}
                     </div>
 
-                    <h4 className="mt-3 fw-bold">{username.replace('_', ' ')}</h4>
+                    <h4 className="mt-3 fw-bold text-capitalize">{username.replace('_', ' ')}</h4>
                     <h5 className="text-muted">
                         {is_student_or_teacher ? (
                             <Badge bg="primary">Student</Badge>

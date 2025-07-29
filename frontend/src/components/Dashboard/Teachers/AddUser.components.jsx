@@ -25,7 +25,7 @@ const steps = [
 
 export const AddUser = () => {
     const { currentUser } = useUser();
-    const [step, setStep] = useState(6);
+    const [step, setStep] = useState(1);
     const [selectedOption, setSelectedOption] = useState(1);
     const [formData, setFormData] = useState({
         "username": "",
@@ -175,7 +175,7 @@ export const AddUser = () => {
 
     };
     if (currentUser.is_superuser || !currentUser.is_student_or_teacher) {
-        if (currentUser.user_class) {
+        if (currentUser.user_class || currentUser.is_superuser) {
             return (
                 <Container fluid className="add">
                     <Row className="h-100">

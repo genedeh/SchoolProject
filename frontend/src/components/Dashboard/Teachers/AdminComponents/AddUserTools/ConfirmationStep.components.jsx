@@ -118,7 +118,6 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
             reader.readAsDataURL(profile_picture);
         }
     }, [profile_picture]);
-    console.log(email)
 
 
 
@@ -144,7 +143,7 @@ export const ConfirmationStep = ({ formData, prevStep, setStep, setFormData }) =
                                     />
                                 </Col>
                                 <Col md={10}>
-                                    <h4 className='text-center text-md-start'>{username.replace('_', ' ')} <hr />
+                                    <h4 className='text-center text-md-start text-capitalize'>{username.replace('_', ' ')} <hr />
                                         <Badge bg={
                                             userType === 'Student' ? 'primary' :
                                                 userType === 'Admin' ? 'success' :
