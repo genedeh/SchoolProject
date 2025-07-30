@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button, Spinner, Row, Col, Form, Card, Container, ListGroup, Table, Image, Badge } from "react-bootstrap";
 import { EyeFill, PlusCircleFill } from "react-bootstrap-icons";
 import { FaStar, FaCheckCircle, FaUpload } from "react-icons/fa";
+import NoProfilePicture from '../../../../assets/NoProfilePicture.jpg'
 
 export const ResultViewHandlerButton = ({ queryKeys, refetch, setSelectedStudent, selectedStudent, id, loading }) => {
     return (
