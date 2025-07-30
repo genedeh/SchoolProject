@@ -109,10 +109,10 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
                             <Form.Label>Assigned Teacher</Form.Label>
                             <br />
                             <Button
-                                className='custom-btn'
+                                className='custom-btn text-capitalize'
                                 onClick={() => {
                                 setListShow(true)
-                            }} variant="outline-primary">{assignedTeacher ? (assignedTeacher.username) : ('None')}</Button>
+                            }} variant="outline-primary" >{assignedTeacher ? (assignedTeacher.username.replace('_',' ')) : ('None')}</Button>
                         </Form.Group>
                         <br />
                         <Form.Group controlId="formStudents">
@@ -129,7 +129,7 @@ export const UpdateClassroomModal = ({ show, handleClose, classroom }) => {
                             </Button>
                             <div>
                                 {students.map(student => (
-                                    <span key={student.id} className="m-2">
+                                    <span key={student.id} className="m-2 text-capitalize">
                                         {student.username.replace('_', ' ')}
                                         <Button size="sm" className="ms-2" variant="outline-danger"
                                             onClick={() => {

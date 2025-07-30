@@ -99,7 +99,7 @@ export const Classrooms = () => {
                                     <Accordion.Header eventKey={id} className="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h5>{name.replace('_', ' ')}</h5>
-                                            <small className="text-muted">Teacher: {assigned_teacher ? (assigned_teacher.username.replace('_', ' ')) : ("NO ASSIGNED TEACHER")}</small>
+                                            <small className="text-muted text-capitalize">Teacher: {assigned_teacher ? (assigned_teacher.username.replace('_', ' ')) : ("NO ASSIGNED TEACHER")}</small>
                                         </div>
 
                                     </Accordion.Header>
@@ -126,7 +126,7 @@ export const Classrooms = () => {
                                                             />
                                                         </div>
                                                         <div>
-                                                            <div>{username}</div>
+                                                            <div className="text-capitalize">{username.replace('_', ' ')}</div>
                                                         </div>
                                                         {gender === 'male' ?
                                                             (<Button className="m-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>

@@ -129,7 +129,7 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
                             <br />
                             <Button
                                 variant="outline-primary"
-                                className="mb-1 custom-btn"
+                                className="mb-1 custom-btn text-capitalize"
                                 onClick={() => {
                                     setListShow(true)
                                 }}
@@ -148,7 +148,7 @@ export const CreateSubjectModal = ({ show, handleClose }) => {
                             >Select Students</Button>
                             <div>
                                 {selectedStudents.map(student => (
-                                    <span key={student.id} className="m-2">
+                                    <span key={student.id} className="m-2 text-capitalize">
                                         {student.username.replace('_', ' ')}
                                         <Button size="sm" className="ms-2" variant="outline-danger"
                                             onClick={() => {

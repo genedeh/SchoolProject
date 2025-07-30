@@ -112,7 +112,7 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                             <br />
                             <Button onClick={() => {
                                 setListShow(true)
-                            }} variant="outline-primary" className='custom-btn'>{assignedTeacher ? (assignedTeacher.username) : ('None')}</Button>
+                            }} variant="outline-primary" className='custom-btn text-capitalize'>{assignedTeacher ? (assignedTeacher.username.replace('_'," ")) : ('None')}</Button>
                         </Form.Group>
                         <br />
                         <Form.Group controlId="formStudents">
@@ -129,7 +129,7 @@ export const UpdateSubjectModal = ({ show, handleClose, subject }) => {
                             </Button>
                             <div>
                                 {students.map(student => (
-                                    <span key={student.id} className="m-2">
+                                    <span key={student.id} className="m-2 text-capitalize">
                                         {student.username.replace('_', ' ')}
                                         <Button size="sm" className="pe-1 ps-1 ms-2 custom-btn5" variant="outline-danger"
                                             onClick={() => {

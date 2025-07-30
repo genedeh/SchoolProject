@@ -46,8 +46,8 @@ export const ClassRoomTeacherSelectPopUp = ({ show, handleClose, selectedTeacher
             </Modal.Header>
             <Modal.Body>
                 <InputGroup>
-                    <Form.Select className="me-2">
-                        <option value="">{!selectedTeacher ? ("Select a Teacher") : (selectedTeacher.username)}</option>
+                    <Form.Select className="me-2 text-capitalize">
+                        <option value="" className='text-capitalize'>{!selectedTeacher ? ("Select a Teacher") : (selectedTeacher.username.replace("_"," "))}</option>
                     </Form.Select>
                     <Form.Control className="me-auto " placeholder='Search...' value={tempSearchTerm} onChange={(e) => {
                         setTempSearchTerm(e.target.value)
@@ -73,7 +73,7 @@ export const ClassRoomTeacherSelectPopUp = ({ show, handleClose, selectedTeacher
                 <ListGroup className="mb-3 ">
                     {!isLoading && !isError ?
                         (data.results?.map((teacher) => (
-                            <UserCardItemComponent key={teacher.id} user={teacher} clickHandler={setSelectedTeacher} selectedDisplay={selectedTeacher ? (selectedTeacher.id === teacher.id ? 'border-info' : '') : ("")} />
+                            <UserCardItemComponent key={teacher.id} user={teacher} clickHandler={setSelectedTeacher} selectedDisplay={selectedTeacher ? (selectedTeacher.id === teacher.id ? 'selected' : '') : ("")} />
                         ))) : (
                             <>
                                 <CenteredSpinner caption="Fetching Teachers..."/>

@@ -55,13 +55,13 @@ export const StudentsSelectPopUp = ({ show, handleClose, selectedStudents, setSe
             </Modal.Header>
             <Modal.Body>
                 <InputGroup>
-                    <Form.Select className="me-2" >
+                    <Form.Select className="me-2 text-capitalize" >
                         <option value="">Choosen Students</option>
                         {selectedOptions.map((id) => {
                             const student = selectedStudents.find((student) => student.id === id);
                             return student ? (
-                                <option key={id} value={student.username}>
-                                    {student.username}
+                                <option key={id} value={student.username} className='text-capitalize'>
+                                    {student.username.replace("_"," ")}
                                 </option>
                             ) : null;
                         })}
@@ -100,7 +100,7 @@ export const StudentsSelectPopUp = ({ show, handleClose, selectedStudents, setSe
                                     const removeStudent = selectedStudents.filter(selectedStudent => selectedStudent.id !== student.id);
                                     setSelectedStudents(removeStudent)
                                 }
-                            }} selectedDisplay={selectedOptions.includes(student.id) ? 'border-info' : ''} />
+                            }} selectedDisplay={selectedOptions.includes(student.id) ? 'selected' : ''} />
                         ))) : (
                             <>
                                 <CenteredSpinner caption='Fetching Students...' />

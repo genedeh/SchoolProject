@@ -26,13 +26,12 @@ export const UserCardItemComponent = ({ user, clickHandler, selectedDisplay, chi
                     <img
                         src={optimizedImageUrl}
                         className="rounded-circle"
-                        alt={username}
                     />
                 </div>
                 <div className="flex-grow-1">
                     <div className="fw-bold d-flex align-items-center gap-1 text-capitalize">
                         <BsPersonCircle className="text-primary" />
-                        {username}
+                        {username.replace("_"," ")}
                     </div>
                     <div className="text-muted small d-flex align-items-center gap-1">
                         <BsGenderAmbiguous />

@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { useUser } from "../../../../contexts/User.contexts";
 import useSubjects from "../../../../contexts/Subjects.contexts";
 import { Navigate } from "react-router-dom";
@@ -11,6 +11,8 @@ import { UpdateSubjectModal } from "./SubjectTools/UpdateSubject.components";
 import { ErrorAlert } from "../../../Alerts/ErrorAlert.components";
 import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import CenteredSpinner from "../../../Loading/CenteredSpinner.components";
+import NoProfilePicture from '../../../../assets/NoProfilePicture.jpg'
+
 
 export const Subjects = () => {
     const { currentUser } = useUser();
@@ -97,7 +99,7 @@ export const Subjects = () => {
                                     <Accordion.Header eventKey={id} className="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h5>{name.replace('_', ' ')}</h5>
-                                            <small className="text-muted">Teacher: {assigned_teacher ? (assigned_teacher.username.replace('_', ' ')) : ("NO ASSIGNED TEACHER")}</small>
+                                            <small className="text-muted text-capitalize">Teacher: {assigned_teacher ? (assigned_teacher.username.replace('_', ' ')) : ("NO ASSIGNED TEACHER")}</small>
                                         </div>
 
                                     </Accordion.Header>
@@ -111,14 +113,16 @@ export const Subjects = () => {
                                                     <div className="d-flex align-items-center">
                                                         <div className="me-3">
                                                             <img
-                                                                src={profile_picture_url == null ? ("https://via.placeholder.com/40") : (profile_picture_url)}
+                                                                src={!profile_picture_url || profile_picture_url === 'null' || profile_picture_url.endsWith('null')
+                                                                    ? NoProfilePicture
+                                                                    : profile_picture_url}
                                                                 alt={username}
                                                                 className="rounded-circle"
                                                                 style={{ objectFit: 'cover', width: '40px', height: '40px' }}
                                                             />
                                                         </div>
                                                         <div>
-                                                            <div>{username}</div>
+                                                            <div className="text-capitalize">{username.replace('_', ' ')}</div>
                                                         </div>
                                                         {gender === 'male' ?
                                                             (<Button className="m-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
