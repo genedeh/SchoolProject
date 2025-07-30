@@ -52,10 +52,9 @@ export const generateResultPDF = async (result, overallPercentage) => {
         startY += 5; // space between lines
     });
     pdf.line(10, 40, 200, 40); // Line below header
-
     // 2. Student Details
     pdf.setFontSize(12);
-    pdf.text(`Name: ${student.username.replace("_", " ")}`, 14, 44);
+    pdf.text(`Name: ${student.username.replace("_", " ").toUpperCase()}`, 14, 44);
     pdf.text(`Class: ${classroom.name}`, 90, 44);
     pdf.text(`Term: ${result.term}`, 14, 50);
     pdf.text(`Session: ${result.session}`, 90, 50);
@@ -323,9 +322,9 @@ export const ResultModal = ({ show, handleClose, result }) => {
                                 className="shadow-lg border border-2 border-primary"
                             />
                             <div className="flex-grow-1">
-                                <h4 className="fw-bold text-dark mb-2">
+                                <h4 className="fw-bold text-dark mb-2 text-capitalize">
                                     <FaUser className="me-2 text-primary" />
-                                    {assigned_student["username"]}
+                                    {assigned_student["username"].replace("_"," ")}
                                 </h4>
                                 <div className="d-flex flex-wrap text-muted">
                                     <p className="me-4 mb-1">

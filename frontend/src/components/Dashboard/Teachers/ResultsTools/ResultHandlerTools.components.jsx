@@ -244,9 +244,11 @@ export const ClassroomPerformance = ({ performanceData }) => {
                                         <tr key={student.student_id}>
                                             <td>{index + 1}</td>
                                             <td>
-                                                <Image src={student.profile_picture_url} roundedCircle width={45} height={45} className="shadow-sm" />
+                                                <Image src={!student.profile_picture_url || student.profile_picture_url === 'null' || student.profile_picture_url.endsWith('null')
+                                                    ? NoProfilePicture
+                                                    : student.profile_picture_url} roundedCircle width={45} height={45} className="shadow-sm" />
                                             </td>
-                                            <td className="fw-bold">{student.username}</td>
+                                            <td className="fw-bold text-capitalize">{student.username.replace("_"," ")}</td>
                                             <td className="text-primary fw-semibold">{student.overall_percentage.toFixed(2)}%</td>
                                             <td className="fw-bold"><Badge>{student.position}</Badge></td>
                                         </tr>
@@ -267,7 +269,7 @@ export const ClassroomPerformance = ({ performanceData }) => {
                             <ListGroup variant="flush">
                                 {Object.entries(performanceData.best_per_subject).map(([subject, { student, score }]) => (
                                     <ListGroup.Item key={subject} className="d-flex justify-content-between">
-                                        <span className="fw-bold">{subject}:</span>
+                                        <span className="fw-bold text-capitalize">{subject.replace("_"," ")}:</span>
                                         <span className="text-success">{student} ({score})</span>
                                     </ListGroup.Item>
                                 ))}

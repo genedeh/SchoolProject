@@ -255,7 +255,7 @@ export const AssignedClassrooms = () => {
                                       alt="Profile"
                                     />
                                     <div className="ms-3">
-                                      <div className="fw-semibold">
+                                      <div className="fw-semibold text-capitalize">
                                         {username.replace("_", " ")}
                                       </div>
                                     </div>

@@ -165,8 +165,8 @@ export const CreateStudentResult = () => {
 
         return (
             <div className="shadow-md border-0 p-4 mt-4">
-                <h2 className="text-center mb-3">
-                    Create Result for {student?.username}
+                <h2 className="text-center mb-3 text-capitalize">
+                    Create Result for {student?.username.replace("_"," ")}
                 </h2>
                 {isSuccess && <SuccessAlert heading="Creation Successful" message="Result Created successfully!" />}
 
@@ -174,7 +174,7 @@ export const CreateStudentResult = () => {
                     {/* ✅ Student Info Section */}
                     <Card className="p-4 mb-4 bg-white rounded">
                         <Row className="mb-3">
-                            <Col><strong>Student:</strong> {student?.username}</Col>
+                            <Col className="text-capitalize"><strong>Student:</strong> {student?.username.replace("_"," ")}</Col>
                             {classroomId && <Col><strong>Classroom:</strong> {classroom?.name}</Col>}
                         </Row>
                         <Row className="gy-3">

@@ -99,7 +99,7 @@ export const AssignedSubjects = () => {
                                                                 />
                                                             </div>
                                                             <div>
-                                                                <div>{username}</div>
+                                                                <div className="text-capitalize">{username.replace("_"," ")}</div>
                                                             </div>
                                                             {gender === 'male' ?
                                                                 (<Button className="m-2" size="sm" variant='primary' style={{ 'borderColor': 'white' }}>
