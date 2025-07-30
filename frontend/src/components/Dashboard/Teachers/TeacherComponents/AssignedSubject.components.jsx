@@ -6,6 +6,7 @@ import { GenderFemale, GenderMale } from "react-bootstrap-icons";
 import { ErrorAlert } from "../../../Alerts/ErrorAlert.components";
 import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import { CenteredSpinner } from "../../../Loading/CenteredSpinner.components"
+import NoProfilePicture from '../../../../assets/NoProfilePicture.jpg'
 import axios from "axios";
 
 
@@ -89,7 +90,9 @@ export const AssignedSubjects = () => {
                                                         <div className="d-flex align-items-center">
                                                             <div className="me-3">
                                                                 <img
-                                                                    src={profile_picture_url == null ? ("https://via.placeholder.com/40") : (profile_picture_url)}
+                                                                    src={!profile_picture_url || profile_picture_url === 'null' || profile_picture_url.endsWith('null')
+                                                                        ? NoProfilePicture
+                                                                        : profile_picture_url}
                                                                     alt="Profile"
                                                                     className="rounded-circle"
                                                                     style={{ width: '40px', height: '40px' }}

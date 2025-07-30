@@ -9,6 +9,7 @@ import { ErrorMessageHandling } from "../../../../utils/ErrorHandler.utils";
 import { CenteredSpinner } from "../../../Loading/CenteredSpinner.components";
 import axios from "axios";
 import { ResultTermModal } from "../ResultsTools/ResultTermsModal.components";
+import NoProfilePicture from '../../../../assets/NoProfilePicture.jpg'
 import {
   ClassroomPerformance,
   ResultCreationHandlerButton,
@@ -121,7 +122,7 @@ export const AssignedClassrooms = () => {
       },
     }
   );
-  
+
 
   if (
     !currentUser.is_student_or_teacher &&
@@ -246,10 +247,9 @@ export const AssignedClassrooms = () => {
                                 >
                                   <div className="d-flex align-items-center">
                                     <img
-                                      src={
-                                        profile_picture_url ||
-                                        "https://via.placeholder.com/40"
-                                      }
+                                      src={!profile_picture_url || profile_picture_url === 'null' || profile_picture_url.endsWith('null')
+                                        ? NoProfilePicture
+                                        : profile_picture_url}
                                       className="rounded-circle border"
                                       style={{ width: "40px", height: "40px" }}
                                       alt="Profile"
